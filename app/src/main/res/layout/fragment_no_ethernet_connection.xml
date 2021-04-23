@@ -15,12 +15,12 @@
             android:id="@+id/imageViewNoConnection"
             android:layout_width="256dp"
             android:layout_height="256dp"
+            android:contentDescription="@null"
             android:src="@drawable/ic_wifi_off_96"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="@null" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/buttonRetryConnection"
@@ -28,6 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
             android:text="@string/retry"
+            android:textSize="?attr/textSizeNormal"
             app:layout_constraintEnd_toEndOf="@+id/imageViewNoConnection"
             app:layout_constraintStart_toStartOf="@+id/imageViewNoConnection"
             app:layout_constraintTop_toBottomOf="@+id/imageViewNoConnection" />
