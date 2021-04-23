@@ -31,10 +31,22 @@
         android:layout_marginBottom="4dp"
         android:contentDescription="@null"
         android:src="@drawable/ic_add_24dp"
-        app:layout_constraintBottom_toTopOf="@id/textViewProductDescription"
+        app:layout_constraintBottom_toTopOf="@id/ratingBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewName" />
+
+    <RatingBar
+        android:id="@+id/ratingBar"
+        style="?android:ratingBarStyleIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toTopOf="@id/textViewProductDescription"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imageViewProductImage" />
 
     <TextView
         android:id="@+id/textViewProductDescription"
@@ -48,7 +60,7 @@
         app:layout_constraintBottom_toTopOf="@id/bottomControllers"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imageViewProductImage" />
+        app:layout_constraintTop_toBottomOf="@id/ratingBar" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottomControllers"
@@ -64,7 +76,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
-            android:text="Single price:"
+            android:text="@string/single_price"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/textViewTotalPrice"
             app:layout_constraintEnd_toStartOf="@id/textViewRealSinglePrice"
@@ -89,7 +101,7 @@
             android:id="@+id/textViewTotalPrice"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Total price:"
+            android:text="@string/total_price"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/imageButtonMinus"
             app:layout_constraintEnd_toStartOf="@id/textViewRealTotalPrice"
