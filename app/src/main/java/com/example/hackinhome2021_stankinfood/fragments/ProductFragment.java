@@ -91,6 +91,7 @@ public class ProductFragment extends Fragment implements View.OnClickListener {
         textViewName = view.findViewById(R.id.textViewName);
         textViewName.setText(product.getProductName());
         textViewProductDescription = view.findViewById(R.id.textViewProductDescription);
+        textViewProductDescription.setText(product.getDescription());
         textViewSinglePrice = view.findViewById(R.id.textViewSinglePrice);
         textViewTotalPrice = view.findViewById(R.id.textViewTotalPrice);
         textViewRealSinglePrice = view.findViewById(R.id.textViewRealSinglePrice);
