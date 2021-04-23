@@ -1,8 +1,10 @@
-package com.example.hackinhome2021_stankinfood;
+package com.example.hackinhome2021_stankinfood.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.hackinhome2021_stankinfood.R;
 
 public class MainActivity extends AppCompatActivity {
 
