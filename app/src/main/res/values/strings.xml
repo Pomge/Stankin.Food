@@ -42,5 +42,6 @@
     <string name="pick_up_at">I will pick it up at:</string>
     <string name="change_time">Change time</string>
     <string name="clear_cart">Clear cart</string>
+    <string name="pay_rest">Pay at the restaurant</string>
 
 </resources>
