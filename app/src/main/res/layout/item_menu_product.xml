@@ -71,7 +71,7 @@
             android:layout_height="48dp"
             android:layout_margin="8dp"
             android:text="100 RUB"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textViewDescription" />
@@ -82,6 +82,7 @@
             android:layout_height="48dp"
             android:layout_margin="8dp"
             android:src="@drawable/ic_remove_24dp"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textViewDescription" />
 
@@ -92,6 +93,7 @@
             android:layout_margin="8dp"
             android:gravity="center"
             android:text="6"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/imageButtonPlus"
             app:layout_constraintStart_toEndOf="@id/imageButtonMinus"
@@ -103,6 +105,7 @@
             android:layout_height="48dp"
             android:layout_margin="8dp"
             android:src="@drawable/ic_add_24dp"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textViewDescription" />
     </androidx.constraintlayout.widget.ConstraintLayout>
