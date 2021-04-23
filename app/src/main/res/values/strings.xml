@@ -24,4 +24,6 @@
     <string name="reset_password_messege">Are you sure you want to reset your email password:</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="retry">Retry</string>
+
 </resources>
