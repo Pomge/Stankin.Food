@@ -46,7 +46,15 @@ public class CartFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_cart, container, false);
-
+        initTextViews(view);
         return view;
+    }
+
+    private void initTextViews(View view) {
+        textViewRealAddress = view.findViewById(R.id.textViewRealAddress);
+        textViewPickupTime = view.findViewById(R.id.textViewPickupTime);
+        textViewRealPickupTime = view.findViewById(R.id.textViewRealPickupTime);
+        textViewRealTotalPrice = view.findViewById(R.id.textViewRealTotalPrice);
+
     }
 }
