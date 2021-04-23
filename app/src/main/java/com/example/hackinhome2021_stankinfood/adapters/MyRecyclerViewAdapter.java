@@ -1,6 +1,5 @@
 package com.example.hackinhome2021_stankinfood.adapters;
 
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -157,8 +156,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         viewHolderMenuProduct.imageButtonLiked.setSelected(product.isLiked());
 //        viewHolderMenuProduct.imageViewProductImage.setImageBitmap(product.image);
         viewHolderMenuProduct.textViewName.setText(product.getProductName());
-        float rating = ((float) product.getLikesCount()) / ((float) productListFull.size());
-        viewHolderMenuProduct.ratingBar.setRating(rating);
+        viewHolderMenuProduct.ratingBar.setRating(product.getRating());
 
         String singlePrice = product.getPrice() + " " +
                 getStringResourceCurrency(viewHolderMenuProduct);
@@ -172,6 +170,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         viewHolderMenuProduct.imageButtonPlus.setVisibility(View.GONE);
 
         viewHolderMenuProduct.cardView.setOnClickListener(myOnClickListener);
+        viewHolderMenuProduct.imageButtonLiked.setOnClickListener(myOnClickListener);
         viewHolderMenuProduct.buttonPrice.setOnClickListener(myOnClickListener);
     }
 
@@ -181,8 +180,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         viewHolderMenuProduct.imageButtonLiked.setSelected(product.isLiked());
 //        viewHolderMenuProduct.imageViewProductImage.setImageBitmap(product.image);
         viewHolderMenuProduct.textViewName.setText(product.getProductName());
-        float rating = ((float) product.getLikesCount()) / ((float) productListFull.size());
-        viewHolderMenuProduct.ratingBar.setRating(rating);
+        viewHolderMenuProduct.ratingBar.setRating(product.getRating());
 
         viewHolderMenuProduct.textViewDescription.setText(getStringForDescriptionAfterClick(
                 viewHolderMenuProduct, product.getPrice(), product.getCountForOrder(), product.getProductsLeft()));
@@ -195,6 +193,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         viewHolderMenuProduct.imageButtonPlus.setVisibility(View.VISIBLE);
 
         viewHolderMenuProduct.cardView.setOnClickListener(myOnClickListener);
+        viewHolderMenuProduct.imageButtonLiked.setOnClickListener(myOnClickListener);
         viewHolderMenuProduct.imageButtonMinus.setOnClickListener(myOnClickListener);
         viewHolderMenuProduct.imageButtonPlus.setOnClickListener(myOnClickListener);
     }

@@ -25,8 +25,8 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuFragment extends Fragment
-        implements SearchView.OnQueryTextListener,
+public class MenuFragment extends Fragment implements
+        SearchView.OnQueryTextListener,
         TabLayout.OnTabSelectedListener,
         OnRecyclerViewClickListener {
 
@@ -169,6 +169,7 @@ public class MenuFragment extends Fragment
         if (newText.length() > 0) {
             tabLayout.setVisibility(View.GONE);
         } else tabLayout.setVisibility(View.VISIBLE);
+        myRecyclerViewAdapter.getFilter().filter(newText);
 
         return false;
     }

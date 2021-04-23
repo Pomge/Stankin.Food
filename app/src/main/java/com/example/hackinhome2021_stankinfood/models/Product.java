@@ -18,6 +18,8 @@ public class Product implements Parcelable {
     private int productsLeft;
     @Exclude
     private int countForOrder;
+    @Exclude
+    private float rating;
     private int price;
     private int likesCount;
     private boolean isLiked;
@@ -28,7 +30,7 @@ public class Product implements Parcelable {
     }
 
     public Product(String productId, String imageURL, String categoryName, String productName,
-                   String description, int productsLeft, int countForOrder, int price,
+                   String description, int productsLeft, int countForOrder, float rating, int price,
                    int likesCount, boolean isLiked, int viewType) {
         this.productId = productId;
         this.imageURL = imageURL;
@@ -37,6 +39,7 @@ public class Product implements Parcelable {
         this.description = description;
         this.productsLeft = productsLeft;
         this.countForOrder = countForOrder;
+        this.rating = rating;
         this.price = price;
         this.likesCount = likesCount;
         this.isLiked = isLiked;
@@ -51,6 +54,7 @@ public class Product implements Parcelable {
         description = in.readString();
         productsLeft = in.readInt();
         countForOrder = in.readInt();
+        rating = in.readFloat();
         price = in.readInt();
         likesCount = in.readInt();
         isLiked = in.readByte() != 0;
@@ -125,6 +129,14 @@ public class Product implements Parcelable {
         this.countForOrder = countForOrder;
     }
 
+    public float getRating() {
+        return rating;
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
+    }
+
     public int getPrice() {
         return price;
     }
@@ -171,6 +183,7 @@ public class Product implements Parcelable {
         dest.writeString(description);
         dest.writeInt(productsLeft);
         dest.writeInt(countForOrder);
+        dest.writeFloat(rating);
         dest.writeInt(price);
         dest.writeInt(likesCount);
         dest.writeByte((byte) (isLiked ? 1 : 0));
