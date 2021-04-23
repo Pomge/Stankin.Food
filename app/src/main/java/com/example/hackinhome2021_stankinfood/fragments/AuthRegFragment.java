@@ -109,14 +109,14 @@ public class AuthRegFragment extends Fragment implements View.OnClickListener {
     private void showAlertDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getResources().getString(R.string.reset_password_title));
-        builder.setMessage(getResources().getString(R.string.reset_password_messege));
+        builder.setMessage(getResources().getString(R.string.reset_password_message));
         builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 //TODO кнопка справа Yes
             }
         });
-        builder.setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 //TODO кнопка справа No
