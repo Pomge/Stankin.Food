@@ -14,4 +14,9 @@
     <string name="sign_in">Sign-in</string>
     <string name="sign_up">Sign-up</string>
     <string name="forgot_password">Forgot your password?</string>
+    <string name="authorization">Authorization</string>
+    <string name="registration">Registration</string>
+    <string name="password_auth_hint">Password</string>
+    <string name="password_reg_hint">Password (min. 8 characters)</string>
+
 </resources>
