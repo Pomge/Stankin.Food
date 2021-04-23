@@ -99,12 +99,12 @@ public class Restaurant implements Parcelable {
     @Exclude
     @Override
     public String toString() {
-        return "Restaurant {" + ",\n" +
-                "restaurantId = '" + restaurantId + '\'' + ",\n" +
-                "name = '" + name + '\'' + ",\n" +
-                "address = '" + address + '\'' + ",\n" +
-                "openingHours = " + openingHours + ",\n" +
-                "closingHours = " + closingHours + ",\n" +
+        return "\nRestaurant {" + ",\n" +
+                "\trestaurantId = '" + restaurantId + '\'' + ",\n" +
+                "\tname = '" + name + '\'' + ",\n" +
+                "\taddress = '" + address + '\'' + ",\n" +
+                "\topeningHours = " + openingHours + ",\n" +
+                "\tclosingHours = " + closingHours + ",\n" +
                 '}' + "\n";
     }
 }

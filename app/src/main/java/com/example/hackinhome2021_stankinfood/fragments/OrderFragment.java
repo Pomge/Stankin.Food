@@ -13,12 +13,8 @@ import com.example.hackinhome2021_stankinfood.interfaces.OnRecyclerViewClickList
 
 
 public class OrderFragment extends Fragment implements OnRecyclerViewClickListener {
-
-
     private static final String KEY = "orderClient";
-
     private static final String ARG_PARAM1 = "param1";
-
 
     private String mParam1;
 

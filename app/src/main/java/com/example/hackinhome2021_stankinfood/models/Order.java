@@ -95,12 +95,12 @@ public class Order implements Parcelable {
 
     @Override
     public String toString() {
-        return "Order {" + "\n" +
-                "orderId = '" + orderId + '\'' + ",\n" +
-                "name = '" + name + '\'' + ",\n" +
-                "pickupTime = " + pickupTime + ",\n" +
-                "isDone = " + isDone + ",\n" +
-                "positions = " + positions + "\n" +
+        return "\nOrder {" + "\n" +
+                "\torderId = '" + orderId + '\'' + ",\n" +
+                "\tname = '" + name + '\'' + ",\n" +
+                "\tpickupTime = " + pickupTime + ",\n" +
+                "\tisDone = " + isDone + ",\n" +
+                "\tpositions = " + positions + "\n" +
                 '}' + "\n";
     }
 }

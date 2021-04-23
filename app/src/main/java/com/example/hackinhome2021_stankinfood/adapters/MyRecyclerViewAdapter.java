@@ -156,7 +156,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         viewHolderMenuProduct.imageButtonLiked.setSelected(product.isLiked());
 //        viewHolderMenuProduct.imageViewProductImage.setImageBitmap(product.image);
         viewHolderMenuProduct.textViewName.setText(product.getProductName());
-        float rating = ((float) product.getLikesCount()) / ((float) productList.size());
+        float rating = ((float) product.getLikesCount()) / ((float) productListFull.size());
         viewHolderMenuProduct.ratingBar.setRating(rating);
 
         String singlePrice = product.getPrice() + " " +
@@ -180,7 +180,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         viewHolderMenuProduct.imageButtonLiked.setSelected(product.isLiked());
 //        viewHolderMenuProduct.imageViewProductImage.setImageBitmap(product.image);
         viewHolderMenuProduct.textViewName.setText(product.getProductName());
-        float rating = ((float) product.getLikesCount()) / ((float) productList.size());
+        float rating = ((float) product.getLikesCount()) / ((float) productListFull.size());
         viewHolderMenuProduct.ratingBar.setRating(rating);
 
         viewHolderMenuProduct.textViewDescription.setText(getStringForDescriptionAfterClick(

@@ -2,8 +2,11 @@ package com.example.hackinhome2021_stankinfood.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.google.firebase.firestore.Exclude;
+
+import java.util.Comparator;
 
 public class Product implements Parcelable {
     @Exclude
@@ -174,21 +177,32 @@ public class Product implements Parcelable {
         dest.writeInt(viewType);
     }
 
-    @Exclude
+    public static final Comparator<Product> PRODUCT_COMPARATOR = (product_1, product_2) -> {
+        if (product_1.getCategoryName().compareTo(product_2.getCategoryName()) < 0) {
+            return -1;
+        } else if (product_1.getCategoryName().compareTo(product_2.getCategoryName()) == 0) {
+            if (product_1.getLikesCount() > product_2.getLikesCount()) {
+                return -1;
+            } else if (product_1.getLikesCount() == product_2.getLikesCount()) {
+                return Integer.compare(product_1.getProductName().compareTo(product_2.getProductName()), 0);
+            } else return 1;
+        } else return 1;
+    };
+
     @Override
     public String toString() {
-        return "Product {" + "\n" +
-                "productId = '" + productId + '\'' + ",\n" +
-                "imageURL = '" + imageURL + '\'' + ",\n" +
-                "categoryName = '" + categoryName + '\'' + ",\n" +
-                "productName = '" + productName + '\'' + ",\n" +
-                "description = '" + description + '\'' + ",\n" +
-                "productsLeft = " + productsLeft + ",\n" +
-                "countForOrder = " + countForOrder + ",\n" +
-                "price = " + price + ",\n" +
-                "likesCount = " + likesCount + ",\n" +
-                "isLiked = " + isLiked + ",\n" +
-                "viewType = " + viewType + "\n" +
+        return "\nProduct {" + "\n" +
+                "\tproductId = '" + productId + '\'' + ",\n" +
+                "\timageURL = '" + imageURL + '\'' + ",\n" +
+                "\tcategoryName = '" + categoryName + '\'' + ",\n" +
+                "\tproductName = '" + productName + '\'' + ",\n" +
+                "\tdescription = '" + description + '\'' + ",\n" +
+                "\tproductsLeft = " + productsLeft + ",\n" +
+                "\tcountForOrder = " + countForOrder + ",\n" +
+                "\tprice = " + price + ",\n" +
+                "\tlikesCount = " + likesCount + ",\n" +
+                "\tisLiked = " + isLiked + ",\n" +
+                "\tviewType = " + viewType + "\n" +
                 '}' + "\n";
     }
 }
