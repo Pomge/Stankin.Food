@@ -18,6 +18,14 @@ public class Restaurant implements Parcelable {
     public Restaurant() {
     }
 
+    public Restaurant(String restaurantId, String name, String address, Timestamp openingHours, Timestamp closingHours) {
+        this.restaurantId = restaurantId;
+        this.name = name;
+        this.address = address;
+        this.openingHours = openingHours;
+        this.closingHours = closingHours;
+    }
+
     protected Restaurant(Parcel in) {
         restaurantId = in.readString();
         name = in.readString();
