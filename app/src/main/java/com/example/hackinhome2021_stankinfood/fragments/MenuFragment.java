@@ -20,6 +20,8 @@ import com.example.hackinhome2021_stankinfood.activities.MainActivity;
 import com.example.hackinhome2021_stankinfood.adapters.MyRecyclerViewAdapter;
 import com.example.hackinhome2021_stankinfood.interfaces.OnRecyclerViewClickListener;
 import com.example.hackinhome2021_stankinfood.models.Product;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -36,6 +38,7 @@ public class MenuFragment extends Fragment implements
     private boolean isMenu;
     private List<Product> productList;
     private List<Integer> titleIndexesList;
+    private List<Integer> savedProductsLeft;
 
     private boolean isScrolled = false;
 
@@ -70,6 +73,7 @@ public class MenuFragment extends Fragment implements
             productList = savedInstanceState.getParcelableArrayList(PRODUCT_LIST);
         }
         setTitleIndexList();
+        setSavedProductsLeft();
     }
 
     @Override
@@ -105,6 +109,14 @@ public class MenuFragment extends Fragment implements
         titleIndexesList.add(productList.size());
 
         Log.d("LOG_MESSAGE", titleIndexesList.toString());
+    }
+
+    private void setSavedProductsLeft() {
+        savedProductsLeft = new ArrayList<>();
+
+        for (Product product : productList) {
+            savedProductsLeft.add(product.getLikesCount());
+        }
     }
 
     private void initSearchView(View view) {
@@ -232,7 +244,6 @@ public class MenuFragment extends Fragment implements
     public void onItemClick(View view, int position) {
         int id = view.getId();
         Product currentProduct = productList.get(position);
-        int currentCount = currentProduct.getCountForOrder();
 
         if (id == R.id.cardView) {
             Toast.makeText(getContext(), "[" + position + "]", Toast.LENGTH_SHORT).show();
@@ -244,6 +255,9 @@ public class MenuFragment extends Fragment implements
                 myRecyclerViewAdapter.notifyItemRangeChanged(position, productList.size());
             } else myRecyclerViewAdapter.notifyItemChanged(position);
         } else {
+            int productsLeft = savedProductsLeft.get(position);
+            int currentCount = currentProduct.getCountForOrder();
+
             if (id == R.id.buttonPrice) {
                 currentProduct.setCountForOrder(1);
                 currentProduct.setViewType(MainActivity.MENU_PRODUCT_ACTIVE);
@@ -251,10 +265,16 @@ public class MenuFragment extends Fragment implements
                 currentProduct.setCountForOrder(currentCount - 1);
                 if (currentProduct.getCountForOrder() == 0) {
                     currentProduct.setViewType(MainActivity.MENU_PRODUCT_INACTIVE);
-                } else currentProduct.setViewType(MainActivity.MENU_PRODUCT_ACTIVE);
+                } else {
+                    currentProduct.setProductsLeft(productsLeft + 1);
+                    currentProduct.setViewType(MainActivity.MENU_PRODUCT_ACTIVE);
+                }
             } else if (id == R.id.imageButtonPlus) {
-                currentProduct.setCountForOrder(currentCount + 1);
-                currentProduct.setViewType(MainActivity.MENU_PRODUCT_ACTIVE);
+                if (currentCount < currentProduct.getProductsLeft()) {
+                    currentProduct.setProductsLeft(productsLeft - 1);
+                    currentProduct.setCountForOrder(currentCount + 1);
+                    currentProduct.setViewType(MainActivity.MENU_PRODUCT_ACTIVE);
+                } else Snackbar.make(getView(), "SYKA!", BaseTransientBottomBar.LENGTH_SHORT).show();
             }
             myRecyclerViewAdapter.notifyItemChanged(position);
         }
