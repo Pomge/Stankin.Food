@@ -1,5 +1,7 @@
 package com.example.hackinhome2021_stankinfood.fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -10,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.hackinhome2021_stankinfood.R;
 
@@ -103,8 +106,46 @@ public class AuthRegFragment extends Fragment implements View.OnClickListener {
         String password = editTextPassword.getText().toString();
         return  password.length() >=8;
     }
+    private void showAlertDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(getResources().getString(R.string.reset_password_title));
+        builder.setMessage(getResources().getString(R.string.reset_password_messege));
+        builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                //TODO кнопка справа Yes
+            }
+        });
+        builder.setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                //TODO кнопка справа No
+            }
+        });
+        builder.setCancelable(true);
+        builder.create();
+    }
     @Override
     public void onClick(View v) {
-
+        int id = v.getId();
+        if (id == R.id.buttonRequest){
+            if (isEmailCorrect()){
+                if(isPasswordCorrect()){
+                    //TODO Зарегистрировать или авторизировать
+                } else{
+                    //TODO можно доработать анимацию
+                    Toast.makeText(getContext(), getResources().getString(R.string.incorrect_password), Toast.LENGTH_SHORT).show();
+                }
+            } else  {
+                //TODO можно доработать анимацию
+                Toast.makeText(getContext(), getResources().getString(R.string.incorrect_email), Toast.LENGTH_SHORT).show();
+            }
+        }else if(id == R.id.buttonRequestApple){
+            //TODO Зарегистрировать или авторизировать Apple
+        }else if(id == R.id.buttonRequestGoogle){
+            //TODO Зарегистрировать или авторизировать Google
+        }else if(id == R.id.textViewForgotPassword){
+            showAlertDialog();
+        }
     }
 }

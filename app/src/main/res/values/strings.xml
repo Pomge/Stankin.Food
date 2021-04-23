@@ -18,5 +18,10 @@
     <string name="registration">Registration</string>
     <string name="password_auth_hint">Password</string>
     <string name="password_reg_hint">Password (min. 8 characters)</string>
-
+    <string name="incorrect_password">Incorrect password!</string>
+    <string name="incorrect_email">Incorrect email!</string>
+    <string name="reset_password_title">Reset password</string>
+    <string name="reset_password_messege">Are you sure you want to reset your email password:</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>
