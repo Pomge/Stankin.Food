@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import com.example.hackinhome2021_stankinfood.R;
+import com.example.hackinhome2021_stankinfood.fragments.MenuFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -58,6 +59,10 @@ public class MainActivity extends AppCompatActivity
         previousBottomNavigationTabId = R.id.canteen;
 
         fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.mainContainer, new MenuFragment());
+//        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
 
         CurrentTimeGetterThread currentTimeGetterThread = new CurrentTimeGetterThread();
         currentTimeGetterThread.start();
@@ -123,16 +128,24 @@ public class MainActivity extends AppCompatActivity
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
             if (previousDirection < currentDirection) {
-//                fragmentTransaction.setCustomAnimations(
-//                        R.anim.enter_from_right, R.anim.exit_to_left,
-//                        R.anim.enter_from_right, R.anim.exit_to_left);
+                fragmentTransaction.setCustomAnimations(
+                        R.anim.enter_from_right, R.anim.exit_to_left,
+                        R.anim.enter_from_right, R.anim.exit_to_left);
             } else {
-//                fragmentTransaction.setCustomAnimations(
-//                        R.anim.enter_from_left, R.anim.exit_to_right,
-//                        R.anim.enter_from_left, R.anim.exit_to_right);
+                fragmentTransaction.setCustomAnimations(
+                        R.anim.enter_from_left, R.anim.exit_to_right,
+                        R.anim.enter_from_left, R.anim.exit_to_right);
             }
         }
 
         return true;
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (fragmentManager.getBackStackEntryCount() == 1) {
+            finish();
+        } else super.onBackPressed();
     }
 }
