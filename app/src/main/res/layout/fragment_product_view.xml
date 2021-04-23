@@ -4,15 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="8dp"
     tools:context=".fragments.ProductViewFragment">
 
     <TextView
         android:id="@+id/textViewName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="4dp"
-        android:layout_marginRight="8dp"
         android:layout_marginBottom="4dp"
         android:gravity="center"
         android:text="ViewName"
@@ -26,9 +25,9 @@
         android:id="@+id/imageViewProductImage"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginLeft="48dp"
+        android:layout_marginLeft="40dp"
         android:layout_marginTop="4dp"
-        android:layout_marginRight="48dp"
+        android:layout_marginRight="40dp"
         android:layout_marginBottom="4dp"
         android:contentDescription="@null"
         android:src="@drawable/ic_add_24dp"
@@ -41,72 +40,125 @@
         android:id="@+id/textViewProductDescription"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="4dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="56dp"
+        android:layout_marginBottom="8dp"
         android:ellipsize="end"
         android:maxLines="7"
         android:text="Description"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomControllers"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/imageViewProductImage" />
 
-    <Button
-        android:id="@+id/buttonProductPrice"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottomControllers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginRight="8dp"
-        android:text="Coast"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
 
-    <ImageButton
-        android:id="@+id/imageButtonMinus"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="8dp"
-        android:backgroundTint="?attr/colorPrimary"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/textViewCount"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_remove_24dp" />
+        <TextView
+            android:id="@+id/textViewSinglePrice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:text="Single price:"
+            app:layout_constraintBottom_toTopOf="@id/textViewTotalPrice"
+            app:layout_constraintEnd_toStartOf="@id/textViewRealSinglePrice"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textViewCount"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:gravity="center"
-        android:text="Count"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/imageButtonPlus"
-        app:layout_constraintStart_toEndOf="@id/imageButtonMinus"
-        app:layout_constraintTop_toBottomOf="@+id/textViewProductDescription" />
+        <TextView
+            android:id="@+id/textViewRealSinglePrice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:gravity="end"
+            android:text="Real single price"
+            app:layout_constraintBottom_toTopOf="@id/textViewRealTotalPrice"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/textViewSinglePrice"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/imageButtonPlus"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:backgroundTint="?attr/colorPrimary"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/textViewCount"
-        app:srcCompat="@drawable/ic_add_24dp" />
+        <TextView
+            android:id="@+id/textViewTotalPrice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Total price:"
+            app:layout_constraintBottom_toTopOf="@+id/imageButtonMinus"
+            app:layout_constraintEnd_toStartOf="@id/textViewRealTotalPrice"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewSinglePrice" />
 
+        <TextView
+            android:id="@+id/textViewRealTotalPrice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:text="Real total price"
+            app:layout_constraintBottom_toTopOf="@id/imageButtonPlus"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/textViewTotalPrice"
+            app:layout_constraintTop_toBottomOf="@id/textViewRealSinglePrice" />
+
+        <Button
+            android:id="@+id/buttonProductPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Coast"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageButton
+            android:id="@+id/imageButtonMinus"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
+            android:backgroundTint="?attr/colorPrimary"
+            android:contentDescription="@null"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/textViewCount"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewTotalPrice"
+            app:srcCompat="@drawable/ic_remove_24dp" />
+
+        <TextView
+            android:id="@+id/textViewCount"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:gravity="center"
+            android:text="Count"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/imageButtonMinus"
+            app:layout_constraintEnd_toStartOf="@id/imageButtonPlus"
+            app:layout_constraintStart_toEndOf="@id/imageButtonMinus"
+            app:layout_constraintTop_toTopOf="@id/imageButtonMinus" />
+
+        <ImageButton
+            android:id="@+id/imageButtonPlus"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:backgroundTint="?attr/colorPrimary"
+            android:contentDescription="@null"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/textViewCount"
+            app:layout_constraintTop_toBottomOf="@id/textViewRealTotalPrice"
+            app:srcCompat="@drawable/ic_add_24dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
