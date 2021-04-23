@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">HackInHome2021_Stankin.Food</string>
+
+    <string name="canteen">Canteen</string>
+    <string name="cafe">Cafe</string>
+    <string name="favorite_orders">Orders</string>
+    <string name="favorite_products">Products</string>
+    <string name="cart">Cart</string>
 </resources>
