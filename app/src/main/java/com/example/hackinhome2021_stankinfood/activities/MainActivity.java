@@ -51,28 +51,28 @@ public class MainActivity extends AppCompatActivity
 
 
     private final Random random = new SecureRandom();
-    //    private final List<String> categoriesNames = Arrays.asList(
-//            "Супы", "Мясо", "Напитки");
     private final List<String> categoriesNames = Arrays.asList(
-            "AAA", "BBB", "CCC");
-    //    private final List<String> soupNames = Arrays.asList(
-//            "Харчо", "Затируха", "Томатный",
-//            "Куриный", "Любимый", "Солянка", "Гречневый");
+            "Супы", "Мясо", "Напитки");
+    //    private final List<String> categoriesNames = Arrays.asList(
+//            "AAA", "BBB", "CCC");
     private final List<String> soupNames = Arrays.asList(
-            "AAA", "BBB", "CCC",
-            "DDD", "EEE", "FFF", "GGG");
-    //    private final List<String> meatNames = Arrays.asList(
-//            "Свиннина", "Говядина", "Телятина",
-//            "Баранина", "Крольчатина", "Оленина", "Ягнятина");
+            "Харчо", "Затируха", "Томатный",
+            "Куриный", "Любимый", "Солянка", "Гречневый");
+    //    private final List<String> soupNames = Arrays.asList(
+//            "AAA", "BBB", "CCC",
+//            "DDD", "EEE", "FFF", "GGG");
     private final List<String> meatNames = Arrays.asList(
-            "AAA", "BBB", "CCC",
-            "DDD", "EEE", "FFF", "GGG");
-    //    private final List<String> drinkNames = Arrays.asList(
-//            "7UP", "Lipton", "AQUA",
-//            "Mirinda", "MountainDew", "Pepsi", "Drive");
+            "Свиннина", "Говядина", "Телятина",
+            "Баранина", "Крольчатина", "Оленина", "Ягнятина");
+    //    private final List<String> meatNames = Arrays.asList(
+//            "AAA", "BBB", "CCC",
+//            "DDD", "EEE", "FFF", "GGG");
     private final List<String> drinkNames = Arrays.asList(
-            "AAA", "BBB", "CCC",
-            "DDD", "EEE", "FFF", "GGG");
+            "7UP", "Lipton", "AQUA",
+            "Mirinda", "MountainDew", "Pepsi", "Drive");
+//    private final List<String> drinkNames = Arrays.asList(
+//            "AAA", "BBB", "CCC",
+//            "DDD", "EEE", "FFF", "GGG");
 
 
     private Date currentDate = null;
@@ -98,11 +98,11 @@ public class MainActivity extends AppCompatActivity
 
         generateMenu();
 
-//        fragmentManager = getSupportFragmentManager();
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.replace(R.id.mainContainer, new MenuFragment());
-//        fragmentTransaction.addToBackStack(null);
-//        fragmentTransaction.commit();
+        fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.mainContainer, MenuFragment.newInstance(true, canteenProductList));
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
 
 //        CurrentTimeGetterThread currentTimeGetterThread = new CurrentTimeGetterThread();
 //        currentTimeGetterThread.start();
@@ -169,12 +169,12 @@ public class MainActivity extends AppCompatActivity
 
         for (String drinkName : drinkNames) {
             Product productCanteen = new Product(
-                    null, null, categoriesNames.get(2), drinkName, getRandomString(255),
-                    getRandomInteger(0, 10), 0,
+                    getRandomString(50), null, categoriesNames.get(2), drinkName,
+                    getRandomString(255), getRandomInteger(0, 10), 0,
                     getRandomInteger(100, 500), 0, false, MENU_PRODUCT_INACTIVE);
             Product productFastFood = new Product(
-                    null, null, categoriesNames.get(2), drinkName, getRandomString(255),
-                    getRandomInteger(0, 10), 0,
+                    getRandomString(50), null, categoriesNames.get(2), drinkName,
+                    getRandomString(255), getRandomInteger(0, 10), 0,
                     getRandomInteger(100, 500), 0, false, MENU_PRODUCT_INACTIVE);
 
             canteenProductListTaken.add(productCanteen);
@@ -183,12 +183,12 @@ public class MainActivity extends AppCompatActivity
 
         for (String meatName : meatNames) {
             Product productCanteen = new Product(
-                    null, null, categoriesNames.get(1), meatName, getRandomString(255),
-                    getRandomInteger(0, 10), 0,
+                    getRandomString(50), null, categoriesNames.get(1), meatName,
+                    getRandomString(255), getRandomInteger(0, 10), 0,
                     getRandomInteger(100, 500), getRandomInteger(0, 10), false, MENU_PRODUCT_INACTIVE);
             Product productFastFood = new Product(
-                    null, null, categoriesNames.get(1), meatName, getRandomString(255),
-                    getRandomInteger(0, 10), 0,
+                    getRandomString(50), null, categoriesNames.get(1), meatName,
+                    getRandomString(255), getRandomInteger(0, 10), 0,
                     getRandomInteger(100, 500), getRandomInteger(0, 10), false, MENU_PRODUCT_INACTIVE);
 
             canteenProductListTaken.add(productCanteen);
@@ -197,12 +197,12 @@ public class MainActivity extends AppCompatActivity
 
         for (String soupName : soupNames) {
             Product productCanteen = new Product(
-                    null, null, categoriesNames.get(0), soupName, getRandomString(255),
-                    getRandomInteger(0, 10), 0,
+                    getRandomString(50), null, categoriesNames.get(0), soupName,
+                    getRandomString(255), getRandomInteger(0, 10), 0,
                     getRandomInteger(100, 500), getRandomInteger(0, 10), false, MENU_PRODUCT_INACTIVE);
             Product productFastFood = new Product(
-                    null, null, categoriesNames.get(0), soupName, getRandomString(255),
-                    getRandomInteger(0, 10), 0,
+                    getRandomString(50), null, categoriesNames.get(0), soupName,
+                    getRandomString(255), getRandomInteger(0, 10), 0,
                     getRandomInteger(100, 500), getRandomInteger(0, 10), false, MENU_PRODUCT_INACTIVE);
 
             canteenProductListTaken.add(productCanteen);
@@ -212,7 +212,43 @@ public class MainActivity extends AppCompatActivity
         Collections.sort(canteenProductListTaken, Product.PRODUCT_COMPARATOR);
         Collections.sort(fastFoodProductListTaken, Product.PRODUCT_COMPARATOR);
 
+        convertForRecyclerView(canteenProductListTaken);
+        convertForRecyclerView(fastFoodProductListTaken);
 
+        canteenProductList.addAll(canteenProductListTaken);
+        fastFoodProductList.addAll(fastFoodProductListTaken);
+    }
+
+    private void convertForRecyclerView(List<Product> productList) {
+        List<String> categoryNamesList = new ArrayList<>();
+        String savedCategoryName = productList.get(0).getCategoryName();
+        categoryNamesList.add(savedCategoryName);
+
+        for (Product product : productList) {
+            if (!product.getCategoryName().equals(savedCategoryName)) {
+                savedCategoryName = product.getCategoryName();
+                categoryNamesList.add(savedCategoryName);
+            }
+        }
+
+        int index = 0;
+        savedCategoryName = categoryNamesList.get(0);
+        productList.add(0, new Product(
+                null, null, null,
+                savedCategoryName, null, 0,
+                0, 0, 0, false, MENU_HEADER));
+        index++;
+
+        for (int i = 1; i < productList.size(); i++) {
+            if (!productList.get(i).getCategoryName().equals(savedCategoryName)) {
+                productList.add(i, new Product(
+                        null, null, null,
+                        categoryNamesList.get(index), null, 0,
+                        0, 0, 0, false, MENU_HEADER));
+                savedCategoryName = categoryNamesList.get(index);
+                index++;
+            }
+        }
     }
 
     private String getRandomString(int length) {

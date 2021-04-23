@@ -1,5 +1,6 @@
 package com.example.hackinhome2021_stankinfood.adapters;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,12 +57,12 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
             case MainActivity.MENU_PRODUCT_ACTIVE:
             case MainActivity.MENU_PRODUCT_INACTIVE:
-                return new ViewHolderMenuHeader(layoutInflater.inflate(
+                return new ViewHolderMenuProduct(layoutInflater.inflate(
                         R.layout.item_menu_product, parent, false));
 
             case MainActivity.ORDER_PRODUCT_ACTIVE:
             case MainActivity.ORDER_PRODUCT_INACTIVE:
-                return new ViewHolderMenuHeader(layoutInflater.inflate(
+                return new ViewHolderOrderProduct(layoutInflater.inflate(
                         R.layout.item_order_product, parent, false));
         }
         return null;
