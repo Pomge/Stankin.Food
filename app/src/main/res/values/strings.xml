@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">HackInHome2021_Stankin.Food</string>
 
+    <string name="order_id">Order id:</string>
+
+    <string name="total_price">Total price:</string>
+    <string name="single_price">Single price:</string>
+    <string name="products_left">Products left:</string>
+    <string name="currency">RUB</string>
+
     <string name="canteen">Canteen</string>
     <string name="cafe">Cafe</string>
     <string name="favorite_orders">Orders</string>
@@ -26,4 +33,5 @@
     <string name="no">No</string>
     <string name="retry">Retry</string>
 
+    <string name="pick_up_time">Pick-up time:</string>
 </resources>
