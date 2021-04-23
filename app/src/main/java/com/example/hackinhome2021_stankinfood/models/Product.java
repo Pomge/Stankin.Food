@@ -157,4 +157,22 @@ public class Product implements Parcelable {
         dest.writeByte((byte) (isLiked ? 1 : 0));
         dest.writeInt(viewType);
     }
+
+    @Exclude
+    @Override
+    public String toString() {
+        return "Product {" + "\n" +
+                "productId = '" + productId + '\'' + ",\n" +
+                "imageURL = '" + imageURL + '\'' + ",\n" +
+                "categoryName = '" + categoryName + '\'' + ",\n" +
+                "productName = '" + productName + '\'' + ",\n" +
+                "description = '" + description + '\'' + ",\n" +
+                "productsLeft = " + productsLeft + ",\n" +
+                "countForOrder = " + countForOrder + ",\n" +
+                "price = " + price + ",\n" +
+                "likesCount = " + likesCount + ",\n" +
+                "isLiked = " + isLiked + ",\n" +
+                "viewType = " + viewType + "\n" +
+                '}' + "\n";
+    }
 }

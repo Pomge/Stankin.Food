@@ -3,6 +3,8 @@ package com.example.hackinhome2021_stankinfood.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.firestore.Exclude;
+
 public class User implements Parcelable {
     private String userId;
     private String restaurantId;
@@ -52,5 +54,14 @@ public class User implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(userId);
         dest.writeString(restaurantId);
+    }
+
+    @Exclude
+    @Override
+    public String toString() {
+        return "User {" + "\n" +
+                "userId = '" + userId + '\'' + ",\n" +
+                "restaurantId = '" + restaurantId + '\'' + "\n" +
+                '}' + "\n";
     }
 }

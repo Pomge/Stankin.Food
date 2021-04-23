@@ -87,4 +87,16 @@ public class Restaurant implements Parcelable {
         dest.writeString(name);
         dest.writeString(address);
     }
+
+    @Exclude
+    @Override
+    public String toString() {
+        return "Restaurant {" + ",\n" +
+                "restaurantId = '" + restaurantId + '\'' + ",\n" +
+                "name = '" + name + '\'' + ",\n" +
+                "address = '" + address + '\'' + ",\n" +
+                "openingHours = " + openingHours + ",\n" +
+                "closingHours = " + closingHours + ",\n" +
+                '}' + "\n";
+    }
 }

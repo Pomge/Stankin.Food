@@ -2,6 +2,7 @@ package com.example.hackinhome2021_stankinfood.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -11,6 +12,7 @@ import android.view.MenuItem;
 
 import com.example.hackinhome2021_stankinfood.R;
 import com.example.hackinhome2021_stankinfood.fragments.MenuFragment;
+import com.example.hackinhome2021_stankinfood.models.Restaurant;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -19,10 +21,14 @@ import com.google.firebase.storage.StorageReference;
 import org.apache.commons.net.time.TimeTCPClient;
 
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity
@@ -40,7 +46,24 @@ public class MainActivity extends AppCompatActivity
     private static final String COLLECTION_PRODUCTS = "products";
     private static final String COLLECTION_FAVORITE_ORDERS = "favoriteOrders";
 
+
+    private final Random random = new SecureRandom();
+    private List<Restaurant> restaurantList;
+    private final List<String> categoriesNames = Arrays.asList(
+            "Супы", "Мясо", "Напитки");
+    private final List<String> soupNames = Arrays.asList(
+            "Харчо", "Затируха", "Томатный",
+            "Куриный", "Любимый", "Солянка", "Гречневый");
+    private final List<String> meatNames = Arrays.asList(
+            "Свиннина", "Говядина", "Телятина",
+            "Баранина", "Крольчатина", "Оленина", "Ягнятина");
+    private final List<String> drinkNames = Arrays.asList(
+            "7UP", "Lipton", "AQUA",
+            "Mirinda", "MountainDew", "Pepsi", "Drive");
+
+
     private Date currentDate = null;
+
     private int previousDirection = 0;
     private int previousBottomNavigationTabId;
 
@@ -116,6 +139,25 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         }
+    }
+
+
+    private String getRandomString(int length) {
+        int leftLimit = 97;     // letter 'a'
+        int rightLimit = 122;   // letter 'z'
+
+        StringBuilder buffer = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int randomLimitedInt = leftLimit +
+                    (int) (random.nextFloat() * (rightLimit - leftLimit + 1));
+            buffer.append((char) randomLimitedInt);
+        }
+
+        return buffer.toString();
+    }
+
+    private int getRandomInteger(int min, int max) {
+        return random.nextInt(max - min) + min;
     }
 
 
