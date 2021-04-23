@@ -90,4 +90,17 @@ public class Order implements Parcelable {
         dest.writeByte((byte) (isDone ? 1 : 0));
         dest.writeTypedList(positions);
     }
+
+    @Exclude
+
+    @Override
+    public String toString() {
+        return "Order {" + "\n" +
+                "orderId = '" + orderId + '\'' + ",\n" +
+                "name = '" + name + '\'' + ",\n" +
+                "pickupTime = " + pickupTime + ",\n" +
+                "isDone = " + isDone + ",\n" +
+                "positions = " + positions + "\n" +
+                '}' + "\n";
+    }
 }
