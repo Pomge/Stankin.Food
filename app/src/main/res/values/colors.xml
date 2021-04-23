@@ -7,4 +7,16 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <attr name="strokeTabColor" format="color" />
+    <color name="tab_stroke_light">#FFAAAAAA</color>
+    <color name="tab_stroke_dark">#FF444444</color>
+
+    <attr name="unselectedTabColor" format="color" />
+    <color name="tab_unselected_light">#FFDDDDDD</color>
+    <color name="tab_unselected_dark">#FF333333</color>
+
+    <attr name="selectedTabColor" format="color" />
+    <color name="tab_selected_light">#FFAAAAAA</color>
+    <color name="tab_selected_dark">#FF666666</color>
 </resources>
