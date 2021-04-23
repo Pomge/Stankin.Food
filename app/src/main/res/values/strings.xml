@@ -6,8 +6,12 @@
     <string name="favorite_orders">Orders</string>
     <string name="favorite_products">Products</string>
     <string name="cart">Cart</string>
-    
+
     <string name="button_registration">Create an account</string>
     <string name="button_authorization">I already have an account</string>
     <string name="stankin_food">Stankin.Food</string>
+    <string name="email_hint">Email</string>
+    <string name="sign_in">Sign-in</string>
+    <string name="sign_up">Sign-up</string>
+    <string name="forgot_password">Forgot your password?</string>
 </resources>
