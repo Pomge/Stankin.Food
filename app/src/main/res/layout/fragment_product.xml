@@ -15,7 +15,7 @@
         android:layout_marginBottom="4dp"
         android:gravity="center"
         android:text="ViewName"
-        android:textSize="?attr/textSizeBig"
+        android:textSize="?attr/textSizeHeader"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/imageViewProductImage"
         app:layout_constraintEnd_toEndOf="parent"

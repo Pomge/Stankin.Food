@@ -18,7 +18,7 @@
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:text="Здесь будет заголовок"
-            android:textSize="?attr/textSizeBig"
+            android:textSize="?attr/textSizeHeader"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:text="@string/stankin_food"
             android:textColor="@color/purple_500"
-            android:textSize="?attr/textSizeBig"
+            android:textSize="?attr/textSizeHeader"
             app:layout_constraintBottom_toTopOf="@+id/buttonRegistration"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

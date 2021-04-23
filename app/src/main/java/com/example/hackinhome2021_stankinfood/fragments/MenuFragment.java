@@ -2,6 +2,7 @@ package com.example.hackinhome2021_stankinfood.fragments;
 
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,11 +98,13 @@ public class MenuFragment extends Fragment
         titleIndexesList = new ArrayList<>();
 
         for (int i = 0; i < productList.size(); i++) {
-            if (productList.get(i).getViewType() != MainActivity.MENU_HEADER) {
+            if (productList.get(i).getViewType() == MainActivity.MENU_HEADER) {
                 titleIndexesList.add(i);
             }
         }
         titleIndexesList.add(productList.size());
+
+        Log.d("LOG_MESSAGE", titleIndexesList.toString());
     }
 
     private void initSearchView(View view) {
@@ -147,7 +150,7 @@ public class MenuFragment extends Fragment
         if (isMenu) {
             for (Product product : productList) {
                 if (product.getViewType() == MainActivity.MENU_HEADER) {
-                    tabLayout.addTab(tabLayout.newTab().setText(product.getCategoryName()));
+                    tabLayout.addTab(tabLayout.newTab().setText(product.getProductName()));
                 }
             }
 
@@ -175,7 +178,7 @@ public class MenuFragment extends Fragment
     public void onTabSelected(TabLayout.Tab tab) {
         if (!isScrolled) {
             int selectedPosition = tabLayout.getSelectedTabPosition();
-            smoothScroller.setTargetPosition(selectedPosition);
+            smoothScroller.setTargetPosition(titleIndexesList.get(selectedPosition));
             gridLayoutManager.startSmoothScroll(smoothScroller);
         }
     }
