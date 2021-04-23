@@ -17,6 +17,8 @@ public class Product implements Parcelable {
     private int countForOrder;
     private int price;
     private int likesCount;
+    @Exclude
+    private int viewType;
 
     public Product() {
     }
@@ -31,6 +33,7 @@ public class Product implements Parcelable {
         countForOrder = in.readInt();
         price = in.readInt();
         likesCount = in.readInt();
+        viewType = in.readInt();
     }
 
     public static final Creator<Product> CREATOR = new Creator<Product>() {
@@ -117,6 +120,14 @@ public class Product implements Parcelable {
         this.likesCount = likesCount;
     }
 
+    public int getViewType() {
+        return viewType;
+    }
+
+    public void setViewType(int viewType) {
+        this.viewType = viewType;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -133,5 +144,6 @@ public class Product implements Parcelable {
         dest.writeInt(countForOrder);
         dest.writeInt(price);
         dest.writeInt(likesCount);
+        dest.writeInt(viewType);
     }
 }
