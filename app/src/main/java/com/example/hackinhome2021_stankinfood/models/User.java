@@ -59,9 +59,9 @@ public class User implements Parcelable {
     @Exclude
     @Override
     public String toString() {
-        return "User {" + "\n" +
-                "userId = '" + userId + '\'' + ",\n" +
-                "restaurantId = '" + restaurantId + '\'' + "\n" +
+        return "\nUser {" + "\n" +
+                "\tuserId = '" + userId + '\'' + ",\n" +
+                "\trestaurantId = '" + restaurantId + '\'' + "\n" +
                 '}' + "\n";
     }
 }

@@ -136,4 +136,3 @@ public class OrderFragment extends Fragment implements OnRecyclerViewClickListen
 
     }
 }
-
