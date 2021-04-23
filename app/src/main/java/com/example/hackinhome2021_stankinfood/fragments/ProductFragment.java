@@ -79,7 +79,8 @@ public class ProductFragment extends Fragment implements View.OnClickListener {
 
     private void initButton(View view) {
         buttonProductPrice = view.findViewById(R.id.buttonProductPrice);
-        buttonProductPrice.setText(product.getPrice());
+        String string = product.getPrice() + " " + view.getResources().getString(R.string.currency);
+        buttonProductPrice.setText(string);
     }
 
     private void initImageButton(View view) {
