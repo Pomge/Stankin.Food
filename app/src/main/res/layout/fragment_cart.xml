@@ -105,7 +105,7 @@
             android:text="@string/total_price"
             android:textSize="?attr/textSizeNormal"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/buttonRequestGoogle"
+            app:layout_constraintBottom_toTopOf="@id/buttonMakeOrder"
             app:layout_constraintEnd_toStartOf="@+id/textViewRealTotalPrice"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -119,23 +119,23 @@
             android:gravity="end|center_vertical"
             android:text="300 RUB"
             android:textSize="?attr/textSizeNormal"
-            app:layout_constraintBottom_toTopOf="@id/buttonRequestGoogle"
+            app:layout_constraintBottom_toTopOf="@id/buttonMakeOrder"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textViewTotalPrice" />
 
         <Button
-            android:id="@+id/buttonRequestGoogle"
+            android:id="@+id/buttonMakeOrder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:text="@string/pay_rest"
-            app:layout_constraintBottom_toTopOf="@+id/buttonRequestApple"
+            app:layout_constraintBottom_toTopOf="@+id/buttonPayWithGoogle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <Button
-            android:id="@+id/buttonRequestApple"
+            android:id="@+id/buttonPayWithGoogle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
