@@ -14,7 +14,7 @@ import com.example.hackinhome2021_stankinfood.R;
 
 public class CartFragment extends Fragment {
 
-    private static final String KEY_CART = "cart";
+    private static final String CART = "cart";
 
     private String cart;
     private TextView textViewRealAddress;
@@ -29,7 +29,7 @@ public class CartFragment extends Fragment {
     public static CartFragment newInstance(String cart) {
         CartFragment fragment = new CartFragment();
         Bundle args = new Bundle();
-        args.putString(KEY_CART, cart);
+        args.putString(CART, cart);
         fragment.setArguments(args);
         return fragment;
     }
@@ -38,7 +38,7 @@ public class CartFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            cart = getArguments().getString(KEY_CART);
+            cart = getArguments().getString(CART);
         }
     }
 
