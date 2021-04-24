@@ -4,6 +4,11 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        kekusik {
+            storeFile file('C:\\Users\\Rostik\\AndroidStudioProjects\\Stankin.Food\\client_secret_310284880548-72n8l3vve0fhguer5bo2kf2jk68jeagt.apps.googleusercontent.com.json')
+        }
+    }
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
