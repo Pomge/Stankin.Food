@@ -3,9 +3,7 @@ package com.example.hackinhome2021_stankinfood.fragments;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -154,7 +152,7 @@ public class AuthRegFragment extends Fragment implements
         builder.setTitle(title);
         builder.setMessage(message);
         builder.setPositiveButton(buttonOkString, (dialog, id) -> {
-            ((MainActivity) getActivity()).switchToFragmentAuthFragment();
+            ((MainActivity) getActivity()).replaceFragmentToAuthRegFragment(false);
         });
         builder.setCancelable(false);
         builder.create();

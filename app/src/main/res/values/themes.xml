@@ -2,12 +2,12 @@
     <!-- Base application theme. -->
     <style name="Theme.HackInHome2021_StankinFood" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">#A00A1E</item>
-        <item name="colorPrimaryVariant">#A00A1E</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/primary</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">#0032AA</item>
-        <item name="colorSecondaryVariant">#001E82</item>
+        <item name="colorSecondary">@color/second</item>
+        <item name="colorSecondaryVariant">@color/second</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
@@ -16,6 +16,6 @@
         <item name="textSizeMedium">16sp</item>
         <item name="textSizeNormal">14sp</item>
 
-        <item name="strokeTabColor">@color/tab_stroke_light</item>
+        <item name="cardBackgroundColor">@color/card_view_background_light</item>
     </style>
 </resources>

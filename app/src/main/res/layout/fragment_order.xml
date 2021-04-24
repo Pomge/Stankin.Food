@@ -24,7 +24,6 @@
         android:layout_width="256dp"
         android:layout_height="256dp"
         android:layout_margin="8dp"
-        android:background="@drawable/corner_view"
         android:contentDescription="@null"
         app:layout_constraintBottom_toTopOf="@id/textViewPickupTime"
         app:layout_constraintEnd_toEndOf="parent"

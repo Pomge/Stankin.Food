@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
@@ -20,9 +19,7 @@ import com.example.hackinhome2021_stankinfood.activities.MainActivity;
 import com.example.hackinhome2021_stankinfood.adapters.ProductRecyclerViewAdapter;
 import com.example.hackinhome2021_stankinfood.interfaces.OnBackPressedFragment;
 import com.example.hackinhome2021_stankinfood.interfaces.OnRecyclerViewClickListener;
-import com.example.hackinhome2021_stankinfood.models.Order;
 import com.example.hackinhome2021_stankinfood.models.Product;
-import com.example.hackinhome2021_stankinfood.models.Restaurant;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
@@ -246,18 +243,15 @@ public class MenuFragment extends Fragment implements
         }
     }
 
-    private int savedCardViewClick = -1;
-    private int savedCardViewPosition = -1;
-
     @Override
     public void onItemClick(View view, int position) {
         int id = view.getId();
         Product currentProduct = productList.get(position);
 
-        if (id == R.id.cardView && id != savedCardViewClick) {
-            savedCardViewClick = id;
-            savedCardViewPosition = position;
-            ((MainActivity) getActivity()).addFragmentProductFragment(productList, position);
+        if (id == R.id.cardView) {
+//            savedCardViewClick = id;
+//            savedCardViewPosition = position;
+            ((MainActivity) getActivity()).replaceFragmentToProductFragment(productList, position);
         } else if (id == R.id.imageButtonLiked) {
             ((MainActivity) getActivity()).markProductAsLiked(currentProduct, !currentProduct.isLiked());
             currentProduct.setLiked(!currentProduct.isLiked());
@@ -298,11 +292,11 @@ public class MenuFragment extends Fragment implements
         }
     }
 
-    public void restoreCardViewClick() {
-        productRecyclerViewAdapter.notifyItemChanged(savedCardViewPosition);
-        savedCardViewClick = -1;
-        savedCardViewPosition = -1;
-    }
+//    public void restoreCardViewClick() {
+//        productRecyclerViewAdapter.notifyItemChanged(savedCardViewPosition);
+//        savedCardViewClick = -1;
+//        savedCardViewPosition = -1;
+//    }
 
 
     @Override

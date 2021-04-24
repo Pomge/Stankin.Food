@@ -13,9 +13,6 @@ import com.example.hackinhome2021_stankinfood.R;
 import com.example.hackinhome2021_stankinfood.activities.MainActivity;
 
 public class AuthRegChooseFragment extends Fragment implements View.OnClickListener {
-    private Button buttonAuthorization;
-    private Button buttonRegistration;
-
     public AuthRegChooseFragment() {
     }
 
@@ -35,8 +32,8 @@ public class AuthRegChooseFragment extends Fragment implements View.OnClickListe
     }
 
     private void initButtons(View view) {
-        buttonAuthorization = view.findViewById(R.id.buttonAuthorization);
-        buttonRegistration = view.findViewById(R.id.buttonRegistration);
+        Button buttonAuthorization = view.findViewById(R.id.buttonAuthorization);
+        Button buttonRegistration = view.findViewById(R.id.buttonRegistration);
 
         buttonRegistration.setOnClickListener(this);
         buttonAuthorization.setOnClickListener(this);
@@ -44,6 +41,6 @@ public class AuthRegChooseFragment extends Fragment implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        ((MainActivity) getActivity()).addFragmentAuthRegFragment(v.getId() != R.id.buttonAuthorization);
+        ((MainActivity) getActivity()).replaceFragmentToAuthRegFragment(v.getId() != R.id.buttonAuthorization);
     }
 }

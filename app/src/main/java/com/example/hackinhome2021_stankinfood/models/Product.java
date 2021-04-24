@@ -6,41 +6,31 @@ import android.os.Parcelable;
 import com.google.firebase.firestore.Exclude;
 
 import java.util.Comparator;
+import java.util.List;
 
 public class Product implements Parcelable, Cloneable {
     private String productId;
-
     private String restaurantId;
     private String imageURL;
     private String categoryName;
     private String productName;
     private String description;
     private int productsLeft;
-
     private int countForOrder;
     private float rating;
-
     private int price;
     private int likesCount;
     private boolean isLiked;
-
+    private List<String> likedUserIds;
     private int viewType;
 
 
     public Product() {
     }
 
-    public Object clone() {
-        try {
-            return super.clone();
-        } catch (CloneNotSupportedException cloneNotSupportedException) {
-            cloneNotSupportedException.printStackTrace();
-        }
-        return null;
-    }
-
     protected Product(Parcel in) {
         productId = in.readString();
+        restaurantId = in.readString();
         imageURL = in.readString();
         categoryName = in.readString();
         productName = in.readString();
@@ -51,6 +41,7 @@ public class Product implements Parcelable, Cloneable {
         price = in.readInt();
         likesCount = in.readInt();
         isLiked = in.readByte() != 0;
+        likedUserIds = in.createStringArrayList();
         viewType = in.readInt();
     }
 
@@ -65,6 +56,15 @@ public class Product implements Parcelable, Cloneable {
             return new Product[size];
         }
     };
+
+    public Object clone() {
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException cloneNotSupportedException) {
+            cloneNotSupportedException.printStackTrace();
+        }
+        return null;
+    }
 
 
     @Exclude
@@ -169,6 +169,16 @@ public class Product implements Parcelable, Cloneable {
     }
 
 
+    public List<String> getLikedUserIds() {
+        return likedUserIds;
+    }
+
+    public void setLikedUserIds(List<String> likedUserIds) {
+        this.likedUserIds = likedUserIds;
+    }
+
+
+    @Exclude
     public boolean isLiked() {
         return isLiked;
     }
@@ -196,6 +206,7 @@ public class Product implements Parcelable, Cloneable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(productId);
+        dest.writeString(restaurantId);
         dest.writeString(imageURL);
         dest.writeString(categoryName);
         dest.writeString(productName);
@@ -206,6 +217,7 @@ public class Product implements Parcelable, Cloneable {
         dest.writeInt(price);
         dest.writeInt(likesCount);
         dest.writeByte((byte) (isLiked ? 1 : 0));
+        dest.writeStringList(likedUserIds);
         dest.writeInt(viewType);
     }
 
@@ -221,6 +233,7 @@ public class Product implements Parcelable, Cloneable {
             } else return 1;
         } else return 1;
     };
+
 
     @Override
     public String toString() {

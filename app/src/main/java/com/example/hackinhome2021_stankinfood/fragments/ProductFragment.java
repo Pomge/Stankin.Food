@@ -246,7 +246,7 @@ public class ProductFragment extends Fragment implements
 
     @Override
     public boolean onBackPressed() {
-        ((MainActivity) getActivity()).restoreCardViewClickListener();
+//        ((MainActivity) getActivity()).restoreCardViewClickListener();
         return false;
     }
 }

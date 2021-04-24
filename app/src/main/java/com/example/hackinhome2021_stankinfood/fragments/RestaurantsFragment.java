@@ -118,7 +118,7 @@ public class RestaurantsFragment extends Fragment implements
         int id = view.getId();
 
         if (id == R.id.cardView) {
-            ((MainActivity) getActivity()).getProductsFromFireStore(restaurantList.get(position));
+            ((MainActivity) getActivity()).getMenuFromFireStore(restaurantList.get(position));
             Log.d("LOG_MESSAGE", "Click: " + id + " -> " + position);
 
         }
