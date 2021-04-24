@@ -21,9 +21,9 @@ import com.example.hackinhome2021_stankinfood.models.Product;
 
 
 public class OrderFragment extends Fragment implements OnRecyclerViewClickListener {
-    private static final String KEY = "order"; //true- кассир, false - клиент
+    private static final String KEY = "order";
 
-    private boolean isOrder;
+    private boolean isOrder; //true- кассир, false - клиент
     private Order order;
     private ImageView imageViewQR;
     private Button buttonCloseOrder;
