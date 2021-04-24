@@ -145,7 +145,7 @@
         <Button
             android:id="@+id/buttonProductPrice"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="64dp"
             android:text="Coast"
             android:textSize="?attr/textSizeNormal"
             android:visibility="visible"
@@ -155,9 +155,10 @@
 
         <ImageButton
             android:id="@+id/imageButtonMinus"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="4dp"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/fragment_product_round_corner"
             android:backgroundTint="?attr/colorPrimary"
             android:contentDescription="@null"
             android:visibility="gone"
@@ -182,8 +183,9 @@
 
         <ImageButton
             android:id="@+id/imageButtonPlus"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:background="@drawable/fragment_product_round_corner"
             android:backgroundTint="?attr/colorPrimary"
             android:contentDescription="@null"
             android:visibility="gone"

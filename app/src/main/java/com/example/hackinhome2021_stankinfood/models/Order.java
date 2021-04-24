@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.google.firebase.firestore.Exclude;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Order implements Parcelable {
@@ -17,6 +18,14 @@ public class Order implements Parcelable {
     private List<Product> positions;
 
     public Order() {
+    }
+
+    public Order(String orderId, String name, Timestamp pickupTime, boolean isDone) {
+        this.orderId = orderId;
+        this.name = name;
+        this.pickupTime = pickupTime;
+        this.isDone = isDone;
+        positions = new ArrayList<>();
     }
 
     protected Order(Parcel in) {
@@ -91,7 +100,13 @@ public class Order implements Parcelable {
         dest.writeTypedList(positions);
     }
 
-    @Exclude
+    public void addNewPosition(Product product) {
+        positions.add(product);
+    }
+
+    public void removePosition(Product product) {
+        positions.remove(product);
+    }
 
     @Override
     public String toString() {

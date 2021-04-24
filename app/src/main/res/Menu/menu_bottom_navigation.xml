@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/canteen"
+        android:id="@+id/menuItemCanteen"
         android:icon="@drawable/ic_canteen_24dp"
         android:title="@string/canteen" />
 
     <item
-        android:id="@+id/cafe"
+        android:id="@+id/menuItemCafe"
         android:icon="@drawable/ic_cafe_24dp"
         android:title="@string/cafe" />
 
     <item
-        android:id="@+id/favoriteOrders"
+        android:id="@+id/menuItemOrders"
         android:icon="@drawable/ic_orders_24dp"
         android:title="@string/favorite_orders" />
 
     <item
-        android:id="@+id/favoriteProducts"
+        android:id="@+id/menuItemFavoriteProducts"
         android:icon="@drawable/ic_liked_24dp"
         android:title="@string/favorite_products" />
 
     <item
-        android:id="@+id/cart"
+        android:id="@+id/menuItemCart"
         android:icon="@drawable/ic_cart_24dp"
         android:title="@string/cart" />
 </menu>

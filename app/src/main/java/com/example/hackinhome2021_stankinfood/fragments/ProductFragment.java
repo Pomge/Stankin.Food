@@ -175,12 +175,14 @@ public class ProductFragment extends Fragment implements
         Log.d("LOG_MESSAGE", "productsLeft before: " + product.getProductsLeft());
         if (id == R.id.buttonProductPrice) {
             product.setCountForOrder(1);
+            product.setViewType(MainActivity.MENU_PRODUCT_ACTIVE);
             textViewRealProductsLeft.setText(String.valueOf(savedProductsLeft - 1));
             hideViewsByButtonClick(true);
         } else if (id == R.id.imageButtonMinus) {
             if (product.getCountForOrder() - 1 == 0) {
+                product.setViewType(MainActivity.MENU_PRODUCT_INACTIVE);
                 hideViewsByButtonClick(false);
-            }
+            } else product.setViewType(MainActivity.MENU_PRODUCT_ACTIVE);
             product.setCountForOrder(product.getCountForOrder() - 1);
             product.setProductsLeft(savedProductsLeft - product.getCountForOrder());
         } else if (id == R.id.imageButtonPlus) {

@@ -194,9 +194,9 @@ public class Product implements Parcelable {
         if (product_1.getCategoryName().compareTo(product_2.getCategoryName()) < 0) {
             return -1;
         } else if (product_1.getCategoryName().compareTo(product_2.getCategoryName()) == 0) {
-            if (product_1.getLikesCount() > product_2.getLikesCount()) {
+            if (product_1.getRating() > product_2.getRating()) {
                 return -1;
-            } else if (product_1.getLikesCount() == product_2.getLikesCount()) {
+            } else if (product_1.getRating() == product_2.getRating()) {
                 return Integer.compare(product_1.getProductName().compareTo(product_2.getProductName()), 0);
             } else return 1;
         } else return 1;

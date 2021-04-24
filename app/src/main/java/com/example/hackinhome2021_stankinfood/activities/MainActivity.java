@@ -9,13 +9,15 @@ import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.example.hackinhome2021_stankinfood.R;
+import com.example.hackinhome2021_stankinfood.fragments.CartFragment;
 import com.example.hackinhome2021_stankinfood.fragments.MenuFragment;
 import com.example.hackinhome2021_stankinfood.fragments.ProductFragment;
 import com.example.hackinhome2021_stankinfood.interfaces.OnBackPressedFragment;
+import com.example.hackinhome2021_stankinfood.models.Order;
 import com.example.hackinhome2021_stankinfood.models.Product;
-import com.example.hackinhome2021_stankinfood.models.Restaurant;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -25,6 +27,7 @@ import org.apache.commons.net.time.TimeTCPClient;
 
 import java.io.IOException;
 import java.security.SecureRandom;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,6 +42,9 @@ import java.util.TimeZone;
 public class MainActivity extends AppCompatActivity
         implements BottomNavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
+
+    private static final String MENU_FRAGMENT_TAG = "MENU_FRAGMENT";
+    private static final String PRODUCT_FRAGMENT_TAG = "PRODUCT_FRAGMENT";
 
     public static final int MENU_HEADER = 0;
     public static final int MENU_PRODUCT_INACTIVE = 1;
@@ -78,13 +84,14 @@ public class MainActivity extends AppCompatActivity
 
 
     private Date currentDate = null;
+    private Order userOrder;
     private List<Product> canteenProductList;
     private List<Product> fastFoodProductList;
 
     private int previousDirection = 0;
     private int previousBottomNavigationTabId;
 
-    private FragmentManager fragmentManager;
+    private BottomNavigationView bottomNavigationView;
 
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
@@ -96,14 +103,14 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         initBottomNavigationView();
-        previousBottomNavigationTabId = R.id.canteen;
+        previousBottomNavigationTabId = R.id.menuItemCanteen;
 
         generateMenu();
 
-        fragmentManager = getSupportFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.mainContainer, MenuFragment.newInstance(
-                true, canteenProductList));
+                true, canteenProductList), MENU_FRAGMENT_TAG);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
@@ -119,7 +126,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initBottomNavigationView() {
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
     }
 
@@ -173,11 +180,11 @@ public class MainActivity extends AppCompatActivity
         for (String drinkName : drinkNames) {
             Product productCanteen = new Product(
                     getRandomString(50), null, categoriesNames.get(2), drinkName,
-                    getRandomString(255), getRandomInteger(0, 10), 0, 0.0f,
+                    getRandomString(255), getRandomInteger(1, 10), 0, 0.0f,
                     getRandomInteger(100, 500), getRandomInteger(0, 100), random.nextBoolean(), MENU_PRODUCT_INACTIVE);
             Product productFastFood = new Product(
                     getRandomString(50), null, categoriesNames.get(2), drinkName,
-                    getRandomString(255), getRandomInteger(0, 10), 0, 0.0f,
+                    getRandomString(255), getRandomInteger(1, 10), 0, 0.0f,
                     getRandomInteger(100, 500), getRandomInteger(0, 100), random.nextBoolean(), MENU_PRODUCT_INACTIVE);
 
             canteenProductListTaken.add(productCanteen);
@@ -187,11 +194,11 @@ public class MainActivity extends AppCompatActivity
         for (String meatName : meatNames) {
             Product productCanteen = new Product(
                     getRandomString(50), null, categoriesNames.get(1), meatName,
-                    getRandomString(255), getRandomInteger(0, 10), 0, 0.0f,
+                    getRandomString(255), getRandomInteger(1, 10), 0, 0.0f,
                     getRandomInteger(100, 500), getRandomInteger(0, 100), random.nextBoolean(), MENU_PRODUCT_INACTIVE);
             Product productFastFood = new Product(
                     getRandomString(50), null, categoriesNames.get(1), meatName,
-                    getRandomString(255), getRandomInteger(0, 10), 0, 0.0f,
+                    getRandomString(255), getRandomInteger(1, 10), 0, 0.0f,
                     getRandomInteger(100, 500), getRandomInteger(0, 100), random.nextBoolean(), MENU_PRODUCT_INACTIVE);
 
             canteenProductListTaken.add(productCanteen);
@@ -201,26 +208,34 @@ public class MainActivity extends AppCompatActivity
         for (String soupName : soupNames) {
             Product productCanteen = new Product(
                     getRandomString(50), null, categoriesNames.get(0), soupName,
-                    getRandomString(255), getRandomInteger(0, 10), 0, 0.0f,
-                    getRandomInteger(100, 500), getRandomInteger(0, 100), random.nextBoolean(), MENU_PRODUCT_INACTIVE);
+                    getRandomString(255), getRandomInteger(1, 10), 0, 0.0f,
+                    getRandomInteger(100, 500), getRandomInteger(1, 100), random.nextBoolean(), MENU_PRODUCT_INACTIVE);
             Product productFastFood = new Product(
                     getRandomString(50), null, categoriesNames.get(0), soupName,
-                    getRandomString(255), getRandomInteger(0, 10), 0, 0.0f,
-                    getRandomInteger(100, 500), getRandomInteger(0, 100), random.nextBoolean(), MENU_PRODUCT_INACTIVE);
+                    getRandomString(255), getRandomInteger(1, 10), 0, 0.0f,
+                    getRandomInteger(100, 500), getRandomInteger(1, 100), random.nextBoolean(), MENU_PRODUCT_INACTIVE);
 
             canteenProductListTaken.add(productCanteen);
             fastFoodProductListTaken.add(productFastFood);
         }
-
-        Collections.sort(canteenProductListTaken, Product.PRODUCT_COMPARATOR);
-        Collections.sort(fastFoodProductListTaken, Product.PRODUCT_COMPARATOR);
 
         for (Product product : canteenProductListTaken) {
             product.setRating(((float) product.getLikesCount()) / ((float) canteenProductListTaken.size()));
         }
 
         for (Product product : fastFoodProductListTaken) {
-            product.setRating(((float) product.getLikesCount()) / ((float) canteenProductListTaken.size()));
+            product.setRating(((float) product.getLikesCount()) / ((float) fastFoodProductListTaken.size()));
+        }
+
+        Collections.sort(canteenProductListTaken, Product.PRODUCT_COMPARATOR);
+        Collections.sort(fastFoodProductListTaken, Product.PRODUCT_COMPARATOR);
+
+        userOrder = new Order("Order id", "Order name", new Timestamp(new Date().getTime()), false);
+        userOrder = new Order("Order id", "Order name", null, false);
+
+        for (int i = 0; i < 5; i++) {
+            userOrder.addNewPosition(canteenProductListTaken.get(getRandomInteger(0, canteenProductListTaken.size())));
+            userOrder.addNewPosition(fastFoodProductListTaken.get(getRandomInteger(0, fastFoodProductListTaken.size())));
         }
 
         convertForRecyclerView(canteenProductListTaken);
@@ -281,27 +296,34 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    public void hideBottomNavigationView(boolean hide) {
+        if (hide) {
+            bottomNavigationView.setVisibility(View.GONE);
+        } else bottomNavigationView.setVisibility(View.VISIBLE);
+    }
+
     public void replaceFragmentToProductFragment(int position) {
-        fragmentManager = getSupportFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.setCustomAnimations(
                 R.anim.enter_from_bottom, R.anim.exit_to_top,
                 R.anim.enter_from_bottom, R.anim.exit_to_top);
-        fragmentTransaction.replace(R.id.mainContainer, ProductFragment.newInstance(
-                canteenProductList.get(position)));
-        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.hide(fragmentManager.findFragmentByTag(MENU_FRAGMENT_TAG));
+        fragmentTransaction.add(R.id.mainContainer, ProductFragment.newInstance(
+                canteenProductList.get(position)), PRODUCT_FRAGMENT_TAG);
         fragmentTransaction.commit();
     }
 
     public void replaceFragmentFromProductFragmentToMenuFragment() {
-        fragmentManager = getSupportFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.setCustomAnimations(
                 R.anim.enter_from_top, R.anim.exit_to_bottom,
                 R.anim.enter_from_top, R.anim.exit_to_bottom);
-        fragmentTransaction.replace(R.id.mainContainer, MenuFragment.newInstance(
-                true, canteenProductList));
-        fragmentTransaction.addToBackStack(null);
+        Fragment fragment = fragmentManager.findFragmentByTag(MENU_FRAGMENT_TAG);
+        ((MenuFragment) fragment).restoreCardViewClick();
+        fragmentTransaction.remove(fragmentManager.findFragmentByTag(PRODUCT_FRAGMENT_TAG));
+        fragmentTransaction.show(fragmentManager.findFragmentByTag(MENU_FRAGMENT_TAG));
         fragmentTransaction.commit();
     }
 
@@ -312,7 +334,25 @@ public class MainActivity extends AppCompatActivity
 
         if (id != previousBottomNavigationTabId) {
             int currentDirection = 0;
+            Fragment fragment = MenuFragment.newInstance(true, canteenProductList);
+            FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+            if (id == R.id.menuItemCanteen) {
+                fragment = MenuFragment.newInstance(true, canteenProductList);
+            } else if (id == R.id.menuItemCafe) {
+                currentDirection = 1;
+                fragment = MenuFragment.newInstance(true, fastFoodProductList);
+            } else if (id == R.id.menuItemOrders) {
+                currentDirection = 2;
+
+            } else if (id == R.id.menuItemFavoriteProducts) {
+                currentDirection = 3;
+                fragment = MenuFragment.newInstance(false, fastFoodProductList);
+            } else if (id == R.id.menuItemCart) {
+                currentDirection = 4;
+                fragment = CartFragment.newInstance(userOrder);
+            }
 
             if (previousDirection < currentDirection) {
                 fragmentTransaction.setCustomAnimations(
@@ -323,6 +363,12 @@ public class MainActivity extends AppCompatActivity
                         R.anim.enter_from_left, R.anim.exit_to_right,
                         R.anim.enter_from_left, R.anim.exit_to_right);
             }
+
+            fragmentTransaction.replace(R.id.mainContainer, fragment);
+            fragmentTransaction.commit();
+
+            previousDirection = currentDirection;
+            previousBottomNavigationTabId = id;
         }
 
         return true;
@@ -334,7 +380,7 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.mainContainer);
         if (!(fragment instanceof OnBackPressedFragment) ||
                 !((OnBackPressedFragment) fragment).onBackPressed()) {
-            if (fragmentManager.getBackStackEntryCount() == 1) {
+            if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
                 finish();
             } else super.onBackPressed();
         }

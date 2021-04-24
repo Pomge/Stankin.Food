@@ -177,7 +177,11 @@ public class MenuFragment extends Fragment implements
     public boolean onQueryTextChange(String newText) {
         if (newText.length() > 0) {
             tabLayout.setVisibility(View.GONE);
-        } else tabLayout.setVisibility(View.VISIBLE);
+            ((MainActivity) getActivity()).hideBottomNavigationView(true);
+        } else {
+            tabLayout.setVisibility(View.VISIBLE);
+            ((MainActivity) getActivity()).hideBottomNavigationView(false);
+        }
         myRecyclerViewAdapter.getFilter().filter(newText);
 
         return false;
@@ -237,12 +241,17 @@ public class MenuFragment extends Fragment implements
         }
     }
 
+    private int savedCardViewClick = -1;
+    private int savedCardViewPosition = -1;
+
     @Override
     public void onItemClick(View view, int position) {
         int id = view.getId();
         Product currentProduct = productList.get(position);
 
-        if (id == R.id.cardView) {
+        if (id == R.id.cardView && id != savedCardViewClick) {
+            savedCardViewClick = id;
+            savedCardViewPosition = position;
             ((MainActivity) getActivity()).replaceFragmentToProductFragment(position);
         } else if (id == R.id.imageButtonLiked) {
             currentProduct.setLiked(!currentProduct.isLiked());
@@ -280,6 +289,12 @@ public class MenuFragment extends Fragment implements
             Log.d("LOG_MESSAGE", "productsLeft after: " + currentProduct.getProductsLeft());
             myRecyclerViewAdapter.notifyItemChanged(position);
         }
+    }
+
+    public void restoreCardViewClick() {
+        myRecyclerViewAdapter.notifyItemChanged(savedCardViewPosition);
+        savedCardViewClick = -1;
+        savedCardViewPosition = -1;
     }
 
 
