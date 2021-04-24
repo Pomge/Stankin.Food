@@ -163,7 +163,7 @@ public class MenuFragment extends Fragment implements
         if (isMenu) {
             for (Product product : productList) {
                 if (product.getViewType() == MainActivity.MENU_HEADER) {
-                    tabLayout.addTab(tabLayout.newTab().setText(product.getProductName()));
+                    tabLayout.addTab(tabLayout.newTab().setText(product.getCategoryName()));
                 }
             }
 
@@ -258,7 +258,9 @@ public class MenuFragment extends Fragment implements
             savedCardViewPosition = position;
             ((MainActivity) getActivity()).addFragmentProductFragment(productList, position);
         } else if (id == R.id.imageButtonLiked) {
+            ((MainActivity) getActivity()).markProductAsLiked(currentProduct, !currentProduct.isLiked());
             currentProduct.setLiked(!currentProduct.isLiked());
+
             if (!isMenu) {
                 productList.remove(currentProduct);
                 productRecyclerViewAdapter.notifyItemRemoved(position);

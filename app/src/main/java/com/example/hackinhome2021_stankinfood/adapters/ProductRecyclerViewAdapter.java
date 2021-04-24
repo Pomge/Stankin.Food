@@ -147,7 +147,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
     private void setDataForViewHolderMenuHeader(ViewHolderMenuHeader viewHolderMenuHeader,
                                                 Product product) {
-        viewHolderMenuHeader.textViewName.setText(product.getProductName());
+        viewHolderMenuHeader.textViewName.setText(product.getCategoryName());
     }
 
     private void setDataForViewHolderMenuProductInactive(

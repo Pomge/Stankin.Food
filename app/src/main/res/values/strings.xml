@@ -56,4 +56,7 @@
 
     <string name="error_verify_email">Error: Please verify your email address!</string>
     <string name="reset_password">A password reset email was sent to:</string>
+
+    <string name="like_add">The like was added!</string>
+    <string name="like_remove">The like was removed!</string>
 </resources>

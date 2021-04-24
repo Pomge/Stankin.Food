@@ -35,11 +35,14 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -102,8 +105,9 @@ public class MainActivity extends AppCompatActivity
     private String currentWeekday;
     private Date currentDate = null;
     private Order userOrder;
-    private List<Restaurant> restaurantList = new ArrayList<>();
+//    private List<Restaurant> restaurantList = new ArrayList<>();
 
+    private View parentLayout;
     private int previousDirection = 0;
     private int previousBottomNavigationTabId;
 
@@ -125,6 +129,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        parentLayout = findViewById(android.R.id.content);
         initBottomNavigationView();
         previousBottomNavigationTabId = R.id.menuItemRestaurants;
 
@@ -612,11 +617,11 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private void replaceToRestaurantsFragment() {
+    private void replaceToRestaurantsFragment(List<Restaurant> restaurantList) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.mainContainer, RestaurantsFragment.newInstance(restaurantList));
-        fragmentTransaction.addToBackStack(null);
+//        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
@@ -624,12 +629,13 @@ public class MainActivity extends AppCompatActivity
         firebaseFirestore.collection(COLLECTION_RESTAURANTS).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        List<Restaurant> restaurantList = new ArrayList<>();
                         for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
                             Restaurant restaurant = queryDocumentSnapshot.toObject(Restaurant.class);
                             restaurant.setRestaurantId(queryDocumentSnapshot.getId());
                             restaurantList.add(restaurant);
                         }
-                        replaceToRestaurantsFragment();
+                        replaceToRestaurantsFragment(restaurantList);
                     } else {
                         Log.d(TAG, "getRestraintsFromFireStore(): Failed!");
                     }
@@ -669,12 +675,11 @@ public class MainActivity extends AppCompatActivity
 
         for (int i = 1; i < productList.size(); i++) {
             if (!productList.get(i).getCategoryName().equals(savedCategoryName)) {
+                savedCategoryName = categoryNamesList.get(index);
                 Product categoryName = new Product();
                 categoryName.setCategoryName(savedCategoryName);
                 categoryName.setViewType(MainActivity.MENU_HEADER);
                 productList.add(i, categoryName);
-
-                savedCategoryName = categoryNamesList.get(index);
                 index++;
             }
         }
@@ -687,7 +692,7 @@ public class MainActivity extends AppCompatActivity
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.mainContainer, MenuFragment.newInstance(
                 isMenu, result));
-        fragmentTransaction.addToBackStack(null);
+        if (isMenu) fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
@@ -701,6 +706,7 @@ public class MainActivity extends AppCompatActivity
                         for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
                             Product product = queryDocumentSnapshot.toObject(Product.class);
                             product.setProductId(queryDocumentSnapshot.getId());
+                            product.setLiked(true);
                             productList.add(product);
                         }
                         replaceToMenuFragment(false, productList);
@@ -728,6 +734,19 @@ public class MainActivity extends AppCompatActivity
                     } else {
                         Log.d(TAG, "getProductsFromFireStore(): Failed!");
                     }
+                });
+    }
+
+    public void markProductAsLiked(Product product, boolean isLiked) {
+        firebaseFirestore.collection(COLLECTION_PRODUCTS).document(product.getProductId())
+                .update("likedUserIds", isLiked ?
+                        FieldValue.arrayUnion(firebaseUser.getUid()) :
+                        FieldValue.arrayRemove(firebaseUser.getUid()))
+                .addOnCompleteListener(task -> {
+                    String message = isLiked ? getResources().getString(R.string.like_add) :
+                            getResources().getString(R.string.like_remove);
+                    Snackbar.make(parentLayout, message,
+                            BaseTransientBottomBar.LENGTH_SHORT).show();
                 });
     }
 
