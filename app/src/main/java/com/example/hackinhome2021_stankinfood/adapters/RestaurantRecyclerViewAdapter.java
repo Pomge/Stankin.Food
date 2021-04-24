@@ -23,9 +23,9 @@ import java.util.Locale;
 public class RestaurantRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         implements Filterable, OnRecyclerViewClickListener {
 
-    private List<Restaurant> restaurantList;
-    private List<Restaurant> restaurantListFull = new ArrayList<>();
-    private OnRecyclerViewClickListener onRecyclerViewClickListener;
+    private final List<Restaurant> restaurantList;
+    private final List<Restaurant> restaurantListFull = new ArrayList<>();
+    private final OnRecyclerViewClickListener onRecyclerViewClickListener;
 
     public RestaurantRecyclerViewAdapter(List<Restaurant> restaurantList,
                                          OnRecyclerViewClickListener onRecyclerViewClickListener) {
@@ -54,9 +54,9 @@ public class RestaurantRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
                 .format(currentRestaurant.getClosingHours());
 
         viewHolderRestaurant.textViewName.setText(currentRestaurant.getName());
-        viewHolderRestaurant.textViewAddress.setText(currentRestaurant.getAddress());
-        viewHolderRestaurant.textViewOpeningHours.setText(openingHoursString);
-        viewHolderRestaurant.textViewClosingHours.setText(closingHoursString);
+        viewHolderRestaurant.textViewRealAddress.setText(currentRestaurant.getAddress());
+        viewHolderRestaurant.textViewRealOpeningHours.setText(openingHoursString);
+        viewHolderRestaurant.textViewRealClosingHours.setText(closingHoursString);
 
         viewHolderRestaurant.cardView.setOnClickListener(new MyOnClickListener(position));
     }
@@ -66,12 +66,13 @@ public class RestaurantRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         return restaurantList.size();
     }
 
+
     @Override
     public Filter getFilter() {
         return restaurantFilter;
     }
 
-    private Filter restaurantFilter = new Filter() {
+    private final Filter restaurantFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             List<Restaurant> restaurantsFiltered = new ArrayList<>();
@@ -125,18 +126,18 @@ public class RestaurantRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     private static class ViewHolderRestaurant extends RecyclerView.ViewHolder {
         private final CardView cardView;
         private final TextView textViewName;
-        private final TextView textViewAddress;
-        private final TextView textViewOpeningHours;
-        private final TextView textViewClosingHours;
+        private final TextView textViewRealAddress;
+        private final TextView textViewRealOpeningHours;
+        private final TextView textViewRealClosingHours;
 
         public ViewHolderRestaurant(@NonNull View itemView) {
             super(itemView);
 
             cardView = itemView.findViewById(R.id.cardView);
             textViewName = itemView.findViewById(R.id.textViewName);
-            textViewAddress = itemView.findViewById(R.id.textViewAddress);
-            textViewOpeningHours = itemView.findViewById(R.id.textViewOpeningHours);
-            textViewClosingHours = itemView.findViewById(R.id.textViewClosingHours);
+            textViewRealAddress = itemView.findViewById(R.id.textViewAddress);
+            textViewRealOpeningHours = itemView.findViewById(R.id.textViewOpeningHours);
+            textViewRealClosingHours = itemView.findViewById(R.id.textViewClosingHours);
         }
     }
 }

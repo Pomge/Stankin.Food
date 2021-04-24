@@ -23,9 +23,9 @@ import java.util.Locale;
 public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         implements Filterable, OnRecyclerViewClickListener {
 
-    private List<Order> orderList;
-    private List<Order> orderListFull = new ArrayList<>();
-    private OnRecyclerViewClickListener onRecyclerViewClickListener;
+    private final List<Order> orderList;
+    private final List<Order> orderListFull = new ArrayList<>();
+    private final OnRecyclerViewClickListener onRecyclerViewClickListener;
 
     public OrderRecyclerViewAdapter(List<Order> orderList,
                                     OnRecyclerViewClickListener onRecyclerViewClickListener) {
@@ -52,15 +52,16 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             viewHolderOrder.textViewOrderId.setText(currentOrder.getOrderId());
             String pickupTimeString = new SimpleDateFormat("HH:mm", Locale.ENGLISH)
                     .format(currentOrder.getPickupTime());
-            viewHolderOrder.pickupTime.setText(pickupTimeString);
+            viewHolderOrder.textViewPickupTime.setText(pickupTimeString);
         } else {
             viewHolderOrder.textViewOrderId.setText("");
             viewHolderOrder.textViewName.setText(currentOrder.getName());
-            viewHolderOrder.pickupTime.setText("");
+            viewHolderOrder.textViewPickupTime.setText("");
         }
 
         viewHolderOrder.cardView.setOnClickListener(new MyOnClickListener(position));
     }
+
 
     @Override
     public int getItemCount() {
@@ -68,7 +69,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     }
 
     private class MyOnClickListener implements View.OnClickListener {
-        private int position;
+        private final int position;
 
         public MyOnClickListener(int position) {
             this.position = position;
@@ -80,12 +81,13 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         }
     }
 
+
     @Override
     public Filter getFilter() {
         return orderFilter;
     }
 
-    private Filter orderFilter = new Filter() {
+    private final Filter orderFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             List<Order> orderFiltered = new ArrayList<>();
@@ -116,16 +118,18 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         }
     };
 
+
     @Override
     public void onItemClick(View view, int position) {
 
     }
 
+
     private static class ViewHolderOrder extends RecyclerView.ViewHolder {
         private final CardView cardView;
         private final TextView textViewOrderId;
         private final TextView textViewName;
-        private final TextView pickupTime;
+        private final TextView textViewPickupTime;
 
         public ViewHolderOrder(@NonNull View itemView) {
             super(itemView);
@@ -133,7 +137,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             cardView = itemView.findViewById(R.id.cardView);
             textViewOrderId = itemView.findViewById(R.id.textViewOrderId);
             textViewName = itemView.findViewById(R.id.textViewName);
-            pickupTime = itemView.findViewById(R.id.textViewPickupTime);
+            textViewPickupTime = itemView.findViewById(R.id.textViewPickupTime);
         }
     }
 }

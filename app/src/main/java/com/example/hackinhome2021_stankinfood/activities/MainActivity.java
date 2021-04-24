@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -71,10 +72,7 @@ public class MainActivity extends AppCompatActivity
     private static final String AUTH_REG_FRAGMENT = "AUTH_REG_FRAGMENT";
     private static final String MENU_FRAGMENT = "MENU_FRAGMENT";
     private static final String PRODUCT_FRAGMENT = "PRODUCT_FRAGMENT";
-
-    private static final String CANTEEN_DOCUMENT_ID = "XUqz9HedsagJwuZV1ur7";
-    private static final String CAFE_DOCUMENT_ID = "rkQh04lJYa9cLWto2zx8";
-
+    
     public static final int MENU_HEADER = 0;
     public static final int MENU_PRODUCT_INACTIVE = 1;
     public static final int MENU_PRODUCT_ACTIVE = 2;
@@ -105,9 +103,9 @@ public class MainActivity extends AppCompatActivity
     private String currentWeekday;
     private Date currentDate = null;
     private Order userOrder;
-//    private List<Restaurant> restaurantList = new ArrayList<>();
 
     private View parentLayout;
+    private ProgressBar progressBar;
     private int previousDirection = 0;
     private int previousBottomNavigationTabId;
 
@@ -131,6 +129,7 @@ public class MainActivity extends AppCompatActivity
 
         parentLayout = findViewById(android.R.id.content);
         initBottomNavigationView();
+        progressBar = findViewById(R.id.progressBar);
         previousBottomNavigationTabId = R.id.menuItemRestaurants;
 
         firebaseUser = firebaseAuth.getCurrentUser();
@@ -626,6 +625,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void getRestraintsFromFireStore() {
+        progressBar.setVisibility(View.VISIBLE);
         firebaseFirestore.collection(COLLECTION_RESTAURANTS).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -635,6 +635,7 @@ public class MainActivity extends AppCompatActivity
                             restaurant.setRestaurantId(queryDocumentSnapshot.getId());
                             restaurantList.add(restaurant);
                         }
+                        progressBar.setVisibility(View.GONE);
                         replaceToRestaurantsFragment(restaurantList);
                     } else {
                         Log.d(TAG, "getRestraintsFromFireStore(): Failed!");
@@ -643,14 +644,14 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private List<Product> getConvertedProductListForRecyclerView(List<Product> productList) {
+    private List<Product> getConvertedProductListForRecyclerView(List<Product> productList, boolean isMenu) {
         for (Product product : productList) {
             product.setRating(((float) product.getLikesCount()) / ((float) productList.size()));
             product.setViewType(MainActivity.MENU_PRODUCT_INACTIVE);
         }
 
         Collections.sort(productList, Product.PRODUCT_COMPARATOR);
-        convertForRecyclerView(productList);
+        if (isMenu) convertForRecyclerView(productList);
 
         return productList;
     }
@@ -686,7 +687,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void replaceToMenuFragment(boolean isMenu, List<Product> productList) {
-        List<Product> result = getConvertedProductListForRecyclerView(productList);
+        List<Product> result = getConvertedProductListForRecyclerView(productList, isMenu);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -697,6 +698,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void getFavoriteProductsFromFireStore() {
+        progressBar.setVisibility(View.VISIBLE);
         firebaseFirestore.collection(COLLECTION_PRODUCTS)
                 .whereArrayContains("likedUserIds", firebaseUser.getUid())
                 .whereGreaterThanOrEqualTo("productsLeft", 1).get()
@@ -709,6 +711,7 @@ public class MainActivity extends AppCompatActivity
                             product.setLiked(true);
                             productList.add(product);
                         }
+                        progressBar.setVisibility(View.GONE);
                         replaceToMenuFragment(false, productList);
                         Log.d(TAG, "getFavoriteProductsFromFireStore(): Success!");
                     } else {
@@ -718,6 +721,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void getProductsFromFireStore(Restaurant restaurant) {
+        progressBar.setVisibility(View.VISIBLE);
         firebaseFirestore.collection(COLLECTION_PRODUCTS)
                 .whereEqualTo("restaurantId", restaurant.getRestaurantId())
                 .whereGreaterThanOrEqualTo("productsLeft", 1).get()
@@ -729,6 +733,7 @@ public class MainActivity extends AppCompatActivity
                             product.setProductId(queryDocumentSnapshot.getId());
                             productList.add(product);
                         }
+                        progressBar.setVisibility(View.GONE);
                         replaceToMenuFragment(true, productList);
                         Log.d(TAG, "getProductsFromFireStore(): Success!");
                     } else {
