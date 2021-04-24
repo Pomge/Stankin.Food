@@ -56,4 +56,7 @@
 
     <string name="error_verify_email">Error: Please verify your email address!</string>
     <string name="reset_password">A password reset email was sent to:</string>
+
+    <string name="opening_hours">Opening hours</string>
+    <string name="closing_hours">Closing hours</string>
 </resources>

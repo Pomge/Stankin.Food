@@ -7,13 +7,18 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="4dp">
 
         <TextView
             android:id="@+id/textViewOrderId"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="TextView"
+            android:layout_marginBottom="4dp"
+            android:gravity="center_vertical"
+            android:text="OrderId"
+            android:textSize="?attr/textSizeHeader"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -22,7 +27,11 @@
             android:id="@+id/textViewName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="TextView"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:text="Name order"
+            android:textSize="?attr/textSizeMedium"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textViewOrderId" />
@@ -31,7 +40,11 @@
             android:id="@+id/textViewPickupTime"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="TextView"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:text="@string/pick_up_time"
+            android:textSize="?attr/textSizeMedium"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/textViewRealPickupTime"
             app:layout_constraintStart_toStartOf="parent"
@@ -41,7 +54,9 @@
             android:id="@+id/textViewRealPickupTime"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="TextView"
+            android:gravity="center_vertical|end"
+            android:text="Real Pickup Time"
+            android:textSize="?attr/textSizeMedium"
             app:layout_constraintBottom_toBottomOf="@id/textViewPickupTime"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/textViewPickupTime"
