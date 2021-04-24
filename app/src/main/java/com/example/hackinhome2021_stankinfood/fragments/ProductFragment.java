@@ -155,7 +155,7 @@ public class ProductFragment extends Fragment implements View.OnClickListener {
         }
         else if (id == R.id.imageButtonMinus) {
             int count = product.getCountForOrder() - 1;
-            int productLeft = product.getProductsLeft() - 1;
+            int productLeft = product.getProductsLeft() + 1;
             int realTotalPrice = product.getPrice() * count;
             product.setCountForOrder(count);
             textViewCount.setText(String.valueOf(product.getCountForOrder()));
