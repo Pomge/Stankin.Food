@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.hackinhome2021_stankinfood.R;
 import com.example.hackinhome2021_stankinfood.activities.MainActivity;
 import com.example.hackinhome2021_stankinfood.adapters.MyRecyclerViewAdapter;
+import com.example.hackinhome2021_stankinfood.interfaces.OnBackPressedFragment;
 import com.example.hackinhome2021_stankinfood.interfaces.OnRecyclerViewClickListener;
 import com.example.hackinhome2021_stankinfood.models.Product;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -29,7 +30,8 @@ import java.util.List;
 public class MenuFragment extends Fragment implements
         SearchView.OnQueryTextListener,
         TabLayout.OnTabSelectedListener,
-        OnRecyclerViewClickListener {
+        OnRecyclerViewClickListener,
+        OnBackPressedFragment {
 
     private static final String IS_MENU = "isMenu";
     private static final String PRODUCT_LIST = "productList";
@@ -252,7 +254,7 @@ public class MenuFragment extends Fragment implements
         if (id == R.id.cardView && id != savedCardViewClick) {
             savedCardViewClick = id;
             savedCardViewPosition = position;
-            ((MainActivity) getActivity()).replaceFragmentToProductFragment(position);
+            ((MainActivity) getActivity()).addFragmentProductFragment(productList, position);
         } else if (id == R.id.imageButtonLiked) {
             currentProduct.setLiked(!currentProduct.isLiked());
             if (!isMenu) {
@@ -302,5 +304,16 @@ public class MenuFragment extends Fragment implements
     public void onDestroyView() {
         searchView.setQuery(null, true);
         super.onDestroyView();
+    }
+
+
+    @Override
+    public boolean onBackPressed() {
+        if (searchView.getQuery().length() > 0) {
+            searchView.setQuery(null, true);
+            searchView.clearFocus();
+            recyclerViewMenu.requestFocus();
+        }
+        return true;
     }
 }

@@ -12,6 +12,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.example.hackinhome2021_stankinfood.R;
+import com.example.hackinhome2021_stankinfood.fragments.AuthRegChooseFragment;
+import com.example.hackinhome2021_stankinfood.fragments.AuthRegFragment;
 import com.example.hackinhome2021_stankinfood.fragments.CartFragment;
 import com.example.hackinhome2021_stankinfood.fragments.MenuFragment;
 import com.example.hackinhome2021_stankinfood.fragments.ProductFragment;
@@ -43,8 +45,10 @@ public class MainActivity extends AppCompatActivity
         implements BottomNavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
 
-    private static final String MENU_FRAGMENT_TAG = "MENU_FRAGMENT";
-    private static final String PRODUCT_FRAGMENT_TAG = "PRODUCT_FRAGMENT";
+    private static final String AUTH_REG_CHOOSE_FRAGMENT = "AUTH_REG_CHOOSE_FRAGMENT";
+    private static final String AUTH_REG_FRAGMENT = "AUTH_REG_FRAGMENT";
+    private static final String MENU_FRAGMENT = "MENU_FRAGMENT";
+    private static final String PRODUCT_FRAGMENT = "PRODUCT_FRAGMENT";
 
     public static final int MENU_HEADER = 0;
     public static final int MENU_PRODUCT_INACTIVE = 1;
@@ -109,15 +113,19 @@ public class MainActivity extends AppCompatActivity
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.mainContainer, MenuFragment.newInstance(
-                true, canteenProductList), MENU_FRAGMENT_TAG);
+        if (firebaseAuth.getCurrentUser() != null) {
+            hideBottomNavigationView(true);
+            fragmentTransaction.replace(R.id.mainContainer, new AuthRegChooseFragment(),
+                    AUTH_REG_CHOOSE_FRAGMENT);
+        } else {
+            fragmentTransaction.replace(R.id.mainContainer, MenuFragment.newInstance(
+                    true, canteenProductList), MENU_FRAGMENT);
+        }
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
-//        CurrentTimeGetterThread currentTimeGetterThread = new CurrentTimeGetterThread();
-//        currentTimeGetterThread.start();
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
+        CurrentTimeGetterThread currentTimeGetterThread = new CurrentTimeGetterThread();
+        currentTimeGetterThread.start();
     }
 
     @Override
@@ -296,36 +304,72 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    public void replaceFragmentToAuthRegChooseFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(
+                R.anim.enter_from_right, R.anim.exit_to_left,
+                R.anim.enter_from_right, R.anim.exit_to_left);
+        fragmentTransaction.remove(fragmentManager.findFragmentByTag(AUTH_REG_FRAGMENT));
+        fragmentTransaction.show(fragmentManager.findFragmentByTag(AUTH_REG_CHOOSE_FRAGMENT));
+        fragmentTransaction.commit();
+    }
+
+    public void addFragmentAuthRegFragment(boolean isRegistration) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        if (isRegistration) {
+            fragmentTransaction.setCustomAnimations(
+                    R.anim.enter_from_right, R.anim.exit_to_left,
+                    R.anim.enter_from_left, R.anim.exit_to_right);
+        } else {
+            fragmentTransaction.setCustomAnimations(
+                    R.anim.enter_from_left, R.anim.exit_to_right,
+                    R.anim.enter_from_right, R.anim.exit_to_left);
+        }
+        fragmentTransaction.hide(fragmentManager.findFragmentByTag(AUTH_REG_CHOOSE_FRAGMENT));
+        fragmentTransaction.add(R.id.mainContainer,
+                AuthRegFragment.newInstance(isRegistration), AUTH_REG_FRAGMENT);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
     public void hideBottomNavigationView(boolean hide) {
         if (hide) {
             bottomNavigationView.setVisibility(View.GONE);
         } else bottomNavigationView.setVisibility(View.VISIBLE);
     }
 
-    public void replaceFragmentToProductFragment(int position) {
+    public void addFragmentProductFragment(List<Product> productList, int position) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.setCustomAnimations(
                 R.anim.enter_from_bottom, R.anim.exit_to_top,
-                R.anim.enter_from_bottom, R.anim.exit_to_top);
-        fragmentTransaction.hide(fragmentManager.findFragmentByTag(MENU_FRAGMENT_TAG));
+                R.anim.enter_from_top, R.anim.exit_to_bottom);
+        fragmentTransaction.hide(fragmentManager.findFragmentByTag(MENU_FRAGMENT));
         fragmentTransaction.add(R.id.mainContainer, ProductFragment.newInstance(
-                canteenProductList.get(position)), PRODUCT_FRAGMENT_TAG);
+                productList.get(position)), PRODUCT_FRAGMENT);
+        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
-    public void replaceFragmentFromProductFragmentToMenuFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.setCustomAnimations(
-                R.anim.enter_from_top, R.anim.exit_to_bottom,
-                R.anim.enter_from_top, R.anim.exit_to_bottom);
-        Fragment fragment = fragmentManager.findFragmentByTag(MENU_FRAGMENT_TAG);
-        ((MenuFragment) fragment).restoreCardViewClick();
-        fragmentTransaction.remove(fragmentManager.findFragmentByTag(PRODUCT_FRAGMENT_TAG));
-        fragmentTransaction.show(fragmentManager.findFragmentByTag(MENU_FRAGMENT_TAG));
-        fragmentTransaction.commit();
+    public void restoreCardViewClickListener() {
+        Fragment menuFragment = getSupportFragmentManager().findFragmentByTag(MENU_FRAGMENT);
+        ((MenuFragment) menuFragment).restoreCardViewClick();
     }
+
+//    public void replaceFragmentFromProductFragmentToMenuFragment() {
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//        fragmentTransaction.setCustomAnimations(
+//                R.anim.enter_from_top, R.anim.exit_to_bottom,
+//                R.anim.enter_from_top, R.anim.exit_to_bottom);
+//        Fragment fragment = fragmentManager.findFragmentByTag(MENU_FRAGMENT);
+//        ((MenuFragment) fragment).restoreCardViewClick();
+//        fragmentTransaction.remove(fragmentManager.findFragmentByTag(PRODUCT_FRAGMENT));
+//        fragmentTransaction.show(fragmentManager.findFragmentByTag(MENU_FRAGMENT));
+//        fragmentTransaction.commit();
+//    }
 
     public void removeCartFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -334,7 +378,7 @@ public class MainActivity extends AppCompatActivity
                 R.anim.enter_from_left, R.anim.exit_to_right,
                 R.anim.enter_from_left, R.anim.exit_to_right);
         fragmentTransaction.replace(R.id.mainContainer, MenuFragment.newInstance(
-                true, canteenProductList), MENU_FRAGMENT_TAG);
+                true, canteenProductList), MENU_FRAGMENT);
         fragmentTransaction.commit();
 
         setBottomNavigationViewToZeroPosition();
@@ -385,7 +429,9 @@ public class MainActivity extends AppCompatActivity
                         R.anim.enter_from_left, R.anim.exit_to_right);
             }
 
-            fragmentTransaction.replace(R.id.mainContainer, fragment);
+            if (id == R.id.menuItemCanteen || id == R.id.menuItemCafe) {
+                fragmentTransaction.replace(R.id.mainContainer, fragment, MENU_FRAGMENT);
+            } else fragmentTransaction.replace(R.id.mainContainer, fragment);
             fragmentTransaction.commit();
 
             previousDirection = currentDirection;

@@ -57,6 +57,7 @@ public class ProductFragment extends Fragment implements
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -168,6 +169,7 @@ public class ProductFragment extends Fragment implements
         //TODO установить картинку
     }
 
+
     @Override
     public void onClick(View v) {
         int id = v.getId();
@@ -244,7 +246,7 @@ public class ProductFragment extends Fragment implements
 
     @Override
     public boolean onBackPressed() {
-        ((MainActivity) getActivity()).replaceFragmentFromProductFragmentToMenuFragment();
-        return true;
+        ((MainActivity) getActivity()).restoreCardViewClickListener();
+        return false;
     }
 }
