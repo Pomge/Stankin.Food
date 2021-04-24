@@ -105,7 +105,7 @@ public class ProductFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initImage(View view) {
-        imageViewProductImage = view.findViewById(R.id.imageViewProductImage);
+        imageViewProductImage = view.findViewById(R.id.imageViewPicture);
     }
 
     private void setImageViewProductImage() {
