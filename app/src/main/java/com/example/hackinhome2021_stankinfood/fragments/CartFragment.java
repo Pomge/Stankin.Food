@@ -101,4 +101,8 @@ public class CartFragment extends Fragment {
 
         return totalPrice + " " + currency;
     }
+
+    private void initRecyclerViewProducts() {
+        
+    }
 }

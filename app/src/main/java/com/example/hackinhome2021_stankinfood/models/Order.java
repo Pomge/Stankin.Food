@@ -101,11 +101,15 @@ public class Order implements Parcelable {
     }
 
     public void addNewPosition(Product product) {
-        positions.add(product);
+        Product productForAdding = product.clone();
+        positions.add(productForAdding);
     }
 
-    public void removePosition(Product product) {
-        positions.remove(product);
+    public void removePosition(String productId) {
+        for (Product product : positions) {
+            if (product.getProductId().equals(productId)) positions.remove(product);
+            break;
+        }
     }
 
     @Override

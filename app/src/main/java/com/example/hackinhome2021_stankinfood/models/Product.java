@@ -4,11 +4,13 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.firestore.Exclude;
 
 import java.util.Comparator;
 
-public class Product implements Parcelable {
+public class Product implements Parcelable, Cloneable {
     @Exclude
     private String productId;
     private String imageURL;
@@ -27,6 +29,17 @@ public class Product implements Parcelable {
     private int viewType;
 
     public Product() {
+    }
+
+    @Override
+    @NonNull
+    public Product clone() {
+        try {
+            return (Product) super.clone();
+        } catch (CloneNotSupportedException cloneNotSupportedException) {
+            cloneNotSupportedException.printStackTrace();
+            throw new InternalError();
+        }
     }
 
     public Product(String productId, String imageURL, String categoryName, String productName,
