@@ -203,12 +203,7 @@ public class AuthRegFragment extends Fragment implements
             showAlertDialogForgotPassword();
         }
         if (id == R.id.imageButtonViewPassword) {
-            if (imageButtonViewPassword.isSelected()) {
-                hidePassword(false);
-            }
-            else {
-                hidePassword(true);
-            }
+            hidePassword(!imageButtonViewPassword.isSelected());
         }
     }
 }
