@@ -30,7 +30,7 @@ public class AuthRegFragment extends Fragment implements View.OnClickListener {
 
     public AuthRegFragment() {
     }
-    
+
     public static AuthRegFragment newInstance(Boolean isRegistration) {
         AuthRegFragment fragment = new AuthRegFragment();
         Bundle args = new Bundle();

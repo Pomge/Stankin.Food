@@ -313,7 +313,7 @@ public class MenuFragment extends Fragment implements
             searchView.setQuery(null, true);
             searchView.clearFocus();
             recyclerViewMenu.requestFocus();
-        }
-        return true;
+            return true;
+        } else return false;
     }
 }
