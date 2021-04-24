@@ -5,9 +5,13 @@ import android.os.Parcelable;
 
 import com.google.firebase.firestore.Exclude;
 
+import java.util.List;
+
 public class User implements Parcelable {
     private String userId;
     private String restaurantId;
+    @Exclude
+    private List<Order> orderList;
 
     public User() {
     }
@@ -15,6 +19,7 @@ public class User implements Parcelable {
     protected User(Parcel in) {
         userId = in.readString();
         restaurantId = in.readString();
+        orderList = in.createTypedArrayList(Order.CREATOR);
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -54,6 +59,7 @@ public class User implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(userId);
         dest.writeString(restaurantId);
+        dest.writeTypedList(orderList);
     }
 
     @Exclude

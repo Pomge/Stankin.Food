@@ -24,6 +24,7 @@ import com.example.hackinhome2021_stankinfood.fragments.ProductFragment;
 import com.example.hackinhome2021_stankinfood.interfaces.OnBackPressedFragment;
 import com.example.hackinhome2021_stankinfood.models.Order;
 import com.example.hackinhome2021_stankinfood.models.Product;
+import com.example.hackinhome2021_stankinfood.models.Restaurant;
 import com.example.hackinhome2021_stankinfood.models.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -31,17 +32,18 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
 
 import org.apache.commons.net.time.TimeTCPClient;
@@ -107,8 +109,10 @@ public class MainActivity extends AppCompatActivity
 //            "DDD", "EEE", "FFF", "GGG");
 
 
+    private String currentWeekday;
     private Date currentDate = null;
     private Order userOrder;
+    private List<Restaurant> restaurantList;
     private List<Product> canteenProductList;
     private List<Product> fastFoodProductList;
 
@@ -118,11 +122,11 @@ public class MainActivity extends AppCompatActivity
     private BottomNavigationView bottomNavigationView;
 
     private FirebaseUser firebaseUser = null;
-    private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private static final int RC_SIGN_IN = 9001;
     private GoogleSignInClient googleSignInClient;
 
-    private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+    private final FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
     private StorageReference storageReference;
 
 
@@ -204,6 +208,7 @@ public class MainActivity extends AppCompatActivity
                     DateFormat weekdayNumber = new SimpleDateFormat("u", Locale.ENGLISH);
                     Log.d(TAG, "weekdayNumber.format(currentDate): " + weekdayNumber.format(currentDate));
                     Log.d(TAG, "weekdayString.format(currentDate): " + weekdayString.format(currentDate));
+                    currentWeekday = weekdayString.format(currentDate);
                     break;
                 } else {
                     Log.d(TAG, "currentDate == null!");
@@ -563,6 +568,61 @@ public class MainActivity extends AppCompatActivity
         bottomNavigationView.setOnNavigationItemSelectedListener(null);
         bottomNavigationView.setSelectedItemId(R.id.menuItemCanteen);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
+    }
+
+
+    private void readAllRestaurants() {
+        firebaseFirestore.collection(COLLECTION_RESTAURANTS).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        restaurantList = new ArrayList<>();
+
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Restaurant restaurant = document.toObject(Restaurant.class);
+                            restaurant.setRestaurantId(document.getId());
+                            restaurantList.add(restaurant);
+                        }
+                    }
+                });
+    }
+
+    private void readAndWriteTodayRestaurantMenu(Restaurant restaurant) {
+        firebaseFirestore.collection(COLLECTION_RESTAURANTS).document(restaurant.getRestaurantId())
+                .collection(COLLECTION_PRODUCTS)
+                .whereArrayContains(currentWeekday, true)
+                .whereGreaterThan("count", 0)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<Product> productList = new ArrayList<>();
+
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Product product = document.toObject(Product.class);
+                            product.setProductId(document.getId());
+                            productList.add(product);
+                        }
+                        restaurant.setProductList(productList);
+                    }
+                });
+    }
+
+    private void readLikedProducts(Restaurant restaurant) {
+        firebaseFirestore.collection(COLLECTION_RESTAURANTS).document(restaurant.getRestaurantId())
+                .collection(COLLECTION_PRODUCTS)
+                .whereArrayContains(currentWeekday, true)
+                .whereGreaterThan("count", 0)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<Product> productList = new ArrayList<>();
+
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Product product = document.toObject(Product.class);
+                            product.setProductId(document.getId());
+                            productList.add(product);
+                        }
+                    }
+                });
     }
 
 
