@@ -135,9 +135,9 @@ public class RestaurantRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
 
             cardView = itemView.findViewById(R.id.cardView);
             textViewName = itemView.findViewById(R.id.textViewName);
-            textViewRealAddress = itemView.findViewById(R.id.textViewAddress);
-            textViewRealOpeningHours = itemView.findViewById(R.id.textViewOpeningHours);
-            textViewRealClosingHours = itemView.findViewById(R.id.textViewClosingHours);
+            textViewRealAddress = itemView.findViewById(R.id.textViewRealAddress);
+            textViewRealOpeningHours = itemView.findViewById(R.id.textViewRealOpeningHours);
+            textViewRealClosingHours = itemView.findViewById(R.id.textViewRealClosingHours);
         }
     }
 }

@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity
     private static final String AUTH_REG_FRAGMENT = "AUTH_REG_FRAGMENT";
     private static final String MENU_FRAGMENT = "MENU_FRAGMENT";
     private static final String PRODUCT_FRAGMENT = "PRODUCT_FRAGMENT";
-    
+
     public static final int MENU_HEADER = 0;
     public static final int MENU_PRODUCT_INACTIVE = 1;
     public static final int MENU_PRODUCT_ACTIVE = 2;
