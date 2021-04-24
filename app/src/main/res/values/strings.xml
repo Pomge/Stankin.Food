@@ -34,4 +34,6 @@
     <string name="order_id">Order id:</string>
     <string name="pick_up_time">Pick-up time:</string>
     <string name="close_order">Close order</string>
+    
+    <string name="no_product_left">Amount used up!</string>
 </resources>

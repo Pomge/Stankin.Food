@@ -27,7 +27,7 @@
             android:layout_height="128dp"
             android:layout_margin="8dp"
             android:contentDescription="@null"
-            android:src="@android:drawable/ic_media_play"
+            android:src="@drawable/ic_no_image_64dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

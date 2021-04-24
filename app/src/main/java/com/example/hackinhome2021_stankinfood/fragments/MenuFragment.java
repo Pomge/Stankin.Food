@@ -115,7 +115,7 @@ public class MenuFragment extends Fragment implements
         savedProductsLeft = new ArrayList<>();
 
         for (Product product : productList) {
-            savedProductsLeft.add(product.getLikesCount());
+            savedProductsLeft.add(product.getProductsLeft());
         }
     }
 
@@ -266,15 +266,18 @@ public class MenuFragment extends Fragment implements
                 if (currentProduct.getCountForOrder() == 0) {
                     currentProduct.setViewType(MainActivity.MENU_PRODUCT_INACTIVE);
                 } else {
-                    currentProduct.setProductsLeft(productsLeft + 1);
+                    currentProduct.setProductsLeft(productsLeft - currentCount);
                     currentProduct.setViewType(MainActivity.MENU_PRODUCT_ACTIVE);
                 }
             } else if (id == R.id.imageButtonPlus) {
-                if (currentCount < currentProduct.getProductsLeft()) {
-                    currentProduct.setProductsLeft(productsLeft - 1);
+                if (currentCount <= productsLeft) {
+                    currentProduct.setProductsLeft(productsLeft - currentCount);
                     currentProduct.setCountForOrder(currentCount + 1);
                     currentProduct.setViewType(MainActivity.MENU_PRODUCT_ACTIVE);
-                } else Snackbar.make(getView(), "SYKA!", BaseTransientBottomBar.LENGTH_SHORT).show();
+                } else {
+                    String noProductLeft = getResources().getString(R.string.no_product_left);
+                    Snackbar.make(getView(), noProductLeft, BaseTransientBottomBar.LENGTH_SHORT).show();
+                }
             }
             myRecyclerViewAdapter.notifyItemChanged(position);
         }
