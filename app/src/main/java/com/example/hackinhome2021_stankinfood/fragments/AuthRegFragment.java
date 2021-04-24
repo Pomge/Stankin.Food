@@ -143,6 +143,7 @@ public class AuthRegFragment extends Fragment implements
         });
         builder.setCancelable(true);
         builder.create();
+        builder.show();
     }
 
 
@@ -201,17 +202,25 @@ public class AuthRegFragment extends Fragment implements
                     //TODO Зарегистрировать или авторизировать
                 } else {
                     //TODO можно доработать анимацию
-                    Toast.makeText(getContext(), getResources().getString(R.string.incorrect_password), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(),
+                            getResources().getString(R.string.incorrect_password),
+                            Toast.LENGTH_SHORT).show();
                 }
             } else {
                 //TODO можно доработать анимацию
-                Toast.makeText(getContext(), getResources().getString(R.string.incorrect_email), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(),
+                        getResources().getString(R.string.incorrect_email),
+                        Toast.LENGTH_SHORT).show();
             }
         } else if (id == R.id.buttonRequestGoogle) {
             ((MainActivity) getActivity()).signInWithGoogle();
         } else if (id == R.id.textViewForgotPassword) {
             if (isEmailCorrect()) {
                 showAlertDialogForgotPassword();
+            } else {
+                Toast.makeText(getContext(),
+                        getResources().getString(R.string.incorrect_email),
+                        Toast.LENGTH_SHORT).show();
             }
         }
         if (id == R.id.imageButtonViewPassword) {

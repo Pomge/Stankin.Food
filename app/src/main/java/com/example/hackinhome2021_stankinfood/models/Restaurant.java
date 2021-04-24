@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.google.firebase.firestore.Exclude;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 public class Restaurant implements Parcelable {
@@ -13,8 +14,8 @@ public class Restaurant implements Parcelable {
     private String restaurantId;
     private String name;
     private String address;
-    private Timestamp openingHours;
-    private Timestamp closingHours;
+    private Date openingHours;
+    private Date closingHours;
     @Exclude
     private List<Order> orderList;
     @Exclude
@@ -23,7 +24,7 @@ public class Restaurant implements Parcelable {
     public Restaurant() {
     }
 
-    public Restaurant(String restaurantId, String name, String address, Timestamp openingHours, Timestamp closingHours) {
+    public Restaurant(String restaurantId, String name, String address, Date openingHours, Date closingHours) {
         this.restaurantId = restaurantId;
         this.name = name;
         this.address = address;
@@ -75,19 +76,19 @@ public class Restaurant implements Parcelable {
         this.address = address;
     }
 
-    public Timestamp getOpeningHours() {
+    public Date getOpeningHours() {
         return openingHours;
     }
 
-    public void setOpeningHours(Timestamp openingHours) {
+    public void setOpeningHours(Date openingHours) {
         this.openingHours = openingHours;
     }
 
-    public Timestamp getClosingHours() {
+    public Date getClosingHours() {
         return closingHours;
     }
 
-    public void setClosingHours(Timestamp closingHours) {
+    public void setClosingHours(Date closingHours) {
         this.closingHours = closingHours;
     }
 

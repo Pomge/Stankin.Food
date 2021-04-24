@@ -11,21 +11,21 @@ import com.google.firebase.firestore.Exclude;
 import java.util.Comparator;
 
 public class Product implements Parcelable, Cloneable {
-    @Exclude
     private String productId;
+
     private String imageURL;
     private String categoryName;
     private String productName;
     private String description;
     private int productsLeft;
-    @Exclude
+
     private int countForOrder;
-    @Exclude
     private float rating;
+
     private int price;
     private int likesCount;
     private boolean isLiked;
-    @Exclude
+
     private int viewType;
 
     public Product() {
@@ -40,6 +40,19 @@ public class Product implements Parcelable, Cloneable {
             cloneNotSupportedException.printStackTrace();
             throw new InternalError();
         }
+    }
+
+    public Product(String imageURL, String categoryName,
+                   String productName, String description,
+                   int productsLeft, int price, int likesCount, boolean isLiked) {
+        this.imageURL = imageURL;
+        this.categoryName =categoryName;
+        this.productName = productName;
+        this.description = description;
+        this.productsLeft = productsLeft;
+        this.price = price;
+        this.likesCount = likesCount;
+        this.isLiked = isLiked;
     }
 
     public Product(String productId, String imageURL, String categoryName, String productName,
@@ -86,6 +99,7 @@ public class Product implements Parcelable, Cloneable {
         }
     };
 
+    @Exclude
     public String getProductId() {
         return productId;
     }
@@ -134,6 +148,7 @@ public class Product implements Parcelable, Cloneable {
         this.productsLeft = productsLeft;
     }
 
+    @Exclude
     public int getCountForOrder() {
         return countForOrder;
     }
@@ -142,6 +157,7 @@ public class Product implements Parcelable, Cloneable {
         this.countForOrder = countForOrder;
     }
 
+    @Exclude
     public float getRating() {
         return rating;
     }
@@ -174,6 +190,7 @@ public class Product implements Parcelable, Cloneable {
         isLiked = liked;
     }
 
+    @Exclude
     public int getViewType() {
         return viewType;
     }

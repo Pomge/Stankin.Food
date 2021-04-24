@@ -40,6 +40,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -70,6 +71,9 @@ public class MainActivity extends AppCompatActivity
     private static final String AUTH_REG_FRAGMENT = "AUTH_REG_FRAGMENT";
     private static final String MENU_FRAGMENT = "MENU_FRAGMENT";
     private static final String PRODUCT_FRAGMENT = "PRODUCT_FRAGMENT";
+
+    private static final String CANTEEN_DOCUMENT_ID = "XUqz9HedsagJwuZV1ur7";
+    private static final String CAFE_DOCUMENT_ID = "rkQh04lJYa9cLWto2zx8";
 
     public static final int MENU_HEADER = 0;
     public static final int MENU_PRODUCT_INACTIVE = 1;
@@ -112,9 +116,7 @@ public class MainActivity extends AppCompatActivity
     private String currentWeekday;
     private Date currentDate = null;
     private Order userOrder;
-    private List<Restaurant> restaurantList;
-    private List<Product> canteenProductList;
-    private List<Product> fastFoodProductList;
+    private List<Restaurant> restaurantList = new ArrayList<>();
 
     private int previousDirection = 0;
     private int previousBottomNavigationTabId;
@@ -138,23 +140,19 @@ public class MainActivity extends AppCompatActivity
         initBottomNavigationView();
         previousBottomNavigationTabId = R.id.menuItemCanteen;
 
-        generateMenu();
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
         firebaseUser = firebaseAuth.getCurrentUser();
 
         if (firebaseUser == null) {
             hideBottomNavigationView(true);
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.mainContainer, new AuthRegChooseFragment(),
                     AUTH_REG_CHOOSE_FRAGMENT);
-        } else {
-            fragmentTransaction.replace(R.id.mainContainer, MenuFragment.newInstance(
-                    true, canteenProductList), MENU_FRAGMENT);
+//            fragmentTransaction.replace(R.id.mainContainer, MenuFragment.newInstance(
+//                    true, canteenProductList), MENU_FRAGMENT);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
         }
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
 
         CurrentTimeGetterThread currentTimeGetterThread = new CurrentTimeGetterThread();
         currentTimeGetterThread.start();
@@ -166,6 +164,7 @@ public class MainActivity extends AppCompatActivity
 
         googleSignInClient = GoogleSignIn.getClient(this, gso);
     }
+
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
@@ -209,6 +208,8 @@ public class MainActivity extends AppCompatActivity
                     Log.d(TAG, "weekdayNumber.format(currentDate): " + weekdayNumber.format(currentDate));
                     Log.d(TAG, "weekdayString.format(currentDate): " + weekdayString.format(currentDate));
                     currentWeekday = weekdayString.format(currentDate);
+                    readRestaurant_badWayForHack();
+//                    generateMenu();
                     break;
                 } else {
                     Log.d(TAG, "currentDate == null!");
@@ -219,9 +220,6 @@ public class MainActivity extends AppCompatActivity
 
 
     private void generateMenu() {
-        canteenProductList = new ArrayList<>();
-        fastFoodProductList = new ArrayList<>();
-
         List<Product> canteenProductListTaken = new ArrayList<>();
         List<Product> fastFoodProductListTaken = new ArrayList<>();
 
@@ -267,30 +265,37 @@ public class MainActivity extends AppCompatActivity
             fastFoodProductListTaken.add(productFastFood);
         }
 
-        for (Product product : canteenProductListTaken) {
-            product.setRating(((float) product.getLikesCount()) / ((float) canteenProductListTaken.size()));
-        }
+//        for (Product product : canteenProductListTaken) {
+//            product.setRating(((float) product.getLikesCount()) / ((float) canteenProductListTaken.size()));
+//        }
 
-        for (Product product : fastFoodProductListTaken) {
-            product.setRating(((float) product.getLikesCount()) / ((float) fastFoodProductListTaken.size()));
-        }
+//        for (Product product : fastFoodProductListTaken) {
+//            product.setRating(((float) product.getLikesCount()) / ((float) fastFoodProductListTaken.size()));
+//        }
 
         Collections.sort(canteenProductListTaken, Product.PRODUCT_COMPARATOR);
         Collections.sort(fastFoodProductListTaken, Product.PRODUCT_COMPARATOR);
 
-        userOrder = new Order("Order id", "Order name", new Timestamp(new Date().getTime()), false);
-        userOrder = new Order("Order id", "Order name", null, false);
-
-        for (int i = 0; i < 5; i++) {
-            userOrder.addNewPosition(canteenProductListTaken.get(getRandomInteger(0, canteenProductListTaken.size())));
-            userOrder.addNewPosition(fastFoodProductListTaken.get(getRandomInteger(0, fastFoodProductListTaken.size())));
+        for (Product product : canteenProductListTaken) {
+            addProducts("rkQh04lJYa9cLWto2zx8", product);
+        }
+        for (Product product : fastFoodProductListTaken) {
+            addProducts("XUqz9HedsagJwuZV1ur7", product);
         }
 
-        convertForRecyclerView(canteenProductListTaken);
-        convertForRecyclerView(fastFoodProductListTaken);
+//        userOrder = new Order("Order id", "Order name", new Timestamp(new Date().getTime()), false);
+//        userOrder = new Order("Order id", "Order name", null, false);
+//
+//        for (int i = 0; i < 5; i++) {
+//            userOrder.addNewPosition(canteenProductListTaken.get(getRandomInteger(0, canteenProductListTaken.size())));
+//            userOrder.addNewPosition(fastFoodProductListTaken.get(getRandomInteger(0, fastFoodProductListTaken.size())));
+//        }
 
-        canteenProductList.addAll(canteenProductListTaken);
-        fastFoodProductList.addAll(fastFoodProductListTaken);
+//        convertForRecyclerView(canteenProductListTaken);
+//        convertForRecyclerView(fastFoodProductListTaken);
+
+//        canteenProductList.addAll(canteenProductListTaken);
+//        fastFoodProductList.addAll(fastFoodProductListTaken);
     }
 
     private void convertForRecyclerView(List<Product> productList) {
@@ -473,7 +478,17 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction.remove(fragmentManager.findFragmentByTag(AUTH_REG_FRAGMENT));
         fragmentTransaction.remove(fragmentManager.findFragmentByTag(AUTH_REG_CHOOSE_FRAGMENT));
         fragmentTransaction.replace(R.id.mainContainer,
-                MenuFragment.newInstance(true, canteenProductList), MENU_FRAGMENT);
+                MenuFragment.newInstance(true, restaurantList.get(0).getProductList()), MENU_FRAGMENT);
+        fragmentTransaction.commit();
+        hideBottomNavigationView(false);
+    }
+
+    public void setFragmentMenu() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.popBackStack();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.mainContainer, MenuFragment.newInstance(
+                true, restaurantList.get(0).getProductList()));
         fragmentTransaction.commit();
         hideBottomNavigationView(false);
     }
@@ -556,7 +571,7 @@ public class MainActivity extends AppCompatActivity
                 R.anim.enter_from_left, R.anim.exit_to_right,
                 R.anim.enter_from_left, R.anim.exit_to_right);
         fragmentTransaction.replace(R.id.mainContainer, MenuFragment.newInstance(
-                true, canteenProductList), MENU_FRAGMENT);
+                true, restaurantList.get(0).getProductList()), MENU_FRAGMENT);
         fragmentTransaction.commit();
 
         setBottomNavigationViewToZeroPosition();
@@ -571,59 +586,126 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private void readAllRestaurants() {
-        firebaseFirestore.collection(COLLECTION_RESTAURANTS).get()
+    private void addProducts(String restaurantId, Product product) {
+        firebaseFirestore.collection(COLLECTION_RESTAURANTS).document(restaurantId)
+                .collection(COLLECTION_PRODUCTS).add(product)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        restaurantList = new ArrayList<>();
-
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            Restaurant restaurant = document.toObject(Restaurant.class);
-                            restaurant.setRestaurantId(document.getId());
-                            restaurantList.add(restaurant);
-                        }
+                        Log.d("LOG_MESSAGE", "addProducts(): Completed!");
                     }
                 });
     }
 
-    private void readAndWriteTodayRestaurantMenu(Restaurant restaurant) {
-        firebaseFirestore.collection(COLLECTION_RESTAURANTS).document(restaurant.getRestaurantId())
-                .collection(COLLECTION_PRODUCTS)
-                .whereArrayContains(currentWeekday, true)
-                .whereGreaterThan("count", 0)
-                .get()
+
+    private void readRestaurant_badWayForHack() {
+        firebaseFirestore.collection(COLLECTION_RESTAURANTS).document(CANTEEN_DOCUMENT_ID).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        List<Product> productList = new ArrayList<>();
+                        Restaurant restaurant = task.getResult().toObject(Restaurant.class);
+                        restaurant.setRestaurantId(task.getResult().getId());
+                        restaurantList.add(restaurant);
 
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            Product product = document.toObject(Product.class);
-                            product.setProductId(document.getId());
-                            productList.add(product);
-                        }
-                        restaurant.setProductList(productList);
+                        firebaseFirestore.collection(COLLECTION_RESTAURANTS).document(restaurant.getRestaurantId())
+                                .collection(COLLECTION_PRODUCTS)
+                                .whereEqualTo("onMenuWeekdays." + currentWeekday, true)
+                                .whereGreaterThan("count", 0)
+                                .get()
+                                .addOnCompleteListener(task1 -> {
+                                    if (task1.isSuccessful()) {
+                                        List<Product> productList = new ArrayList<>();
+                                        for (QueryDocumentSnapshot document : task1.getResult()) {
+                                            Product product = document.toObject(Product.class);
+                                            product.setProductId(document.getId());
+                                            productList.add(product);
+                                        }
+                                        restaurantList.get(0).setProductList(productList);
+
+                                        firebaseFirestore.collection(COLLECTION_RESTAURANTS).document(CAFE_DOCUMENT_ID).get()
+                                                .addOnCompleteListener(task11 -> {
+                                                    if (task11.isSuccessful()) {
+                                                        Restaurant restaurant1 = task11.getResult().toObject(Restaurant.class);
+                                                        restaurant1.setRestaurantId(task11.getResult().getId());
+                                                        restaurantList.add(restaurant1);
+
+                                                        firebaseFirestore.collection(COLLECTION_RESTAURANTS).document(restaurant.getRestaurantId())
+                                                                .collection(COLLECTION_PRODUCTS)
+                                                                .whereEqualTo("onMenuWeekdays." + currentWeekday, true)
+                                                                .whereGreaterThan("count", 0)
+                                                                .get()
+                                                                .addOnCompleteListener(task111 -> {
+                                                                    List<Product> productList1 = new ArrayList<>();
+                                                                    for (QueryDocumentSnapshot document : task111.getResult()) {
+                                                                        Product product = document.toObject(Product.class);
+                                                                        product.setProductId(document.getId());
+                                                                        productList1.add(product);
+                                                                    }
+                                                                    restaurantList.get(1).setProductList(productList1);
+                                                                    setFragmentMenu();
+                                                                });
+                                                    }
+                                                });
+                                    }
+                                });
                     }
                 });
     }
 
-    private void readLikedProducts(Restaurant restaurant) {
-        firebaseFirestore.collection(COLLECTION_RESTAURANTS).document(restaurant.getRestaurantId())
-                .collection(COLLECTION_PRODUCTS)
-                .whereArrayContains(currentWeekday, true)
-                .whereGreaterThan("count", 0)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        List<Product> productList = new ArrayList<>();
+//    private void readAllRestaurants() {
+//        firebaseFirestore.collection(COLLECTION_RESTAURANTS).get()
+//                .addOnCompleteListener(task -> {
+//                    if (task.isSuccessful()) {
+//                        restaurantList = new ArrayList<>();
+//
+//                        for (QueryDocumentSnapshot document : task.getResult()) {
+//                            Restaurant restaurant = document.toObject(Restaurant.class);
+//                            restaurant.setRestaurantId(document.getId());
+//                            readAndWriteTodayRestaurantMenu(restaurant);
+//                            restaurantList.add(restaurant);
+//                        }
+//                    }
+//                });
+//    }
 
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            Product product = document.toObject(Product.class);
-                            product.setProductId(document.getId());
-                            productList.add(product);
-                        }
-                    }
-                });
-    }
+//    private void readAndWriteTodayRestaurantMenu(Restaurant restaurant) {
+//        Log.d("LOG_MESSAGE", currentWeekday);
+//        firebaseFirestore.collection(COLLECTION_RESTAURANTS).document(restaurant.getRestaurantId())
+//                .collection(COLLECTION_PRODUCTS)
+//                .whereEqualTo("onMenuWeekdays." + currentWeekday, true)
+//                .whereGreaterThan("count", 0)
+//                .get()
+//                .addOnCompleteListener(task -> {
+//                    if (task.isSuccessful()) {
+//                        List<Product> productList = new ArrayList<>();
+//
+//                        for (QueryDocumentSnapshot document : task.getResult()) {
+//                            Product product = document.toObject(Product.class);
+//                            product.setProductId(document.getId());
+//                            productList.add(product);
+//                            Log.d("LOG_MESSAGE", product.toString());
+//                        }
+//                        restaurant.setProductList(productList);
+//                    }
+//                });
+//    }
+
+//    private void readLikedProducts(Restaurant restaurant) {
+//        firebaseFirestore.collection(COLLECTION_RESTAURANTS).document(restaurant.getRestaurantId())
+//                .collection(COLLECTION_PRODUCTS)
+//                .whereArrayContains(currentWeekday, true)
+//                .whereGreaterThan("count", 0)
+//                .get()
+//                .addOnCompleteListener(task -> {
+//                    if (task.isSuccessful()) {
+//                        List<Product> productList = new ArrayList<>();
+//
+//                        for (QueryDocumentSnapshot document : task.getResult()) {
+//                            Product product = document.toObject(Product.class);
+//                            product.setProductId(document.getId());
+//                            productList.add(product);
+//                        }
+//                    }
+//                });
+//    }
 
 
     @Override
@@ -632,24 +714,24 @@ public class MainActivity extends AppCompatActivity
 
         if (id != previousBottomNavigationTabId) {
             int currentDirection = 0;
-            Fragment fragment = MenuFragment.newInstance(true, canteenProductList);
+            Fragment fragment = MenuFragment.newInstance(true, restaurantList.get(0).getProductList());
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
             if (id == R.id.menuItemCanteen) {
-                fragment = MenuFragment.newInstance(true, canteenProductList);
+                fragment = MenuFragment.newInstance(true, restaurantList.get(0).getProductList());
             } else if (id == R.id.menuItemCafe) {
                 currentDirection = 1;
-                fragment = MenuFragment.newInstance(true, fastFoodProductList);
+                fragment = MenuFragment.newInstance(true, restaurantList.get(1).getProductList());
             } else if (id == R.id.menuItemOrders) {
                 currentDirection = 2;
 
             } else if (id == R.id.menuItemFavoriteProducts) {
                 currentDirection = 3;
-                fragment = MenuFragment.newInstance(false, fastFoodProductList);
+                fragment = MenuFragment.newInstance(false,  restaurantList.get(1).getProductList());
             } else if (id == R.id.menuItemCart) {
                 currentDirection = 4;
-                fragment = CartFragment.newInstance(userOrder);
+                fragment = new CartFragment();
             }
 
             if (previousDirection < currentDirection) {
