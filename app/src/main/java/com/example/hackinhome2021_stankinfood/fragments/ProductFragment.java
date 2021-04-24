@@ -204,6 +204,7 @@ public class ProductFragment extends Fragment implements
         if (id == R.id.imageButtonLiked) {
             ((MainActivity) getActivity()).markProductAsLiked(product, !product.isLiked());
             product.setLiked(!product.isLiked());
+
             imageButtonLiked.setSelected(product.isLiked());
         }
         textViewCount.setText(String.valueOf(product.getCountForOrder()));
