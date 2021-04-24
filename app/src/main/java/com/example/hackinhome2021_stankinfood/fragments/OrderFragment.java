@@ -21,21 +21,21 @@ import com.example.hackinhome2021_stankinfood.models.Product;
 
 
 public class OrderFragment extends Fragment implements OnRecyclerViewClickListener {
-    private static final String ORDER = "order"; //true - кассир, false - клиент
+    private static final String IS_ORDER = "isOrder";
+    private static final String ORDER = "order";
 
     private boolean isOrder; //true- кассир, false - клиент
     private Order order;
     private ImageView imageViewQR;
     private Button buttonCloseOrder;
 
-
     public OrderFragment() {
-        // Required empty public constructor
     }
 
-    public static OrderFragment newInstance(Order order) {
+    public static OrderFragment newInstance(boolean isOrder, Order order) {
         OrderFragment fragment = new OrderFragment();
         Bundle args = new Bundle();
+        args.putBoolean(IS_ORDER, isOrder);
         args.putParcelable(ORDER, order);
         fragment.setArguments(args);
         return fragment;
@@ -45,17 +45,25 @@ public class OrderFragment extends Fragment implements OnRecyclerViewClickListen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            isOrder = getArguments().getBoolean(IS_ORDER);
             order = getArguments().getParcelable(ORDER);
         }
         if (savedInstanceState != null) {
+            isOrder = getArguments().getBoolean(IS_ORDER);
             order = savedInstanceState.getParcelable(ORDER);
         }
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putBoolean(IS_ORDER, isOrder);
+        outState.putParcelable(ORDER, order);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_order, container, false);
 
         initTextViewOrderId(view);
@@ -64,16 +72,9 @@ public class OrderFragment extends Fragment implements OnRecyclerViewClickListen
         initImageViewOR(view);
         initButtonCloseOrder(view);
 
-
         return view;
     }
 
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putParcelable(ORDER, order);
-        super.onSaveInstanceState(outState);
-    }
 
     private void initTextViewOrderId(View view) {
         TextView textViewOrderId = view.findViewById(R.id.textViewOrderId);
@@ -108,16 +109,14 @@ public class OrderFragment extends Fragment implements OnRecyclerViewClickListen
 
     private void initImageViewOR(View view) {
         imageViewQR = view.findViewById(R.id.imageViewQR);
-        if (isOrder) {
-            imageViewQR.setVisibility(View.GONE);
-        }
+        if (isOrder) imageViewQR.setVisibility(View.GONE);
+
     }
 
     private void initButtonCloseOrder(View view) {
         buttonCloseOrder = view.findViewById(R.id.buttonCloseOrder);
-        if (isOrder) {
-            buttonCloseOrder.setVisibility(View.VISIBLE);
-        }
+        if (isOrder) buttonCloseOrder.setVisibility(View.VISIBLE);
+
     }
 
 

@@ -41,7 +41,7 @@
         app:layout_constraintTop_toBottomOf="@id/imageViewPicture" />
 
     <TextView
-        android:id="@+id/textViewProductDescription"
+        android:id="@+id/textViewDescription"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
@@ -109,8 +109,8 @@
             android:gravity="end|center_vertical"
             android:text="Real total price"
             android:textSize="?attr/textSizeNormal"
-            app:layout_constraintBottom_toBottomOf="@id/textViewTotalPrice"
             android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/textViewTotalPrice"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/textViewTotalPrice"
             app:layout_constraintTop_toTopOf="@id/textViewTotalPrice" />
@@ -119,8 +119,10 @@
             android:id="@+id/textViewProductsLeft"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:text="@string/products_left"
-            android:textSize="?attr/textSizeNormal"
+            android:textSize="?attr/textSizeMedium"
+            android:textStyle="bold"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/imageButtonMinus"
             app:layout_constraintEnd_toStartOf="@id/textViewRealProductsLeft"
@@ -130,15 +132,15 @@
         <TextView
             android:id="@+id/textViewRealProductsLeft"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:gravity="end"
             android:text="Real products left"
             android:textSize="?attr/textSizeNormal"
             android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@id/imageButtonPlus"
+            app:layout_constraintBottom_toBottomOf="@id/textViewProductsLeft"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/textViewProductsLeft"
-            app:layout_constraintTop_toBottomOf="@id/textViewRealTotalPrice" />
+            app:layout_constraintTop_toTopOf="@id/textViewProductsLeft" />
 
         <Button
             android:id="@+id/buttonProductPrice"

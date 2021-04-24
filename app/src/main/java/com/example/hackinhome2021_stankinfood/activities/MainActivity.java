@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import com.example.hackinhome2021_stankinfood.R;
 import com.example.hackinhome2021_stankinfood.fragments.MenuFragment;
 import com.example.hackinhome2021_stankinfood.fragments.ProductFragment;
+import com.example.hackinhome2021_stankinfood.interfaces.OnBackPressedFragment;
 import com.example.hackinhome2021_stankinfood.models.Product;
 import com.example.hackinhome2021_stankinfood.models.Restaurant;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -101,7 +102,8 @@ public class MainActivity extends AppCompatActivity
 
         fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.mainContainer, ProductFragment.newInstance(canteenProductList.get(1)));
+        fragmentTransaction.replace(R.id.mainContainer, MenuFragment.newInstance(
+                true, canteenProductList));
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
@@ -279,6 +281,31 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    public void replaceFragmentToProductFragment(int position) {
+        fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(
+                R.anim.enter_from_bottom, R.anim.exit_to_top,
+                R.anim.enter_from_bottom, R.anim.exit_to_top);
+        fragmentTransaction.replace(R.id.mainContainer, ProductFragment.newInstance(
+                canteenProductList.get(position)));
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+    public void replaceFragmentFromProductFragmentToMenuFragment() {
+        fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(
+                R.anim.enter_from_top, R.anim.exit_to_bottom,
+                R.anim.enter_from_top, R.anim.exit_to_bottom);
+        fragmentTransaction.replace(R.id.mainContainer, MenuFragment.newInstance(
+                true, canteenProductList));
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
@@ -304,8 +331,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        if (fragmentManager.getBackStackEntryCount() == 1) {
-            finish();
-        } else super.onBackPressed();
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.mainContainer);
+        if (!(fragment instanceof OnBackPressedFragment) ||
+                !((OnBackPressedFragment) fragment).onBackPressed()) {
+            if (fragmentManager.getBackStackEntryCount() == 1) {
+                finish();
+            } else super.onBackPressed();
+        }
     }
 }

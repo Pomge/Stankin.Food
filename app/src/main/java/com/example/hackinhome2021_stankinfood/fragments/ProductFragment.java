@@ -1,6 +1,7 @@
 package com.example.hackinhome2021_stankinfood.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,18 +15,24 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.hackinhome2021_stankinfood.R;
+import com.example.hackinhome2021_stankinfood.activities.MainActivity;
+import com.example.hackinhome2021_stankinfood.interfaces.OnBackPressedFragment;
 import com.example.hackinhome2021_stankinfood.models.Product;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 
-public class ProductFragment extends Fragment implements View.OnClickListener {
-
+public class ProductFragment extends Fragment implements
+        View.OnClickListener,
+        OnBackPressedFragment {
     private static final String PRODUCT = "product";
 
+    private int savedProductsLeft;
     private Product product;
 
     private TextView textViewName;
     private ImageView imageViewProductImage;
     private RatingBar ratingBar;
-    private TextView textViewProductDescription;
+    private TextView textViewDescription;
     private Button buttonProductPrice;
 
     private TextView textViewSinglePrice;
@@ -59,6 +66,7 @@ public class ProductFragment extends Fragment implements View.OnClickListener {
         if (savedInstanceState != null) {
             product = savedInstanceState.getParcelable(PRODUCT);
         }
+        savedProductsLeft = product.getProductsLeft() + product.getCountForOrder();
     }
 
     @Override
@@ -72,16 +80,25 @@ public class ProductFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_product, container, false);
 
-        initPriceButton(view);
-        initImageButton(view);
-        initTextViews(view);
-        initRatingBar(view);
         initImageView(view);
+        initRatingBar(view);
+
+        initTextViewName(view);
+        initTextViewDescription(view);
+        initTextViewSinglePrice(view);
+        initTextViewTotalPrice(view);
+        initTextViewProductsLeft(view);
+
+        initButtonPrice(view);
+        initTextViewCount(view);
+        initImageButton(view);
+
+        hideViewsByButtonClick(product.getCountForOrder() != 0);
 
         return view;
     }
 
-    private void initPriceButton(View view) {
+    private void initButtonPrice(View view) {
         buttonProductPrice = view.findViewById(R.id.buttonProductPrice);
         String price = product.getPrice() + " " + view.getResources().getString(R.string.currency);
         buttonProductPrice.setText(price);
@@ -97,25 +114,45 @@ public class ProductFragment extends Fragment implements View.OnClickListener {
         imageButtonPlus.setOnClickListener(this);
     }
 
-    private void initTextViews(View view) {
+    private void initTextViewName(View view) {
         textViewName = view.findViewById(R.id.textViewName);
         textViewName.setText(product.getProductName());
+    }
 
-        textViewProductDescription = view.findViewById(R.id.textViewProductDescription);
-        textViewProductDescription.setText(product.getDescription());
+    private void initTextViewDescription(View view) {
+        textViewDescription = view.findViewById(R.id.textViewDescription);
+        textViewDescription.setText(product.getDescription());
+    }
+
+    private void initTextViewSinglePrice(View view) {
+        String currency = getResources().getString(R.string.currency);
+        String singlePriceString = product.getPrice() + " " + currency;
 
         textViewSinglePrice = view.findViewById(R.id.textViewSinglePrice);
-        textViewTotalPrice = view.findViewById(R.id.textViewTotalPrice);
-
-        String singlePrice = product.getPrice() + " " +
-                view.getResources().getString(R.string.currency);
         textViewRealSinglePrice = view.findViewById(R.id.textViewRealSinglePrice);
-        textViewRealSinglePrice.setText(singlePrice);
+        textViewRealSinglePrice.setText(singlePriceString);
+    }
 
-        textViewRealTotalPrice = view.findViewById(R.id.textViewRealTotalPrice);
+    private void initTextViewProductsLeft(View view) {
         textViewProductsLeft = view.findViewById(R.id.textViewProductsLeft);
         textViewRealProductsLeft = view.findViewById(R.id.textViewRealProductsLeft);
+        textViewRealProductsLeft.setText(String.valueOf(product.getProductsLeft()));
+    }
+
+    private void initTextViewCount(View view) {
+        String countString = String.valueOf(product.getCountForOrder());
+
         textViewCount = view.findViewById(R.id.textViewCount);
+        textViewCount.setText(countString);
+    }
+
+    private void initTextViewTotalPrice(View view) {
+        String currency = getResources().getString(R.string.currency);
+        String totalPriceString = product.getPrice() * product.getCountForOrder() + " " + currency;
+
+        textViewTotalPrice = view.findViewById(R.id.textViewTotalPrice);
+        textViewRealTotalPrice = view.findViewById(R.id.textViewRealTotalPrice);
+        textViewRealTotalPrice.setText(totalPriceString);
     }
 
     private void initRatingBar(View view) {
@@ -123,7 +160,7 @@ public class ProductFragment extends Fragment implements View.OnClickListener {
         ratingBar.setRating(product.getRating());
     }
 
-    private void initImage(View view) {
+    private void initImageView(View view) {
         imageViewProductImage = view.findViewById(R.id.imageViewPicture);
     }
 
@@ -133,80 +170,79 @@ public class ProductFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        int id = v.getId();;
+        int id = v.getId();
 
+        Log.d("LOG_MESSAGE", "productsLeft before: " + product.getProductsLeft());
         if (id == R.id.buttonProductPrice) {
-            String totalPrice = product.getPrice() + " " +
-                    getResources().getString(R.string.currency);
-
-            textViewRealTotalPrice.setText(totalPrice);
-            textViewRealProductsLeft.setText(String.valueOf(product.getProductsLeft()));
-
             product.setCountForOrder(1);
-            textViewCount.setText(String.valueOf(product.getCountForOrder()));
+            textViewRealProductsLeft.setText(String.valueOf(savedProductsLeft - 1));
+            hideViewsByButtonClick(true);
+        } else if (id == R.id.imageButtonMinus) {
+            if (product.getCountForOrder() - 1 == 0) {
+                hideViewsByButtonClick(false);
+            }
+            product.setCountForOrder(product.getCountForOrder() - 1);
+            product.setProductsLeft(savedProductsLeft - product.getCountForOrder());
+        } else if (id == R.id.imageButtonPlus) {
+            if (product.getCountForOrder() + 1 <= savedProductsLeft) {
+                product.setCountForOrder(product.getCountForOrder() + 1);
+                product.setProductsLeft(savedProductsLeft - product.getCountForOrder());
+                product.setViewType(MainActivity.MENU_PRODUCT_ACTIVE);
+            } else {
+                String noProductLeft = getResources().getString(R.string.no_product_left);
+                Snackbar.make(getView(), noProductLeft, BaseTransientBottomBar.LENGTH_SHORT).show();
+            }
+        }
+        textViewCount.setText(String.valueOf(product.getCountForOrder()));
+        textViewRealTotalPrice.setText(getTotalPriceString());
+        textViewRealProductsLeft.setText(String.valueOf(savedProductsLeft - product.getCountForOrder()));
 
+        Log.d("LOG_MESSAGE", "productsLeft after: " + product.getProductsLeft());
+    }
+
+    private String getTotalPriceString() {
+        String currency = getResources().getString(R.string.currency);
+        return product.getCountForOrder() * product.getPrice() + " " + currency;
+    }
+
+    private void hideViewsByButtonClick(boolean hide) {
+        if (hide) {
             buttonProductPrice.setVisibility(View.GONE);
 
-            imageButtonPlus.setVisibility(View.VISIBLE);
             imageButtonMinus.setVisibility(View.VISIBLE);
             textViewCount.setVisibility(View.VISIBLE);
+            imageButtonPlus.setVisibility(View.VISIBLE);
 
-            textViewRealTotalPrice.setVisibility(View.VISIBLE);
+            textViewSinglePrice.setVisibility(View.VISIBLE);
             textViewRealSinglePrice.setVisibility(View.VISIBLE);
 
             textViewTotalPrice.setVisibility(View.VISIBLE);
-            textViewSinglePrice.setVisibility(View.VISIBLE);
+            textViewRealTotalPrice.setVisibility(View.VISIBLE);
 
             textViewProductsLeft.setVisibility(View.VISIBLE);
             textViewRealProductsLeft.setVisibility(View.VISIBLE);
-        } else if (id == R.id.imageButtonPlus) {
-            int productLeft = product.getProductsLeft() - 1;
-            product.setProductsLeft(productLeft);
+        } else {
+            buttonProductPrice.setVisibility(View.VISIBLE);
 
-            if (productLeft > 0) {
-                int count = product.getCountForOrder() + 1;
-                int totalPrice = product.getPrice() * count;
+            imageButtonMinus.setVisibility(View.GONE);
+            textViewCount.setVisibility(View.GONE);
+            imageButtonPlus.setVisibility(View.GONE);
 
-                product.setCountForOrder(count);
-                textViewCount.setText(String.valueOf(product.getCountForOrder()));
+            textViewTotalPrice.setVisibility(View.GONE);
+            textViewRealTotalPrice.setVisibility(View.GONE);
 
-                String totalPriceString = totalPrice + " " +
-                        v.getResources().getString(R.string.currency);
-                textViewRealTotalPrice.setText(totalPriceString);
-            }
-            textViewRealProductsLeft.setText(String.valueOf(product.getProductsLeft()));
+            textViewSinglePrice.setVisibility(View.GONE);
+            textViewRealSinglePrice.setVisibility(View.GONE);
 
-        } else if (id == R.id.imageButtonMinus) {
-            int count = product.getCountForOrder() - 1;
-            int productLeft = product.getProductsLeft() + 1;
-            int realTotalPrice = product.getPrice() * count;
-
-            product.setCountForOrder(count);
-            product.setProductsLeft(productLeft);
-
-            textViewCount.setText(String.valueOf(product.getCountForOrder()));
-            textViewRealProductsLeft.setText(String.valueOf(product.getProductsLeft()));
-
-            String totalPrice = realTotalPrice + " " +
-                    getResources().getString(R.string.currency);
-            textViewRealTotalPrice.setText(totalPrice);
-
-            if (count == 0) {
-                buttonProductPrice.setVisibility(View.VISIBLE);
-
-                imageButtonPlus.setVisibility(View.GONE);
-                imageButtonMinus.setVisibility(View.GONE);
-                textViewCount.setVisibility(View.GONE);
-
-                textViewRealTotalPrice.setVisibility(View.GONE);
-                textViewRealSinglePrice.setVisibility(View.GONE);
-
-                textViewTotalPrice.setVisibility(View.GONE);
-                textViewSinglePrice.setVisibility(View.GONE);
-
-                textViewProductsLeft.setVisibility(View.GONE);
-                textViewRealProductsLeft.setVisibility(View.GONE);
-            }
+            textViewProductsLeft.setVisibility(View.GONE);
+            textViewRealProductsLeft.setVisibility(View.GONE);
         }
+    }
+
+
+    @Override
+    public boolean onBackPressed() {
+        ((MainActivity) getActivity()).replaceFragmentFromProductFragmentToMenuFragment();
+        return true;
     }
 }

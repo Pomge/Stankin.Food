@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -107,8 +106,6 @@ public class MenuFragment extends Fragment implements
             }
         }
         titleIndexesList.add(productList.size());
-
-        Log.d("LOG_MESSAGE", titleIndexesList.toString());
     }
 
     private void setSavedProductsLeft() {
@@ -246,7 +243,7 @@ public class MenuFragment extends Fragment implements
         Product currentProduct = productList.get(position);
 
         if (id == R.id.cardView) {
-            Toast.makeText(getContext(), "[" + position + "]", Toast.LENGTH_SHORT).show();
+            ((MainActivity) getActivity()).replaceFragmentToProductFragment(position);
         } else if (id == R.id.imageButtonLiked) {
             currentProduct.setLiked(!currentProduct.isLiked());
             if (!isMenu) {
@@ -255,30 +252,32 @@ public class MenuFragment extends Fragment implements
                 myRecyclerViewAdapter.notifyItemRangeChanged(position, productList.size());
             } else myRecyclerViewAdapter.notifyItemChanged(position);
         } else {
+            Log.d("LOG_MESSAGE", "productsLeft before: " + currentProduct.getProductsLeft());
+
             int productsLeft = savedProductsLeft.get(position);
-            int currentCount = currentProduct.getCountForOrder();
 
             if (id == R.id.buttonPrice) {
                 currentProduct.setCountForOrder(1);
+                currentProduct.setProductsLeft(productsLeft - 1);
                 currentProduct.setViewType(MainActivity.MENU_PRODUCT_ACTIVE);
             } else if (id == R.id.imageButtonMinus) {
-                currentProduct.setCountForOrder(currentCount - 1);
-                if (currentProduct.getCountForOrder() == 0) {
+                if (currentProduct.getCountForOrder() - 1 == 0) {
                     currentProduct.setViewType(MainActivity.MENU_PRODUCT_INACTIVE);
-                } else {
-                    currentProduct.setProductsLeft(productsLeft - currentCount);
-                    currentProduct.setViewType(MainActivity.MENU_PRODUCT_ACTIVE);
-                }
+                } else currentProduct.setViewType(MainActivity.MENU_PRODUCT_ACTIVE);
+
+                currentProduct.setCountForOrder(currentProduct.getCountForOrder() - 1);
+                currentProduct.setProductsLeft(productsLeft - currentProduct.getCountForOrder());
             } else if (id == R.id.imageButtonPlus) {
-                if (currentCount <= productsLeft) {
-                    currentProduct.setProductsLeft(productsLeft - currentCount);
-                    currentProduct.setCountForOrder(currentCount + 1);
+                if (currentProduct.getCountForOrder() + 1 <= productsLeft) {
+                    currentProduct.setCountForOrder(currentProduct.getCountForOrder() + 1);
+                    currentProduct.setProductsLeft(productsLeft - currentProduct.getCountForOrder());
                     currentProduct.setViewType(MainActivity.MENU_PRODUCT_ACTIVE);
                 } else {
                     String noProductLeft = getResources().getString(R.string.no_product_left);
                     Snackbar.make(getView(), noProductLeft, BaseTransientBottomBar.LENGTH_SHORT).show();
                 }
             }
+            Log.d("LOG_MESSAGE", "productsLeft after: " + currentProduct.getProductsLeft());
             myRecyclerViewAdapter.notifyItemChanged(position);
         }
     }
