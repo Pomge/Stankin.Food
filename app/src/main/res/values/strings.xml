@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">HackInHome2021_Stankin.Food</string>
 
@@ -34,6 +35,15 @@
     <string name="order_id">Order id:</string>
     <string name="pick_up_time">Pick-up time:</string>
     <string name="close_order">Close order</string>
-    
+
+    <string name="address">Pick up from</string>
+    <string name="real_address_cafe">Burger cafe (3 floor)</string>
+    <string name="real_address_eatery">Eatery (2 floor)</string>
+    <string name="pick_up_soon">I will pick it up soon</string>
+    <string name="pick_up_at">I will pick it up at:</string>
+    <string name="change_time">Change time</string>
+    <string name="clear_cart">Clear cart</string>
+    <string name="pay_rest">Pay at the restaurant</string>
+  
     <string name="no_product_left">Amount used up!</string>
 </resources>
