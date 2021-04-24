@@ -1,15 +1,19 @@
 package com.example.hackinhome2021_stankinfood.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.hackinhome2021_stankinfood.R;
 import com.example.hackinhome2021_stankinfood.fragments.AuthRegChooseFragment;
@@ -20,9 +24,23 @@ import com.example.hackinhome2021_stankinfood.fragments.ProductFragment;
 import com.example.hackinhome2021_stankinfood.interfaces.OnBackPressedFragment;
 import com.example.hackinhome2021_stankinfood.models.Order;
 import com.example.hackinhome2021_stankinfood.models.Product;
+import com.example.hackinhome2021_stankinfood.models.User;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.StorageReference;
 
 import org.apache.commons.net.time.TimeTCPClient;
@@ -43,7 +61,7 @@ import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity
         implements BottomNavigationView.OnNavigationItemSelectedListener {
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "LOG_MESSAGE";
 
     private static final String AUTH_REG_CHOOSE_FRAGMENT = "AUTH_REG_CHOOSE_FRAGMENT";
     private static final String AUTH_REG_FRAGMENT = "AUTH_REG_FRAGMENT";
@@ -60,6 +78,7 @@ public class MainActivity extends AppCompatActivity
     private static final String COLLECTION_ORDERS = "orders";
     private static final String COLLECTION_PRODUCTS = "products";
     private static final String COLLECTION_FAVORITE_ORDERS = "favoriteOrders";
+    private static final String COLLECTION_USERS = "users";
 
 
     private final Random random = new SecureRandom();
@@ -97,9 +116,14 @@ public class MainActivity extends AppCompatActivity
 
     private BottomNavigationView bottomNavigationView;
 
+    private FirebaseUser firebaseUser = null;
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    private static final int RC_SIGN_IN = 9001;
+    private GoogleSignInClient googleSignInClient;
+
     private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
     private StorageReference storageReference;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +137,11 @@ public class MainActivity extends AppCompatActivity
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        if (firebaseAuth.getCurrentUser() != null) {
+
+        firebaseAuth.signOut();
+        firebaseUser = firebaseAuth.getCurrentUser();
+
+        if (firebaseUser == null) {
             hideBottomNavigationView(true);
             fragmentTransaction.replace(R.id.mainContainer, new AuthRegChooseFragment(),
                     AUTH_REG_CHOOSE_FRAGMENT);
@@ -126,6 +154,13 @@ public class MainActivity extends AppCompatActivity
 
         CurrentTimeGetterThread currentTimeGetterThread = new CurrentTimeGetterThread();
         currentTimeGetterThread.start();
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        googleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
     @Override
@@ -304,14 +339,127 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    public void replaceFragmentToAuthRegChooseFragment() {
+    public void createUserWithEmailAndPassword(String email, String password) {
+        firebaseAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "createUserWithEmailAndPassword(): Task Successful!");
+                        hideKeyboard(this);
+
+                        firebaseUser = firebaseAuth.getCurrentUser();
+                        firebaseUser.sendEmailVerification();
+
+                        Fragment fragment = getSupportFragmentManager().findFragmentByTag(AUTH_REG_FRAGMENT);
+                        ((AuthRegFragment) fragment).showAlertDialogVerificationMessage(email);
+                    } else {
+                        Log.d(TAG, "createUserWithEmailAndPassword(): Task Failure!");
+                    }
+                });
+    }
+
+    public void authUserWithEmailAndPassword(String email, String password) {
+        hideKeyboard(this);
+
+        firebaseAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        firebaseUser = firebaseAuth.getCurrentUser();
+                        if (!firebaseUser.isEmailVerified()) {
+                            Fragment fragment = getSupportFragmentManager().findFragmentByTag(AUTH_REG_FRAGMENT);
+                            ((AuthRegFragment) fragment).showSnackBarEmailNotVerified();
+                            return;
+                        } else findUserInDatabase();
+                        Log.d(TAG, "authUserWithEmailAndPassword(): Task Successful!");
+                    } else {
+                        Log.d(TAG, "authUserWithEmailAndPassword(): Task Failure!");
+                    }
+                });
+    }
+
+
+    public void signInWithGoogle() {
+        Intent signInWithGoogle = googleSignInClient.getSignInIntent();
+        startActivityForResult(signInWithGoogle, RC_SIGN_IN);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                Log.d("LOG_MESSAGE", "onActivityResult: " + account.getId());
+                firebaseAuthWithGoogle(account.getIdToken());
+            } catch (ApiException apiException) {
+                apiException.printStackTrace();
+            }
+        }
+    }
+
+    public void firebaseAuthWithGoogle(String idToken) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+        firebaseAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+
+                            Log.d(TAG, "signInWithCredential:success");
+                            firebaseUser = firebaseAuth.getCurrentUser();
+                            findUserInDatabase();
+//                            updateUI(user);
+                        } else {
+
+                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+//                            updateUI(null);
+                        }
+                    }
+                });
+    }
+
+
+    private void findUserInDatabase() {
+        User user = new User();
+        user.setUserId(firebaseUser.getUid());
+        user.setRestaurantId(null);
+
+        firebaseFirestore.collection(COLLECTION_USERS).whereEqualTo(
+                "userId", firebaseUser.getUid()).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "findUserInDatabase(): Task Successful!");
+                        if (task.getResult().isEmpty()) {
+                            createUserInDatabase(user);
+                        } else setFragmentMenuFragment();
+                    } else {
+                        Log.d(TAG, "findUserInDatabase(): Task Failure!");
+                    }
+                });
+    }
+
+    private void createUserInDatabase(User user) {
+        firebaseFirestore.collection(COLLECTION_USERS).document().set(user)
+                .addOnCompleteListener(taskInner -> {
+                    if (taskInner.isSuccessful()) {
+                        Log.d(TAG, "createUserInDatabase(): Task Successful!");
+                        setFragmentMenuFragment();
+                    } else {
+                        Log.d(TAG, "createUserInDatabase(): Task Failure!");
+                    }
+                });
+    }
+
+
+    private void setFragmentMenuFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.popBackStack();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.setCustomAnimations(
-                R.anim.enter_from_right, R.anim.exit_to_left,
-                R.anim.enter_from_right, R.anim.exit_to_left);
         fragmentTransaction.remove(fragmentManager.findFragmentByTag(AUTH_REG_FRAGMENT));
-        fragmentTransaction.show(fragmentManager.findFragmentByTag(AUTH_REG_CHOOSE_FRAGMENT));
+        fragmentTransaction.remove(fragmentManager.findFragmentByTag(AUTH_REG_CHOOSE_FRAGMENT));
+        fragmentTransaction.replace(R.id.mainContainer,
+                MenuFragment.newInstance(true, canteenProductList), MENU_FRAGMENT);
         fragmentTransaction.commit();
     }
 
@@ -334,10 +482,20 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction.commit();
     }
 
-    public void hideBottomNavigationView(boolean hide) {
-        if (hide) {
-            bottomNavigationView.setVisibility(View.GONE);
-        } else bottomNavigationView.setVisibility(View.VISIBLE);
+    public void switchToFragmentAuthFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.popBackStack();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.remove(fragmentManager.findFragmentByTag(AUTH_REG_FRAGMENT));
+        fragmentTransaction.commit();
+
+        fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(
+                R.anim.enter_from_left, R.anim.exit_to_right,
+                R.anim.enter_from_left, R.anim.exit_to_right);
+        fragmentTransaction.replace(R.id.mainContainer,
+                AuthRegFragment.newInstance(false), AUTH_REG_FRAGMENT);
+        fragmentTransaction.commit();
     }
 
     public void addFragmentProductFragment(List<Product> productList, int position) {
@@ -356,6 +514,23 @@ public class MainActivity extends AppCompatActivity
     public void restoreCardViewClickListener() {
         Fragment menuFragment = getSupportFragmentManager().findFragmentByTag(MENU_FRAGMENT);
         ((MenuFragment) menuFragment).restoreCardViewClick();
+    }
+
+    private void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        View view = activity.getCurrentFocus();
+
+        if (view == null) {
+            view = new View(activity);
+        }
+
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    public void hideBottomNavigationView(boolean hide) {
+        if (hide) {
+            bottomNavigationView.setVisibility(View.GONE);
+        } else bottomNavigationView.setVisibility(View.VISIBLE);
     }
 
 //    public void replaceFragmentFromProductFragmentToMenuFragment() {

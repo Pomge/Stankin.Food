@@ -14,8 +14,13 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 
 import com.example.hackinhome2021_stankinfood.R;
+import com.example.hackinhome2021_stankinfood.activities.MainActivity;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 
-public class AuthRegFragment extends Fragment implements View.OnClickListener {
+public class AuthRegFragment extends Fragment implements
+        View.OnClickListener {
     private static final String IS_REGISTRATION = "isRegistration";
 
     private boolean isRegistration;
@@ -25,8 +30,7 @@ public class AuthRegFragment extends Fragment implements View.OnClickListener {
     private EditText editTextPassword;
     private Button buttonRequest;
     private TextView textViewForgotPassword;
-    private Button buttonRequestGoogle;
-    private Button buttonRequestApple;
+    private SignInButton buttonRequestGoogle;
 
     public AuthRegFragment() {
     }
@@ -77,7 +81,6 @@ public class AuthRegFragment extends Fragment implements View.OnClickListener {
 
     private void initButtons(View view) {
         buttonRequest = view.findViewById(R.id.buttonRequest);
-        buttonRequestApple = view.findViewById(R.id.buttonRequestApple);
         buttonRequestGoogle = view.findViewById(R.id.buttonRequestGoogle);
 
         if (isRegistration) {
@@ -87,7 +90,6 @@ public class AuthRegFragment extends Fragment implements View.OnClickListener {
         }
 
         buttonRequest.setOnClickListener(this);
-        buttonRequestApple.setOnClickListener(this);
         buttonRequestGoogle.setOnClickListener(this);
     }
 
@@ -109,10 +111,10 @@ public class AuthRegFragment extends Fragment implements View.OnClickListener {
 
     private boolean isPasswordCorrect() {
         String password = editTextPassword.getText().toString();
-        return password.length() >= 8;
+        return password.length() >= 8 && !password.contains(" ");
     }
 
-    private void showAlertDialog() {
+    private void showAlertDialogForgotPassword() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getResources().getString(R.string.reset_password_title));
         builder.setMessage(getResources().getString(R.string.reset_password_message));
@@ -122,15 +124,35 @@ public class AuthRegFragment extends Fragment implements View.OnClickListener {
                 //TODO кнопка справа Yes
             }
         });
-        builder.setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                //TODO кнопка справа No
-            }
+        builder.setNegativeButton(getResources().getString(R.string.cancel), (dialog, id) -> {
         });
         builder.setCancelable(true);
         builder.create();
     }
+
+
+    public void showAlertDialogVerificationMessage(String email) {
+        String title = getResources().getString(R.string.verification_email_title);
+        String message = getResources().getString(R.string.verification_email_message) + "\n" + email;
+        String buttonOkString = getResources().getString(R.string.ok);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setPositiveButton(buttonOkString, (dialog, id) -> {
+            ((MainActivity) getActivity()).switchToFragmentAuthFragment();
+        });
+        builder.setCancelable(false);
+        builder.create();
+        builder.show();
+    }
+
+    public void showSnackBarEmailNotVerified() {
+        Snackbar.make(getView(),
+                getResources().getString(R.string.error_verify_email),
+                BaseTransientBottomBar.LENGTH_LONG).show();
+    }
+
 
     @Override
     public void onClick(View v) {
@@ -138,6 +160,14 @@ public class AuthRegFragment extends Fragment implements View.OnClickListener {
         if (id == R.id.buttonRequest) {
             if (isEmailCorrect()) {
                 if (isPasswordCorrect()) {
+                    String email = editTextEmail.getText().toString();
+                    String password = editTextPassword.getText().toString();
+
+                    if (isRegistration) {
+                        ((MainActivity) getActivity()).createUserWithEmailAndPassword(email, password);
+                    } else {
+                        ((MainActivity) getActivity()).authUserWithEmailAndPassword(email, password);
+                    }
                     //TODO Зарегистрировать или авторизировать
                 } else {
                     //TODO можно доработать анимацию
@@ -147,12 +177,10 @@ public class AuthRegFragment extends Fragment implements View.OnClickListener {
                 //TODO можно доработать анимацию
                 Toast.makeText(getContext(), getResources().getString(R.string.incorrect_email), Toast.LENGTH_SHORT).show();
             }
-        } else if (id == R.id.buttonRequestApple) {
-            //TODO Зарегистрировать или авторизировать Apple
         } else if (id == R.id.buttonRequestGoogle) {
-            //TODO Зарегистрировать или авторизировать Google
+            ((MainActivity) getActivity()).signInWithGoogle();
         } else if (id == R.id.textViewForgotPassword) {
-            showAlertDialog();
+            showAlertDialogForgotPassword();
         }
     }
 }

@@ -77,21 +77,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonRequest" />
 
-    <Button
+    <com.google.android.gms.common.SignInButton
         android:id="@+id/buttonRequestGoogle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Логин Google"
-        android:textSize="?attr/textSizeNormal"
-        app:layout_constraintBottom_toTopOf="@+id/buttonRequestApple"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/buttonRequestApple"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Логин apple"
         android:textSize="?attr/textSizeNormal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

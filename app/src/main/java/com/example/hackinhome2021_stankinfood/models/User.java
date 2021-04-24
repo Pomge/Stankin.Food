@@ -9,7 +9,7 @@ public class User implements Parcelable {
     private String userId;
     private String restaurantId;
 
-    private User() {
+    public User() {
     }
 
     protected User(Parcel in) {

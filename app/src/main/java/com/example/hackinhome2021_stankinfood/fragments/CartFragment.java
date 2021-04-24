@@ -149,7 +149,6 @@ public class CartFragment extends Fragment implements
     private void clearCart() {
         order.setPositions(new ArrayList<>());
         ((MainActivity) getActivity()).removeCartFragment();
-//        myRecyclerViewAdapter.notifyAll();
     }
 
     @Override
