@@ -87,7 +87,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 break;
             case MainActivity.ORDER_PRODUCT_INACTIVE:
                 setDataForViewHolderOrderProductInactive(
-                        (ViewHolderOrderProduct) holder, currentProduct, myOnClickListener);
+                        (ViewHolderOrderProduct) holder, currentProduct);
                 break;
             case MainActivity.ORDER_PRODUCT_ACTIVE:
                 setDataForViewHolderOrderProductActive(
@@ -200,18 +200,16 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private void setDataForViewHolderOrderProductInactive(
             ViewHolderOrderProduct viewHolderOrderProduct,
-            Product product, MyOnClickListener myOnClickListener) {
+            Product product) {
         //viewHolderProduct.imageViewProductImage.setImageBitmap(product.image);
         viewHolderOrderProduct.textViewName.setText(product.getProductName());
-        viewHolderOrderProduct.textViewRealTotalPrice.setText(getStringTotalPriceWithNumber(
-                viewHolderOrderProduct, product.getPrice(), product.getCountForOrder()));
+        String totalPrice = product.getPrice() * product.getCountForOrder() + " " +
+                getStringResourceCurrency(viewHolderOrderProduct);
+        viewHolderOrderProduct.textViewRealTotalPrice.setText(totalPrice);
         viewHolderOrderProduct.textViewCount.setText(String.valueOf(product.getCountForOrder()));
 
         viewHolderOrderProduct.imageButtonPlus.setVisibility(View.GONE);
         viewHolderOrderProduct.imageButtonMinus.setVisibility(View.GONE);
-
-        viewHolderOrderProduct.imageButtonMinus.setOnClickListener(myOnClickListener);
-        viewHolderOrderProduct.imageButtonPlus.setOnClickListener(myOnClickListener);
     }
 
     private void setDataForViewHolderOrderProductActive(
@@ -219,8 +217,9 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             Product product, MyOnClickListener myOnClickListener) {
         //viewHolderProduct.imageViewProductImage.setImageBitmap(productClient.image);
         viewHolderOrderProduct.textViewName.setText(product.getProductName());
-        viewHolderOrderProduct.textViewRealTotalPrice.setText(getStringTotalPriceWithNumber(
-                viewHolderOrderProduct, product.getPrice(), product.getCountForOrder()));
+        String totalPrice = product.getPrice() * product.getCountForOrder() + " " +
+                getStringResourceCurrency(viewHolderOrderProduct);
+        viewHolderOrderProduct.textViewRealTotalPrice.setText(totalPrice);
         viewHolderOrderProduct.textViewCount.setText(String.valueOf(product.getCountForOrder()));
 
         viewHolderOrderProduct.imageButtonPlus.setVisibility(View.VISIBLE);

@@ -17,7 +17,7 @@
     <string name="incorrect_email">Incorrect email!</string>
     <string name="reset_password_title">Reset password</string>
     <string name="reset_password_message">Are you sure you want to reset your email password:</string>
-    <string name="yes">Yes</string>
+    <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="retry">Retry</string>
 
@@ -46,4 +46,8 @@
     <string name="pay_rest">Pay at the restaurant</string>
   
     <string name="no_product_left">Amount used up!</string>
+
+    <string name="cart_clear_message">Are you sure you want to empty your shopping cart?</string>
+    <string name="cart_item_remove_title">Item removing</string>
+    <string name="cart_item_remove_message">The item will be removed from the cart</string>
 </resources>

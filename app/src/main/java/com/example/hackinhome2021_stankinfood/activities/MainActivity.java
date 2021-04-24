@@ -327,6 +327,27 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction.commit();
     }
 
+    public void removeCartFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(
+                R.anim.enter_from_left, R.anim.exit_to_right,
+                R.anim.enter_from_left, R.anim.exit_to_right);
+        fragmentTransaction.replace(R.id.mainContainer, MenuFragment.newInstance(
+                true, canteenProductList), MENU_FRAGMENT_TAG);
+        fragmentTransaction.commit();
+
+        setBottomNavigationViewToZeroPosition();
+    }
+
+    private void setBottomNavigationViewToZeroPosition() {
+        previousDirection = 0;
+        previousBottomNavigationTabId = R.id.menuItemCanteen;
+        bottomNavigationView.setOnNavigationItemSelectedListener(null);
+        bottomNavigationView.setSelectedItemId(R.id.menuItemCanteen);
+        bottomNavigationView.setOnNavigationItemSelectedListener(this);
+    }
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {

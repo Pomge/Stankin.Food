@@ -3,6 +3,7 @@ package com.example.hackinhome2021_stankinfood.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.example.hackinhome2021_stankinfood.activities.MainActivity;
 import com.google.firebase.firestore.Exclude;
 
 import java.sql.Timestamp;
@@ -102,13 +103,17 @@ public class Order implements Parcelable {
 
     public void addNewPosition(Product product) {
         Product productForAdding = product.clone();
+        productForAdding.setCountForOrder(3);
+        productForAdding.setViewType(MainActivity.ORDER_PRODUCT_ACTIVE);
         positions.add(productForAdding);
     }
 
     public void removePosition(String productId) {
         for (Product product : positions) {
-            if (product.getProductId().equals(productId)) positions.remove(product);
-            break;
+            if (product.getProductId().equals(productId)) {
+                positions.remove(product);
+                break;
+            }
         }
     }
 
