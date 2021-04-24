@@ -123,8 +123,8 @@ public class ProductFragment extends Fragment implements View.OnClickListener {
         ratingBar.setRating(product.getRating());
     }
 
-    private void initImageView(View view) {
-        imageViewProductImage = view.findViewById(R.id.imageViewProductImage);
+    private void initImage(View view) {
+        imageViewProductImage = view.findViewById(R.id.imageViewPicture);
     }
 
     private void setImageForImageView() {

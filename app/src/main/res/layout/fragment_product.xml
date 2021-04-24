@@ -4,35 +4,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8dp"
+    android:padding="16dp"
     tools:context=".fragments.ProductFragment">
 
     <TextView
         android:id="@+id/textViewName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
         android:gravity="center"
         android:text="ViewName"
         android:textSize="?attr/textSizeHeader"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/imageViewProductImage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageViewProductImage"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginLeft="40dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginRight="40dp"
-        android:layout_marginBottom="4dp"
+        android:id="@+id/imageViewPicture"
+        android:layout_width="256dp"
+        android:layout_height="256dp"
+        android:layout_marginTop="8dp"
         android:contentDescription="@null"
-        android:src="@drawable/ic_add_24dp"
-        app:layout_constraintBottom_toTopOf="@id/ratingBar"
+        android:src="@drawable/ic_no_image_64dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewName" />
@@ -42,18 +35,16 @@
         style="?android:ratingBarStyleIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toTopOf="@id/textViewProductDescription"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imageViewProductImage" />
+        app:layout_constraintTop_toBottomOf="@id/imageViewPicture" />
 
     <TextView
         android:id="@+id/textViewProductDescription"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:ellipsize="end"
         android:maxLines="7"
@@ -76,12 +67,10 @@
             android:id="@+id/textViewSinglePrice"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
             android:text="@string/single_price"
-            android:textSize="?attr/textSizeNormal"
+            android:textSize="?attr/textSizeMedium"
+            android:textStyle="bold"
             android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@id/textViewTotalPrice"
             app:layout_constraintEnd_toStartOf="@id/textViewRealSinglePrice"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -89,24 +78,24 @@
         <TextView
             android:id="@+id/textViewRealSinglePrice"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:gravity="end"
+            android:layout_height="0dp"
+            android:gravity="end|center_vertical"
             android:text="Real single price"
             android:textSize="?attr/textSizeNormal"
             android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@id/textViewRealTotalPrice"
+            app:layout_constraintBottom_toBottomOf="@id/textViewSinglePrice"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/textViewSinglePrice"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/textViewSinglePrice" />
 
         <TextView
             android:id="@+id/textViewTotalPrice"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:text="@string/total_price"
-            android:textSize="?attr/textSizeNormal"
+            android:textSize="?attr/textSizeMedium"
+            android:textStyle="bold"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/textViewProductsLeft"
             app:layout_constraintEnd_toStartOf="@id/textViewRealTotalPrice"
@@ -116,15 +105,15 @@
         <TextView
             android:id="@+id/textViewRealTotalPrice"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="end"
+            android:layout_height="0dp"
+            android:gravity="end|center_vertical"
             android:text="Real total price"
             android:textSize="?attr/textSizeNormal"
+            app:layout_constraintBottom_toBottomOf="@id/textViewTotalPrice"
             android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@id/textViewRealProductsLeft"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/textViewTotalPrice"
-            app:layout_constraintTop_toBottomOf="@id/textViewRealSinglePrice" />
+            app:layout_constraintTop_toTopOf="@id/textViewTotalPrice" />
 
         <TextView
             android:id="@+id/textViewProductsLeft"
@@ -155,9 +144,9 @@
             android:id="@+id/buttonProductPrice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
             android:text="Coast"
             android:textSize="?attr/textSizeNormal"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -167,8 +156,6 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginTop="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginBottom="4dp"
             android:backgroundTint="?attr/colorPrimary"
             android:contentDescription="@null"
             android:visibility="gone"
@@ -182,8 +169,6 @@
             android:id="@+id/textViewCount"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
             android:gravity="center"
             android:text="Count"
             android:textSize="?attr/textSizeNormal"
@@ -197,16 +182,13 @@
             android:id="@+id/imageButtonPlus"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
             android:backgroundTint="?attr/colorPrimary"
             android:contentDescription="@null"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/textViewCount"
-            app:layout_constraintTop_toBottomOf="@id/textViewRealProductsLeft"
+            app:layout_constraintTop_toTopOf="@id/imageButtonMinus"
             app:srcCompat="@drawable/ic_add_24dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

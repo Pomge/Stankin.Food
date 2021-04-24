@@ -21,7 +21,7 @@ import com.example.hackinhome2021_stankinfood.models.Product;
 
 
 public class OrderFragment extends Fragment implements OnRecyclerViewClickListener {
-    private static final String KEY = "order";
+    private static final String ORDER = "order"; //true - кассир, false - клиент
 
     private boolean isOrder; //true- кассир, false - клиент
     private Order order;
@@ -36,7 +36,7 @@ public class OrderFragment extends Fragment implements OnRecyclerViewClickListen
     public static OrderFragment newInstance(Order order) {
         OrderFragment fragment = new OrderFragment();
         Bundle args = new Bundle();
-        args.putParcelable(KEY, order);
+        args.putParcelable(ORDER, order);
         fragment.setArguments(args);
         return fragment;
     }
@@ -45,10 +45,10 @@ public class OrderFragment extends Fragment implements OnRecyclerViewClickListen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            order = getArguments().getParcelable(KEY);
+            order = getArguments().getParcelable(ORDER);
         }
         if (savedInstanceState != null) {
-            order = savedInstanceState.getParcelable(KEY);
+            order = savedInstanceState.getParcelable(ORDER);
         }
     }
 
@@ -71,7 +71,7 @@ public class OrderFragment extends Fragment implements OnRecyclerViewClickListen
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putParcelable(KEY, order);
+        outState.putParcelable(ORDER, order);
         super.onSaveInstanceState(outState);
     }
 
