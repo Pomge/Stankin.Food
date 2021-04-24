@@ -165,11 +165,11 @@ public class AuthRegFragment extends Fragment implements
 
     private void hidePassword(boolean hide) {
         if (hide) {
-            editTextPassword.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            editTextPassword.setInputType(129);
             imageButtonViewPassword.setSelected(true);
         }
         else {
-            editTextPassword.setInputType(129);
+            editTextPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
             imageButtonViewPassword.setSelected(false);
         }
     }
