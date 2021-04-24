@@ -4,6 +4,7 @@
     android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="4dp"
     app:cardCornerRadius="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,6 +17,7 @@
             android:layout_height="32dp"
             android:layout_margin="8dp"
             android:background="@drawable/image_button_liked"
+            android:contentDescription="@null"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -24,7 +26,8 @@
             android:layout_width="128dp"
             android:layout_height="128dp"
             android:layout_margin="8dp"
-            android:src="@android:drawable/ic_media_play"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_no_image_64dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -36,7 +39,7 @@
             android:layout_margin="8dp"
             android:gravity="center"
             android:text="ProductName"
-            android:textSize="18sp"
+            android:textSize="?attr/textSizeMedium"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -50,6 +53,8 @@
             android:layout_margin="8dp"
             android:numStars="5"
             android:rating="0"
+            android:scaleX=".75"
+            android:scaleY=".75"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textViewName" />
@@ -59,8 +64,10 @@
             android:layout_width="match_parent"
             android:layout_height="128dp"
             android:layout_margin="8dp"
+            android:ellipsize="end"
+            android:maxLines="6"
             android:text="ProductDescription"
-            android:textSize="18sp"
+            android:textSize="?attr/textSizeNormal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ratingBar" />
@@ -71,6 +78,7 @@
             android:layout_height="48dp"
             android:layout_margin="8dp"
             android:text="100 RUB"
+            android:textSize="?attr/textSizeNormal"
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -81,6 +89,8 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_margin="8dp"
+            android:backgroundTint="?attr/colorPrimary"
+            android:contentDescription="@null"
             android:src="@drawable/ic_remove_24dp"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
@@ -93,6 +103,7 @@
             android:layout_margin="8dp"
             android:gravity="center"
             android:text="6"
+            android:textSize="?attr/textSizeNormal"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/imageButtonPlus"
@@ -104,6 +115,8 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_margin="8dp"
+            android:backgroundTint="?attr/colorPrimary"
+            android:contentDescription="@null"
             android:src="@drawable/ic_add_24dp"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"

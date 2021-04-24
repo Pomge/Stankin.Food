@@ -12,6 +12,8 @@ import android.view.MenuItem;
 
 import com.example.hackinhome2021_stankinfood.R;
 import com.example.hackinhome2021_stankinfood.fragments.MenuFragment;
+import com.example.hackinhome2021_stankinfood.fragments.ProductFragment;
+import com.example.hackinhome2021_stankinfood.models.Product;
 import com.example.hackinhome2021_stankinfood.models.Restaurant;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,7 +26,9 @@ import java.io.IOException;
 import java.security.SecureRandom;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -48,21 +52,33 @@ public class MainActivity extends AppCompatActivity
 
 
     private final Random random = new SecureRandom();
-    private List<Restaurant> restaurantList;
     private final List<String> categoriesNames = Arrays.asList(
             "Супы", "Мясо", "Напитки");
+    //    private final List<String> categoriesNames = Arrays.asList(
+//            "AAA", "BBB", "CCC");
     private final List<String> soupNames = Arrays.asList(
             "Харчо", "Затируха", "Томатный",
             "Куриный", "Любимый", "Солянка", "Гречневый");
+    //    private final List<String> soupNames = Arrays.asList(
+//            "AAA", "BBB", "CCC",
+//            "DDD", "EEE", "FFF", "GGG");
     private final List<String> meatNames = Arrays.asList(
             "Свиннина", "Говядина", "Телятина",
             "Баранина", "Крольчатина", "Оленина", "Ягнятина");
+    //    private final List<String> meatNames = Arrays.asList(
+//            "AAA", "BBB", "CCC",
+//            "DDD", "EEE", "FFF", "GGG");
     private final List<String> drinkNames = Arrays.asList(
             "7UP", "Lipton", "AQUA",
             "Mirinda", "MountainDew", "Pepsi", "Drive");
+//    private final List<String> drinkNames = Arrays.asList(
+//            "AAA", "BBB", "CCC",
+//            "DDD", "EEE", "FFF", "GGG");
 
 
     private Date currentDate = null;
+    private List<Product> canteenProductList;
+    private List<Product> fastFoodProductList;
 
     private int previousDirection = 0;
     private int previousBottomNavigationTabId;
@@ -81,15 +97,18 @@ public class MainActivity extends AppCompatActivity
         initBottomNavigationView();
         previousBottomNavigationTabId = R.id.canteen;
 
+        generateMenu();
+
         fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.mainContainer, new MenuFragment());
-//        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.replace(R.id.mainContainer, ProductFragment.newInstance(canteenProductList.get(1)));
+        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
-        CurrentTimeGetterThread currentTimeGetterThread = new CurrentTimeGetterThread();
-        currentTimeGetterThread.start();
+//        CurrentTimeGetterThread currentTimeGetterThread = new CurrentTimeGetterThread();
+//        currentTimeGetterThread.start();
 //        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
     }
 
     @Override
@@ -143,7 +162,102 @@ public class MainActivity extends AppCompatActivity
 
 
     private void generateMenu() {
+        canteenProductList = new ArrayList<>();
+        fastFoodProductList = new ArrayList<>();
 
+        List<Product> canteenProductListTaken = new ArrayList<>();
+        List<Product> fastFoodProductListTaken = new ArrayList<>();
+
+        for (String drinkName : drinkNames) {
+            Product productCanteen = new Product(
+                    getRandomString(50), null, categoriesNames.get(2), drinkName,
+                    getRandomString(255), getRandomInteger(0, 10), 0, 0.0f,
+                    getRandomInteger(100, 500), getRandomInteger(0, 100), random.nextBoolean(), MENU_PRODUCT_INACTIVE);
+            Product productFastFood = new Product(
+                    getRandomString(50), null, categoriesNames.get(2), drinkName,
+                    getRandomString(255), getRandomInteger(0, 10), 0, 0.0f,
+                    getRandomInteger(100, 500), getRandomInteger(0, 100), random.nextBoolean(), MENU_PRODUCT_INACTIVE);
+
+            canteenProductListTaken.add(productCanteen);
+            fastFoodProductListTaken.add(productFastFood);
+        }
+
+        for (String meatName : meatNames) {
+            Product productCanteen = new Product(
+                    getRandomString(50), null, categoriesNames.get(1), meatName,
+                    getRandomString(255), getRandomInteger(0, 10), 0, 0.0f,
+                    getRandomInteger(100, 500), getRandomInteger(0, 100), random.nextBoolean(), MENU_PRODUCT_INACTIVE);
+            Product productFastFood = new Product(
+                    getRandomString(50), null, categoriesNames.get(1), meatName,
+                    getRandomString(255), getRandomInteger(0, 10), 0, 0.0f,
+                    getRandomInteger(100, 500), getRandomInteger(0, 100), random.nextBoolean(), MENU_PRODUCT_INACTIVE);
+
+            canteenProductListTaken.add(productCanteen);
+            fastFoodProductListTaken.add(productFastFood);
+        }
+
+        for (String soupName : soupNames) {
+            Product productCanteen = new Product(
+                    getRandomString(50), null, categoriesNames.get(0), soupName,
+                    getRandomString(255), getRandomInteger(0, 10), 0, 0.0f,
+                    getRandomInteger(100, 500), getRandomInteger(0, 100), random.nextBoolean(), MENU_PRODUCT_INACTIVE);
+            Product productFastFood = new Product(
+                    getRandomString(50), null, categoriesNames.get(0), soupName,
+                    getRandomString(255), getRandomInteger(0, 10), 0, 0.0f,
+                    getRandomInteger(100, 500), getRandomInteger(0, 100), random.nextBoolean(), MENU_PRODUCT_INACTIVE);
+
+            canteenProductListTaken.add(productCanteen);
+            fastFoodProductListTaken.add(productFastFood);
+        }
+
+        Collections.sort(canteenProductListTaken, Product.PRODUCT_COMPARATOR);
+        Collections.sort(fastFoodProductListTaken, Product.PRODUCT_COMPARATOR);
+
+        for (Product product : canteenProductListTaken) {
+            product.setRating(((float) product.getLikesCount()) / ((float) canteenProductListTaken.size()));
+        }
+
+        for (Product product : fastFoodProductListTaken) {
+            product.setRating(((float) product.getLikesCount()) / ((float) canteenProductListTaken.size()));
+        }
+
+        convertForRecyclerView(canteenProductListTaken);
+        convertForRecyclerView(fastFoodProductListTaken);
+
+        canteenProductList.addAll(canteenProductListTaken);
+        fastFoodProductList.addAll(fastFoodProductListTaken);
+    }
+
+    private void convertForRecyclerView(List<Product> productList) {
+        List<String> categoryNamesList = new ArrayList<>();
+        String savedCategoryName = productList.get(0).getCategoryName();
+        categoryNamesList.add(savedCategoryName);
+
+        for (Product product : productList) {
+            if (!product.getCategoryName().equals(savedCategoryName)) {
+                savedCategoryName = product.getCategoryName();
+                categoryNamesList.add(savedCategoryName);
+            }
+        }
+
+        int index = 0;
+        savedCategoryName = categoryNamesList.get(0);
+        productList.add(0, new Product(
+                null, null, null,
+                savedCategoryName, null, 0,
+                0, 0.0f, 0, 0, false, MENU_HEADER));
+        index++;
+
+        for (int i = 1; i < productList.size(); i++) {
+            if (!productList.get(i).getCategoryName().equals(savedCategoryName)) {
+                productList.add(i, new Product(
+                        null, null, null,
+                        categoryNamesList.get(index), null, 0,
+                        0, 0.0f, 0, 0, false, MENU_HEADER));
+                savedCategoryName = categoryNamesList.get(index);
+                index++;
+            }
+        }
     }
 
     private String getRandomString(int length) {

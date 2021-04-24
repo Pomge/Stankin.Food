@@ -5,5 +5,5 @@
     android:layout_height="wrap_content"
     android:padding="8dp"
     android:text="Header"
-    android:textSize="24sp"
+    android:textSize="?attr/textSizeHeader"
     android:textStyle="bold" />

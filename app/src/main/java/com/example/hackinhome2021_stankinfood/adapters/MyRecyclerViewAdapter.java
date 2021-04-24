@@ -56,12 +56,12 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
             case MainActivity.MENU_PRODUCT_ACTIVE:
             case MainActivity.MENU_PRODUCT_INACTIVE:
-                return new ViewHolderMenuHeader(layoutInflater.inflate(
+                return new ViewHolderMenuProduct(layoutInflater.inflate(
                         R.layout.item_menu_product, parent, false));
 
             case MainActivity.ORDER_PRODUCT_ACTIVE:
             case MainActivity.ORDER_PRODUCT_INACTIVE:
-                return new ViewHolderMenuHeader(layoutInflater.inflate(
+                return new ViewHolderOrderProduct(layoutInflater.inflate(
                         R.layout.item_order_product, parent, false));
         }
         return null;
@@ -156,6 +156,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         viewHolderMenuProduct.imageButtonLiked.setSelected(product.isLiked());
 //        viewHolderMenuProduct.imageViewProductImage.setImageBitmap(product.image);
         viewHolderMenuProduct.textViewName.setText(product.getProductName());
+        viewHolderMenuProduct.ratingBar.setRating(product.getRating());
 
         String singlePrice = product.getPrice() + " " +
                 getStringResourceCurrency(viewHolderMenuProduct);
@@ -169,6 +170,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         viewHolderMenuProduct.imageButtonPlus.setVisibility(View.GONE);
 
         viewHolderMenuProduct.cardView.setOnClickListener(myOnClickListener);
+        viewHolderMenuProduct.imageButtonLiked.setOnClickListener(myOnClickListener);
         viewHolderMenuProduct.buttonPrice.setOnClickListener(myOnClickListener);
     }
 
@@ -178,6 +180,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         viewHolderMenuProduct.imageButtonLiked.setSelected(product.isLiked());
 //        viewHolderMenuProduct.imageViewProductImage.setImageBitmap(product.image);
         viewHolderMenuProduct.textViewName.setText(product.getProductName());
+        viewHolderMenuProduct.ratingBar.setRating(product.getRating());
 
         viewHolderMenuProduct.textViewDescription.setText(getStringForDescriptionAfterClick(
                 viewHolderMenuProduct, product.getPrice(), product.getCountForOrder(), product.getProductsLeft()));
@@ -190,6 +193,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         viewHolderMenuProduct.imageButtonPlus.setVisibility(View.VISIBLE);
 
         viewHolderMenuProduct.cardView.setOnClickListener(myOnClickListener);
+        viewHolderMenuProduct.imageButtonLiked.setOnClickListener(myOnClickListener);
         viewHolderMenuProduct.imageButtonMinus.setOnClickListener(myOnClickListener);
         viewHolderMenuProduct.imageButtonPlus.setOnClickListener(myOnClickListener);
     }

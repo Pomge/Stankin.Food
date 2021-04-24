@@ -2,8 +2,11 @@ package com.example.hackinhome2021_stankinfood.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.google.firebase.firestore.Exclude;
+
+import java.util.Comparator;
 
 public class Product implements Parcelable {
     @Exclude
@@ -15,6 +18,8 @@ public class Product implements Parcelable {
     private int productsLeft;
     @Exclude
     private int countForOrder;
+    @Exclude
+    private float rating;
     private int price;
     private int likesCount;
     private boolean isLiked;
@@ -22,6 +27,23 @@ public class Product implements Parcelable {
     private int viewType;
 
     public Product() {
+    }
+
+    public Product(String productId, String imageURL, String categoryName, String productName,
+                   String description, int productsLeft, int countForOrder, float rating, int price,
+                   int likesCount, boolean isLiked, int viewType) {
+        this.productId = productId;
+        this.imageURL = imageURL;
+        this.categoryName = categoryName;
+        this.productName = productName;
+        this.description = description;
+        this.productsLeft = productsLeft;
+        this.countForOrder = countForOrder;
+        this.rating = rating;
+        this.price = price;
+        this.likesCount = likesCount;
+        this.isLiked = isLiked;
+        this.viewType = viewType;
     }
 
     protected Product(Parcel in) {
@@ -32,6 +54,7 @@ public class Product implements Parcelable {
         description = in.readString();
         productsLeft = in.readInt();
         countForOrder = in.readInt();
+        rating = in.readFloat();
         price = in.readInt();
         likesCount = in.readInt();
         isLiked = in.readByte() != 0;
@@ -106,6 +129,14 @@ public class Product implements Parcelable {
         this.countForOrder = countForOrder;
     }
 
+    public float getRating() {
+        return rating;
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
+    }
+
     public int getPrice() {
         return price;
     }
@@ -152,27 +183,39 @@ public class Product implements Parcelable {
         dest.writeString(description);
         dest.writeInt(productsLeft);
         dest.writeInt(countForOrder);
+        dest.writeFloat(rating);
         dest.writeInt(price);
         dest.writeInt(likesCount);
         dest.writeByte((byte) (isLiked ? 1 : 0));
         dest.writeInt(viewType);
     }
 
-    @Exclude
+    public static final Comparator<Product> PRODUCT_COMPARATOR = (product_1, product_2) -> {
+        if (product_1.getCategoryName().compareTo(product_2.getCategoryName()) < 0) {
+            return -1;
+        } else if (product_1.getCategoryName().compareTo(product_2.getCategoryName()) == 0) {
+            if (product_1.getLikesCount() > product_2.getLikesCount()) {
+                return -1;
+            } else if (product_1.getLikesCount() == product_2.getLikesCount()) {
+                return Integer.compare(product_1.getProductName().compareTo(product_2.getProductName()), 0);
+            } else return 1;
+        } else return 1;
+    };
+
     @Override
     public String toString() {
-        return "Product {" + "\n" +
-                "productId = '" + productId + '\'' + ",\n" +
-                "imageURL = '" + imageURL + '\'' + ",\n" +
-                "categoryName = '" + categoryName + '\'' + ",\n" +
-                "productName = '" + productName + '\'' + ",\n" +
-                "description = '" + description + '\'' + ",\n" +
-                "productsLeft = " + productsLeft + ",\n" +
-                "countForOrder = " + countForOrder + ",\n" +
-                "price = " + price + ",\n" +
-                "likesCount = " + likesCount + ",\n" +
-                "isLiked = " + isLiked + ",\n" +
-                "viewType = " + viewType + "\n" +
+        return "\nProduct {" + "\n" +
+                "\tproductId = '" + productId + '\'' + ",\n" +
+                "\timageURL = '" + imageURL + '\'' + ",\n" +
+                "\tcategoryName = '" + categoryName + '\'' + ",\n" +
+                "\tproductName = '" + productName + '\'' + ",\n" +
+                "\tdescription = '" + description + '\'' + ",\n" +
+                "\tproductsLeft = " + productsLeft + ",\n" +
+                "\tcountForOrder = " + countForOrder + ",\n" +
+                "\tprice = " + price + ",\n" +
+                "\tlikesCount = " + likesCount + ",\n" +
+                "\tisLiked = " + isLiked + ",\n" +
+                "\tviewType = " + viewType + "\n" +
                 '}' + "\n";
     }
 }

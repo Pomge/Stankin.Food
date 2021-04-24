@@ -34,6 +34,7 @@
 
     <string name="order_id">Order id:</string>
     <string name="pick_up_time">Pick-up time:</string>
+    <string name="close_order">Close order</string>
 
     <string name="address">Pick up from</string>
     <string name="real_address_cafe">Burger cafe (3 floor)</string>
@@ -43,5 +44,6 @@
     <string name="change_time">Change time</string>
     <string name="clear_cart">Clear cart</string>
     <string name="pay_rest">Pay at the restaurant</string>
-
+  
+    <string name="no_product_left">Amount used up!</string>
 </resources>

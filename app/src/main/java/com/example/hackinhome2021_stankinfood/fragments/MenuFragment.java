@@ -2,6 +2,7 @@ package com.example.hackinhome2021_stankinfood.fragments;
 
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +20,15 @@ import com.example.hackinhome2021_stankinfood.activities.MainActivity;
 import com.example.hackinhome2021_stankinfood.adapters.MyRecyclerViewAdapter;
 import com.example.hackinhome2021_stankinfood.interfaces.OnRecyclerViewClickListener;
 import com.example.hackinhome2021_stankinfood.models.Product;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuFragment extends Fragment
-        implements SearchView.OnQueryTextListener,
+public class MenuFragment extends Fragment implements
+        SearchView.OnQueryTextListener,
         TabLayout.OnTabSelectedListener,
         OnRecyclerViewClickListener {
 
@@ -35,6 +38,7 @@ public class MenuFragment extends Fragment
     private boolean isMenu;
     private List<Product> productList;
     private List<Integer> titleIndexesList;
+    private List<Integer> savedProductsLeft;
 
     private boolean isScrolled = false;
 
@@ -69,6 +73,7 @@ public class MenuFragment extends Fragment
             productList = savedInstanceState.getParcelableArrayList(PRODUCT_LIST);
         }
         setTitleIndexList();
+        setSavedProductsLeft();
     }
 
     @Override
@@ -97,11 +102,21 @@ public class MenuFragment extends Fragment
         titleIndexesList = new ArrayList<>();
 
         for (int i = 0; i < productList.size(); i++) {
-            if (productList.get(i).getViewType() != MainActivity.MENU_HEADER) {
+            if (productList.get(i).getViewType() == MainActivity.MENU_HEADER) {
                 titleIndexesList.add(i);
             }
         }
         titleIndexesList.add(productList.size());
+
+        Log.d("LOG_MESSAGE", titleIndexesList.toString());
+    }
+
+    private void setSavedProductsLeft() {
+        savedProductsLeft = new ArrayList<>();
+
+        for (Product product : productList) {
+            savedProductsLeft.add(product.getProductsLeft());
+        }
     }
 
     private void initSearchView(View view) {
@@ -147,7 +162,7 @@ public class MenuFragment extends Fragment
         if (isMenu) {
             for (Product product : productList) {
                 if (product.getViewType() == MainActivity.MENU_HEADER) {
-                    tabLayout.addTab(tabLayout.newTab().setText(product.getCategoryName()));
+                    tabLayout.addTab(tabLayout.newTab().setText(product.getProductName()));
                 }
             }
 
@@ -166,6 +181,7 @@ public class MenuFragment extends Fragment
         if (newText.length() > 0) {
             tabLayout.setVisibility(View.GONE);
         } else tabLayout.setVisibility(View.VISIBLE);
+        myRecyclerViewAdapter.getFilter().filter(newText);
 
         return false;
     }
@@ -175,7 +191,7 @@ public class MenuFragment extends Fragment
     public void onTabSelected(TabLayout.Tab tab) {
         if (!isScrolled) {
             int selectedPosition = tabLayout.getSelectedTabPosition();
-            smoothScroller.setTargetPosition(selectedPosition);
+            smoothScroller.setTargetPosition(titleIndexesList.get(selectedPosition));
             gridLayoutManager.startSmoothScroll(smoothScroller);
         }
     }
@@ -228,7 +244,6 @@ public class MenuFragment extends Fragment
     public void onItemClick(View view, int position) {
         int id = view.getId();
         Product currentProduct = productList.get(position);
-        int currentCount = currentProduct.getCountForOrder();
 
         if (id == R.id.cardView) {
             Toast.makeText(getContext(), "[" + position + "]", Toast.LENGTH_SHORT).show();
@@ -240,6 +255,9 @@ public class MenuFragment extends Fragment
                 myRecyclerViewAdapter.notifyItemRangeChanged(position, productList.size());
             } else myRecyclerViewAdapter.notifyItemChanged(position);
         } else {
+            int productsLeft = savedProductsLeft.get(position);
+            int currentCount = currentProduct.getCountForOrder();
+
             if (id == R.id.buttonPrice) {
                 currentProduct.setCountForOrder(1);
                 currentProduct.setViewType(MainActivity.MENU_PRODUCT_ACTIVE);
@@ -247,10 +265,19 @@ public class MenuFragment extends Fragment
                 currentProduct.setCountForOrder(currentCount - 1);
                 if (currentProduct.getCountForOrder() == 0) {
                     currentProduct.setViewType(MainActivity.MENU_PRODUCT_INACTIVE);
-                } else currentProduct.setViewType(MainActivity.MENU_PRODUCT_ACTIVE);
+                } else {
+                    currentProduct.setProductsLeft(productsLeft - currentCount);
+                    currentProduct.setViewType(MainActivity.MENU_PRODUCT_ACTIVE);
+                }
             } else if (id == R.id.imageButtonPlus) {
-                currentProduct.setCountForOrder(currentCount + 1);
-                currentProduct.setViewType(MainActivity.MENU_PRODUCT_ACTIVE);
+                if (currentCount <= productsLeft) {
+                    currentProduct.setProductsLeft(productsLeft - currentCount);
+                    currentProduct.setCountForOrder(currentCount + 1);
+                    currentProduct.setViewType(MainActivity.MENU_PRODUCT_ACTIVE);
+                } else {
+                    String noProductLeft = getResources().getString(R.string.no_product_left);
+                    Snackbar.make(getView(), noProductLeft, BaseTransientBottomBar.LENGTH_SHORT).show();
+                }
             }
             myRecyclerViewAdapter.notifyItemChanged(position);
         }
