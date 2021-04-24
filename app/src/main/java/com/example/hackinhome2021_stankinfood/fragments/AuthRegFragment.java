@@ -3,11 +3,13 @@ package com.example.hackinhome2021_stankinfood.fragments;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +29,7 @@ public class AuthRegFragment extends Fragment implements
 
     private TextView textViewAuthRegTitle;
     private EditText editTextEmail;
+    private ImageButton imageButtonViewPassword;
     private EditText editTextPassword;
     private Button buttonRequest;
     private TextView textViewForgotPassword;
@@ -59,9 +62,10 @@ public class AuthRegFragment extends Fragment implements
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_auth_reg, container, false);
 
-        initButtons(view);
-        initEditTexts(view);
         initTextViews(view);
+        initButtons(view);
+        initImageButton(view);
+        initEditTexts(view);
 
         return view;
     }
@@ -91,6 +95,12 @@ public class AuthRegFragment extends Fragment implements
 
         buttonRequest.setOnClickListener(this);
         buttonRequestGoogle.setOnClickListener(this);
+    }
+
+    private void initImageButton(View view) {
+        imageButtonViewPassword = view.findViewById(R.id.imageButtonViewPassword);
+        imageButtonViewPassword.setSelected(true);
+        imageButtonViewPassword.setOnClickListener(this);
     }
 
     private void initEditTexts(View view) {
@@ -153,6 +163,16 @@ public class AuthRegFragment extends Fragment implements
                 BaseTransientBottomBar.LENGTH_LONG).show();
     }
 
+    private void hidePassword(boolean hide) {
+        if (hide) {
+            editTextPassword.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            imageButtonViewPassword.setSelected(true);
+        }
+        else {
+            editTextPassword.setInputType(129);
+            imageButtonViewPassword.setSelected(false);
+        }
+    }
 
     @Override
     public void onClick(View v) {
@@ -181,6 +201,14 @@ public class AuthRegFragment extends Fragment implements
             ((MainActivity) getActivity()).signInWithGoogle();
         } else if (id == R.id.textViewForgotPassword) {
             showAlertDialogForgotPassword();
+        }
+        if (id == R.id.imageButtonViewPassword) {
+            if (imageButtonViewPassword.isSelected()) {
+                hidePassword(false);
+            }
+            else {
+                hidePassword(true);
+            }
         }
     }
 }
