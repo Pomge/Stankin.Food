@@ -166,6 +166,7 @@ public class ProductFragment extends Fragment implements
 
     private void setImageForImageView() {
         //TODO установить картинку
+        
     }
 
     @Override
