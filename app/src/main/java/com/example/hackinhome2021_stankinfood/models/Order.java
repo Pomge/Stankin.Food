@@ -2,6 +2,7 @@ package com.example.hackinhome2021_stankinfood.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.example.hackinhome2021_stankinfood.activities.MainActivity;
 import com.google.firebase.firestore.Exclude;
@@ -15,7 +16,7 @@ public class Order implements Parcelable {
     private String name;
     private Timestamp pickupTime;
     private boolean isDone;
-    private List<Product> positions;
+    private List<Product> positions = new ArrayList<>();
 
     public Order() {
     }
@@ -100,20 +101,9 @@ public class Order implements Parcelable {
     }
 
 
-    public void addNewPosition(Product product) {
-        Product productForAdding = (Product) product.clone();
-        productForAdding.setCountForOrder(3);
-        productForAdding.setViewType(MainActivity.ORDER_PRODUCT_ACTIVE);
-        positions.add(productForAdding);
-    }
-
-    public void removePosition(String productId) {
-        for (Product product : positions) {
-            if (product.getProductId().equals(productId)) {
-                positions.remove(product);
-                break;
-            }
-        }
+    public void clearPositions() {
+        positions.clear();
+        Log.d("LOG_MESSAGE", positions.toString());
     }
 
 
