@@ -262,8 +262,6 @@ public class MenuFragment extends Fragment implements
                 productRecyclerViewAdapter.notifyItemRangeChanged(position, productList.size());
             } else productRecyclerViewAdapter.notifyItemChanged(position);
         } else {
-            Log.d("LOG_MESSAGE", "productsLeft before: " + currentProduct.getProductsLeft());
-
             int productsLeft = savedProductsLeft.get(position);
 
             if (id == R.id.buttonPrice) {
@@ -287,7 +285,6 @@ public class MenuFragment extends Fragment implements
                     Snackbar.make(getView(), noProductLeft, BaseTransientBottomBar.LENGTH_SHORT).show();
                 }
             }
-            Log.d("LOG_MESSAGE", "productsLeft after: " + currentProduct.getProductsLeft());
             productRecyclerViewAdapter.notifyItemChanged(position);
         }
     }

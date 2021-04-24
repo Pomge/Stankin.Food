@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity
 
     private String currentWeekday;
     private Date currentDate = null;
-    private Order userOrder;
+    private Order userOrder = new Order();
 
     private View parentLayout;
     private int previousDirection = 0;
@@ -540,7 +540,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void getMenuFromFireStore(Restaurant restaurant) {
-        userOrder = new Order();
+        userOrder.clearPositions();
 
         firebaseFirestore.collection(COLLECTION_PRODUCTS)
                 .whereEqualTo("restaurantId", restaurant.getRestaurantId())
@@ -581,14 +581,6 @@ public class MainActivity extends AppCompatActivity
                     Snackbar.make(parentLayout, message,
                             BaseTransientBottomBar.LENGTH_SHORT).show();
                 });
-    }
-
-    public void addPositionToOrder(Product product) {
-        userOrder.addNewPosition(product);
-    }
-
-    public void removePositionFromOrder(String productId) {
-        userOrder.removePosition(productId);
     }
 
 

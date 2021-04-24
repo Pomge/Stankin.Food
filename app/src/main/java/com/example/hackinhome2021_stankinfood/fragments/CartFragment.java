@@ -183,7 +183,6 @@ public class CartFragment extends Fragment implements
     private void removeItem(String productId, int position) {
         Log.d("LOG_MESSAGE", "productId: " + productId);
         Log.d("LOG_MESSAGE", "position: " + position);
-        order.removePosition(productId);
         productRecyclerViewAdapter.notifyItemRemoved(position);
         productRecyclerViewAdapter.notifyItemRangeChanged(position, order.getPositions().size());
     }
