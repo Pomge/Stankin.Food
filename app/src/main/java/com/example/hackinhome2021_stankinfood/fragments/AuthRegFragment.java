@@ -3,11 +3,15 @@ package com.example.hackinhome2021_stankinfood.fragments;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +31,7 @@ public class AuthRegFragment extends Fragment implements
 
     private TextView textViewAuthRegTitle;
     private EditText editTextEmail;
+    private ImageButton imageButtonViewPassword;
     private EditText editTextPassword;
     private Button buttonRequest;
     private TextView textViewForgotPassword;
@@ -59,9 +64,12 @@ public class AuthRegFragment extends Fragment implements
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_auth_reg, container, false);
 
-        initButtons(view);
-        initEditTexts(view);
         initTextViews(view);
+        initButtons(view);
+        initImageButton(view);
+        initEditTexts(view);
+
+        Log.d("LOG_MESSAGE", editTextPassword.getInputType() + "");
 
         return view;
     }
@@ -91,6 +99,12 @@ public class AuthRegFragment extends Fragment implements
 
         buttonRequest.setOnClickListener(this);
         buttonRequestGoogle.setOnClickListener(this);
+    }
+
+    private void initImageButton(View view) {
+        imageButtonViewPassword = view.findViewById(R.id.imageButtonViewPassword);
+        imageButtonViewPassword.setSelected(false);
+        imageButtonViewPassword.setOnClickListener(this);
     }
 
     private void initEditTexts(View view) {
@@ -154,12 +168,21 @@ public class AuthRegFragment extends Fragment implements
                 BaseTransientBottomBar.LENGTH_LONG).show();
     }
 
+    private void hidePassword(boolean hide) {
+        if (hide) {
+            editTextPassword.setTransformationMethod(new PasswordTransformationMethod());
+        } else {
+            editTextPassword.setTransformationMethod(null);
+        }
+        imageButtonViewPassword.setSelected(!imageButtonViewPassword.isSelected());
+        editTextPassword.setSelection(editTextPassword.getText().toString().length());
+    }
+
     public void showSnackBarResetPassword(String email) {
         Snackbar.make(getView(),
                 getResources().getString(R.string.reset_password) + " " + email,
                 BaseTransientBottomBar.LENGTH_LONG).show();
     }
-
 
     @Override
     public void onClick(View v) {
@@ -190,6 +213,9 @@ public class AuthRegFragment extends Fragment implements
             if (isEmailCorrect()) {
                 showAlertDialogForgotPassword();
             }
+        }
+        if (id == R.id.imageButtonViewPassword) {
+            hidePassword(imageButtonViewPassword.isSelected());
         }
     }
 }

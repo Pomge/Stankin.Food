@@ -50,6 +50,17 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="LabelFor" />
 
+    <ImageButton
+        android:id="@+id/imageButtonViewPassword"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_margin="8dp"
+        android:background="@drawable/visible_state"
+        android:contentDescription="@null"
+        app:layout_constraintBottom_toBottomOf="@id/editTextPassword"
+        app:layout_constraintEnd_toEndOf="@id/editTextPassword"
+        app:layout_constraintTop_toTopOf="@id/editTextPassword" />
+
     <Button
         android:id="@+id/buttonRequest"
         android:layout_width="0dp"
@@ -85,4 +96,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
