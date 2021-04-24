@@ -12,6 +12,7 @@ import android.view.MenuItem;
 
 import com.example.hackinhome2021_stankinfood.R;
 import com.example.hackinhome2021_stankinfood.fragments.MenuFragment;
+import com.example.hackinhome2021_stankinfood.fragments.ProductFragment;
 import com.example.hackinhome2021_stankinfood.models.Product;
 import com.example.hackinhome2021_stankinfood.models.Restaurant;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity
 
         fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.mainContainer, MenuFragment.newInstance(true, canteenProductList));
+        fragmentTransaction.replace(R.id.mainContainer, ProductFragment.newInstance(canteenProductList.get(1)));
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
