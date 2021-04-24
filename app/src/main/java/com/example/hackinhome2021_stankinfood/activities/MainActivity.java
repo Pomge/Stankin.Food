@@ -21,6 +21,7 @@ import com.example.hackinhome2021_stankinfood.fragments.AuthRegFragment;
 import com.example.hackinhome2021_stankinfood.fragments.CartFragment;
 import com.example.hackinhome2021_stankinfood.fragments.MenuFragment;
 import com.example.hackinhome2021_stankinfood.fragments.ProductFragment;
+import com.example.hackinhome2021_stankinfood.fragments.RestaurantsFragment;
 import com.example.hackinhome2021_stankinfood.interfaces.OnBackPressedFragment;
 import com.example.hackinhome2021_stankinfood.models.Order;
 import com.example.hackinhome2021_stankinfood.models.Product;
@@ -41,6 +42,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
 
 import org.apache.commons.net.time.TimeTCPClient;
@@ -86,26 +88,15 @@ public class MainActivity extends AppCompatActivity
     private final Random random = new SecureRandom();
     private final List<String> categoriesNames = Arrays.asList(
             "Супы", "Мясо", "Напитки");
-    //    private final List<String> categoriesNames = Arrays.asList(
-//            "AAA", "BBB", "CCC");
     private final List<String> soupNames = Arrays.asList(
             "Харчо", "Затируха", "Томатный",
             "Куриный", "Любимый", "Солянка", "Гречневый");
-    //    private final List<String> soupNames = Arrays.asList(
-//            "AAA", "BBB", "CCC",
-//            "DDD", "EEE", "FFF", "GGG");
     private final List<String> meatNames = Arrays.asList(
             "Свиннина", "Говядина", "Телятина",
             "Баранина", "Крольчатина", "Оленина", "Ягнятина");
-    //    private final List<String> meatNames = Arrays.asList(
-//            "AAA", "BBB", "CCC",
-//            "DDD", "EEE", "FFF", "GGG");
     private final List<String> drinkNames = Arrays.asList(
             "7UP", "Lipton", "AQUA",
             "Mirinda", "MountainDew", "Pepsi", "Drive");
-//    private final List<String> drinkNames = Arrays.asList(
-//            "AAA", "BBB", "CCC",
-//            "DDD", "EEE", "FFF", "GGG");
 
 
     private String currentWeekday;
@@ -117,6 +108,8 @@ public class MainActivity extends AppCompatActivity
     private int previousBottomNavigationTabId;
 
     private BottomNavigationView bottomNavigationView;
+
+    private CurrentTimeGetterThread currentTimeGetterThread = null;
 
     private FirebaseUser firebaseUser = null;
     private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -143,14 +136,12 @@ public class MainActivity extends AppCompatActivity
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.mainContainer, new AuthRegChooseFragment(),
                     AUTH_REG_CHOOSE_FRAGMENT);
-//            fragmentTransaction.replace(R.id.mainContainer, MenuFragment.newInstance(
-//                    true, canteenProductList), MENU_FRAGMENT);
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
+        } else {
+            currentTimeGetterThread = new CurrentTimeGetterThread();
+            currentTimeGetterThread.start();
         }
-
-        CurrentTimeGetterThread currentTimeGetterThread = new CurrentTimeGetterThread();
-        currentTimeGetterThread.start();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -184,14 +175,14 @@ public class MainActivity extends AppCompatActivity
                     client.setKeepAlive(false);
 
                     currentDate = client.getDate();
-                    DateFormat gmtFormat = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
-                    TimeZone gmtTime = TimeZone.getTimeZone("GMT+3");
-                    gmtFormat.setTimeZone(gmtTime);
+//                    DateFormat gmtFormat = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
+//                    TimeZone gmtTime = TimeZone.getTimeZone("GMT+3");
+//                    gmtFormat.setTimeZone(gmtTime);
                     client.disconnect();
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(250);
                     } catch (InterruptedException interruptedException) {
                         interruptedException.printStackTrace();
                     }
@@ -199,11 +190,11 @@ public class MainActivity extends AppCompatActivity
 
                 if (currentDate != null) {
                     DateFormat weekdayString = new SimpleDateFormat("EEEE", Locale.ENGLISH);
-                    DateFormat weekdayNumber = new SimpleDateFormat("u", Locale.ENGLISH);
-                    Log.d(TAG, "weekdayNumber.format(currentDate): " + weekdayNumber.format(currentDate));
+//                    DateFormat weekdayNumber = new SimpleDateFormat("u", Locale.ENGLISH);
+//                    Log.d(TAG, "weekdayNumber.format(currentDate): " + weekdayNumber.format(currentDate));
                     Log.d(TAG, "weekdayString.format(currentDate): " + weekdayString.format(currentDate));
                     currentWeekday = weekdayString.format(currentDate);
-                    readRestaurant_badWayForHack();
+                    getRestraintsFromFireStore();
 //                    generateMenu();
                     break;
                 } else {
@@ -214,116 +205,116 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private void generateMenu() {
-        List<Product> canteenProductListTaken = new ArrayList<>();
-        List<Product> fastFoodProductListTaken = new ArrayList<>();
-
-        for (String drinkName : drinkNames) {
-            Product productCanteen = new Product(
-                    getRandomString(50), null, categoriesNames.get(2), drinkName,
-                    getRandomString(255), getRandomInteger(1, 10), 0, 0.0f,
-                    getRandomInteger(100, 500), getRandomInteger(0, 100), random.nextBoolean(), MENU_PRODUCT_INACTIVE);
-            Product productFastFood = new Product(
-                    getRandomString(50), null, categoriesNames.get(2), drinkName,
-                    getRandomString(255), getRandomInteger(1, 10), 0, 0.0f,
-                    getRandomInteger(100, 500), getRandomInteger(0, 100), random.nextBoolean(), MENU_PRODUCT_INACTIVE);
-
-            canteenProductListTaken.add(productCanteen);
-            fastFoodProductListTaken.add(productFastFood);
-        }
-
-        for (String meatName : meatNames) {
-            Product productCanteen = new Product(
-                    getRandomString(50), null, categoriesNames.get(1), meatName,
-                    getRandomString(255), getRandomInteger(1, 10), 0, 0.0f,
-                    getRandomInteger(100, 500), getRandomInteger(0, 100), random.nextBoolean(), MENU_PRODUCT_INACTIVE);
-            Product productFastFood = new Product(
-                    getRandomString(50), null, categoriesNames.get(1), meatName,
-                    getRandomString(255), getRandomInteger(1, 10), 0, 0.0f,
-                    getRandomInteger(100, 500), getRandomInteger(0, 100), random.nextBoolean(), MENU_PRODUCT_INACTIVE);
-
-            canteenProductListTaken.add(productCanteen);
-            fastFoodProductListTaken.add(productFastFood);
-        }
-
-        for (String soupName : soupNames) {
-            Product productCanteen = new Product(
-                    getRandomString(50), null, categoriesNames.get(0), soupName,
-                    getRandomString(255), getRandomInteger(1, 10), 0, 0.0f,
-                    getRandomInteger(100, 500), getRandomInteger(1, 100), random.nextBoolean(), MENU_PRODUCT_INACTIVE);
-            Product productFastFood = new Product(
-                    getRandomString(50), null, categoriesNames.get(0), soupName,
-                    getRandomString(255), getRandomInteger(1, 10), 0, 0.0f,
-                    getRandomInteger(100, 500), getRandomInteger(1, 100), random.nextBoolean(), MENU_PRODUCT_INACTIVE);
-
-            canteenProductListTaken.add(productCanteen);
-            fastFoodProductListTaken.add(productFastFood);
-        }
-
-//        for (Product product : canteenProductListTaken) {
-//            product.setRating(((float) product.getLikesCount()) / ((float) canteenProductListTaken.size()));
-//        }
-
-//        for (Product product : fastFoodProductListTaken) {
-//            product.setRating(((float) product.getLikesCount()) / ((float) fastFoodProductListTaken.size()));
-//        }
-
-        Collections.sort(canteenProductListTaken, Product.PRODUCT_COMPARATOR);
-        Collections.sort(fastFoodProductListTaken, Product.PRODUCT_COMPARATOR);
-
-        for (Product product : canteenProductListTaken) {
-            addProducts("rkQh04lJYa9cLWto2zx8", product);
-        }
-        for (Product product : fastFoodProductListTaken) {
-            addProducts("XUqz9HedsagJwuZV1ur7", product);
-        }
-
-//        userOrder = new Order("Order id", "Order name", new Timestamp(new Date().getTime()), false);
-//        userOrder = new Order("Order id", "Order name", null, false);
+//    private void generateMenu() {
+//        List<Product> canteenProductListTaken = new ArrayList<>();
+//        List<Product> fastFoodProductListTaken = new ArrayList<>();
 //
-//        for (int i = 0; i < 5; i++) {
-//            userOrder.addNewPosition(canteenProductListTaken.get(getRandomInteger(0, canteenProductListTaken.size())));
-//            userOrder.addNewPosition(fastFoodProductListTaken.get(getRandomInteger(0, fastFoodProductListTaken.size())));
+//        for (String drinkName : drinkNames) {
+//            Product productCanteen = new Product(
+//                    getRandomString(50), null, categoriesNames.get(2), drinkName,
+//                    getRandomString(255), getRandomInteger(1, 10), 0, 0.0f,
+//                    getRandomInteger(100, 500), getRandomInteger(0, 100), random.nextBoolean(), MENU_PRODUCT_INACTIVE);
+//            Product productFastFood = new Product(
+//                    getRandomString(50), null, categoriesNames.get(2), drinkName,
+//                    getRandomString(255), getRandomInteger(1, 10), 0, 0.0f,
+//                    getRandomInteger(100, 500), getRandomInteger(0, 100), random.nextBoolean(), MENU_PRODUCT_INACTIVE);
+//
+//            canteenProductListTaken.add(productCanteen);
+//            fastFoodProductListTaken.add(productFastFood);
 //        }
+//
+//        for (String meatName : meatNames) {
+//            Product productCanteen = new Product(
+//                    getRandomString(50), null, categoriesNames.get(1), meatName,
+//                    getRandomString(255), getRandomInteger(1, 10), 0, 0.0f,
+//                    getRandomInteger(100, 500), getRandomInteger(0, 100), random.nextBoolean(), MENU_PRODUCT_INACTIVE);
+//            Product productFastFood = new Product(
+//                    getRandomString(50), null, categoriesNames.get(1), meatName,
+//                    getRandomString(255), getRandomInteger(1, 10), 0, 0.0f,
+//                    getRandomInteger(100, 500), getRandomInteger(0, 100), random.nextBoolean(), MENU_PRODUCT_INACTIVE);
+//
+//            canteenProductListTaken.add(productCanteen);
+//            fastFoodProductListTaken.add(productFastFood);
+//        }
+//
+//        for (String soupName : soupNames) {
+//            Product productCanteen = new Product(
+//                    getRandomString(50), null, categoriesNames.get(0), soupName,
+//                    getRandomString(255), getRandomInteger(1, 10), 0, 0.0f,
+//                    getRandomInteger(100, 500), getRandomInteger(1, 100), random.nextBoolean(), MENU_PRODUCT_INACTIVE);
+//            Product productFastFood = new Product(
+//                    getRandomString(50), null, categoriesNames.get(0), soupName,
+//                    getRandomString(255), getRandomInteger(1, 10), 0, 0.0f,
+//                    getRandomInteger(100, 500), getRandomInteger(1, 100), random.nextBoolean(), MENU_PRODUCT_INACTIVE);
+//
+//            canteenProductListTaken.add(productCanteen);
+//            fastFoodProductListTaken.add(productFastFood);
+//        }
+//
+////        for (Product product : canteenProductListTaken) {
+////            product.setRating(((float) product.getLikesCount()) / ((float) canteenProductListTaken.size()));
+////        }
+//
+////        for (Product product : fastFoodProductListTaken) {
+////            product.setRating(((float) product.getLikesCount()) / ((float) fastFoodProductListTaken.size()));
+////        }
+//
+//        Collections.sort(canteenProductListTaken, Product.PRODUCT_COMPARATOR);
+//        Collections.sort(fastFoodProductListTaken, Product.PRODUCT_COMPARATOR);
+//
+//        for (Product product : canteenProductListTaken) {
+//            addProducts("rkQh04lJYa9cLWto2zx8", product);
+//        }
+//        for (Product product : fastFoodProductListTaken) {
+//            addProducts("XUqz9HedsagJwuZV1ur7", product);
+//        }
+//
+////        userOrder = new Order("Order id", "Order name", new Timestamp(new Date().getTime()), false);
+////        userOrder = new Order("Order id", "Order name", null, false);
+////
+////        for (int i = 0; i < 5; i++) {
+////            userOrder.addNewPosition(canteenProductListTaken.get(getRandomInteger(0, canteenProductListTaken.size())));
+////            userOrder.addNewPosition(fastFoodProductListTaken.get(getRandomInteger(0, fastFoodProductListTaken.size())));
+////        }
+//
+////        convertForRecyclerView(canteenProductListTaken);
+////        convertForRecyclerView(fastFoodProductListTaken);
+//
+////        canteenProductList.addAll(canteenProductListTaken);
+////        fastFoodProductList.addAll(fastFoodProductListTaken);
+//    }
 
-//        convertForRecyclerView(canteenProductListTaken);
-//        convertForRecyclerView(fastFoodProductListTaken);
-
-//        canteenProductList.addAll(canteenProductListTaken);
-//        fastFoodProductList.addAll(fastFoodProductListTaken);
-    }
-
-    private void convertForRecyclerView(List<Product> productList) {
-        List<String> categoryNamesList = new ArrayList<>();
-        String savedCategoryName = productList.get(0).getCategoryName();
-        categoryNamesList.add(savedCategoryName);
-
-        for (Product product : productList) {
-            if (!product.getCategoryName().equals(savedCategoryName)) {
-                savedCategoryName = product.getCategoryName();
-                categoryNamesList.add(savedCategoryName);
-            }
-        }
-
-        int index = 0;
-        savedCategoryName = categoryNamesList.get(0);
-        productList.add(0, new Product(
-                null, null, null,
-                savedCategoryName, null, 0,
-                0, 0.0f, 0, 0, false, MENU_HEADER));
-        index++;
-
-        for (int i = 1; i < productList.size(); i++) {
-            if (!productList.get(i).getCategoryName().equals(savedCategoryName)) {
-                productList.add(i, new Product(
-                        null, null, null,
-                        categoryNamesList.get(index), null, 0,
-                        0, 0.0f, 0, 0, false, MENU_HEADER));
-                savedCategoryName = categoryNamesList.get(index);
-                index++;
-            }
-        }
-    }
+//    private void convertForRecyclerView(List<Product> productList) {
+//        List<String> categoryNamesList = new ArrayList<>();
+//        String savedCategoryName = productList.get(0).getCategoryName();
+//        categoryNamesList.add(savedCategoryName);
+//
+//        for (Product product : productList) {
+//            if (!product.getCategoryName().equals(savedCategoryName)) {
+//                savedCategoryName = product.getCategoryName();
+//                categoryNamesList.add(savedCategoryName);
+//            }
+//        }
+//
+//        int index = 0;
+//        savedCategoryName = categoryNamesList.get(0);
+//        productList.add(0, new Product(
+//                null, null, null,
+//                savedCategoryName, null, 0,
+//                0, 0.0f, 0, 0, false, MENU_HEADER));
+//        index++;
+//
+//        for (int i = 1; i < productList.size(); i++) {
+//            if (!productList.get(i).getCategoryName().equals(savedCategoryName)) {
+//                productList.add(i, new Product(
+//                        null, null, null,
+//                        categoryNamesList.get(index), null, 0,
+//                        0, 0.0f, 0, 0, false, MENU_HEADER));
+//                savedCategoryName = categoryNamesList.get(index);
+//                index++;
+//            }
+//        }
+//    }
 
     private String getRandomString(int length) {
         int leftLimit = 97;     // letter 'a'
@@ -368,13 +359,12 @@ public class MainActivity extends AppCompatActivity
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
+                        Log.d(TAG, "authUserWithEmailAndPassword(): Task Successful!");
                         firebaseUser = firebaseAuth.getCurrentUser();
                         if (!firebaseUser.isEmailVerified()) {
                             Fragment fragment = getSupportFragmentManager().findFragmentByTag(AUTH_REG_FRAGMENT);
                             ((AuthRegFragment) fragment).showSnackBarEmailNotVerified();
-                            return;
                         } else findUserInDatabase();
-                        Log.d(TAG, "authUserWithEmailAndPassword(): Task Successful!");
                     } else {
                         Log.d(TAG, "authUserWithEmailAndPassword(): Task Failure!");
                     }
@@ -435,6 +425,10 @@ public class MainActivity extends AppCompatActivity
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Log.d(TAG, "findUserInDatabase(): Task Successful!");
+                        if (currentTimeGetterThread == null) {
+                            currentTimeGetterThread = new CurrentTimeGetterThread();
+                            currentTimeGetterThread.start();
+                        }
                         if (task.getResult().isEmpty()) {
                             createUserInDatabase(user);
                         } else setFragmentMenuFragment();
@@ -472,18 +466,8 @@ public class MainActivity extends AppCompatActivity
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.remove(fragmentManager.findFragmentByTag(AUTH_REG_FRAGMENT));
         fragmentTransaction.remove(fragmentManager.findFragmentByTag(AUTH_REG_CHOOSE_FRAGMENT));
-        fragmentTransaction.replace(R.id.mainContainer,
-                MenuFragment.newInstance(true, restaurantList.get(0).getProductList()), MENU_FRAGMENT);
-        fragmentTransaction.commit();
-        hideBottomNavigationView(false);
-    }
-
-    public void setFragmentMenu() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.popBackStack();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.mainContainer, MenuFragment.newInstance(
-                true, restaurantList.get(0).getProductList()));
+//        fragmentTransaction.replace(R.id.mainContainer,
+//                MenuFragment.newInstance(true, restaurantList.get(0).getProductList()), MENU_FRAGMENT);
         fragmentTransaction.commit();
         hideBottomNavigationView(false);
     }
@@ -559,18 +543,65 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    public void removeCartFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.setCustomAnimations(
-                R.anim.enter_from_left, R.anim.exit_to_right,
-                R.anim.enter_from_left, R.anim.exit_to_right);
-        fragmentTransaction.replace(R.id.mainContainer, MenuFragment.newInstance(
-                true, restaurantList.get(0).getProductList()), MENU_FRAGMENT);
-        fragmentTransaction.commit();
+    private void generateData() {
+        List<Product> productList = new ArrayList<>();
 
-        setBottomNavigationViewToZeroPosition();
+        for (String soupName : soupNames) {
+            Product product = new Product();
+            product.setRestaurantId("XUqz9HedsagJwuZV1ur7");
+            product.setProductsLeft(getRandomInteger(0, 10));
+            product.setProductName(soupName);
+            product.setPrice(getRandomInteger(50, 100));
+            product.setLikesCount(getRandomInteger(0, 20));
+            product.setImageURL(getRandomString(100));
+            product.setDescription(getRandomString(255));
+            product.setCategoryName(categoriesNames.get(0));
+            productList.add(product);
+        }
+
+        for (String meatName : meatNames) {
+            Product product = new Product();
+            product.setRestaurantId("XUqz9HedsagJwuZV1ur7");
+            product.setProductsLeft(getRandomInteger(0, 10));
+            product.setProductName(meatName);
+            product.setPrice(getRandomInteger(50, 100));
+            product.setLikesCount(getRandomInteger(0, 20));
+            product.setImageURL(getRandomString(100));
+            product.setDescription(getRandomString(255));
+            product.setCategoryName(categoriesNames.get(1));
+            productList.add(product);
+        }
+
+        for (String drinkName : drinkNames) {
+            Product product = new Product();
+            product.setRestaurantId("XUqz9HedsagJwuZV1ur7");
+            product.setProductsLeft(getRandomInteger(0, 10));
+            product.setProductName(drinkName);
+            product.setPrice(getRandomInteger(50, 100));
+            product.setLikesCount(getRandomInteger(0, 20));
+            product.setImageURL(getRandomString(100));
+            product.setDescription(getRandomString(255));
+            product.setCategoryName(categoriesNames.get(2));
+            productList.add(product);
+        }
+
+        for (Product product : productList) {
+            firebaseFirestore.collection(COLLECTION_PRODUCTS).add(product);
+        }
     }
+
+//    public void removeCartFragment() {
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//        fragmentTransaction.setCustomAnimations(
+//                R.anim.enter_from_left, R.anim.exit_to_right,
+//                R.anim.enter_from_left, R.anim.exit_to_right);
+//        fragmentTransaction.replace(R.id.mainContainer, MenuFragment.newInstance(
+//                true, restaurantList.get(0).getProductList()), MENU_FRAGMENT);
+//        fragmentTransaction.commit();
+//
+//        setBottomNavigationViewToZeroPosition();
+//    }
 
     private void setBottomNavigationViewToZeroPosition() {
         previousDirection = 0;
@@ -581,69 +612,177 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private void addProducts(String restaurantId, Product product) {
-        firebaseFirestore.collection(COLLECTION_RESTAURANTS).document(restaurantId)
-                .collection(COLLECTION_PRODUCTS).add(product)
+    private void replaceToRestaurantsFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.mainContainer, RestaurantsFragment.newInstance(restaurantList));
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+    public void getRestraintsFromFireStore() {
+        firebaseFirestore.collection(COLLECTION_RESTAURANTS).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Log.d("LOG_MESSAGE", "addProducts(): Completed!");
+                        for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
+                            Restaurant restaurant = queryDocumentSnapshot.toObject(Restaurant.class);
+                            restaurant.setRestaurantId(queryDocumentSnapshot.getId());
+                            restaurantList.add(restaurant);
+                        }
+                        replaceToRestaurantsFragment();
+                    } else {
+                        Log.d(TAG, "getRestraintsFromFireStore(): Failed!");
                     }
                 });
     }
 
 
-    private void readRestaurant_badWayForHack() {
-        firebaseFirestore.collection(COLLECTION_RESTAURANTS).document(CANTEEN_DOCUMENT_ID).get()
+    private List<Product> getConvertedProductListForRecyclerView(List<Product> productList) {
+        for (Product product : productList) {
+            product.setRating(((float) product.getLikesCount()) / ((float) productList.size()));
+            product.setViewType(MainActivity.MENU_PRODUCT_INACTIVE);
+        }
+
+        Collections.sort(productList, Product.PRODUCT_COMPARATOR);
+        convertForRecyclerView(productList);
+
+        return productList;
+    }
+
+    private void convertForRecyclerView(List<Product> productList) {
+        List<String> categoryNamesList = new ArrayList<>();
+
+        for (Product product : productList) {
+            String savedCategoryName = product.getCategoryName();
+            if (!categoryNamesList.contains(savedCategoryName)) {
+                categoryNamesList.add(savedCategoryName);
+            }
+        }
+
+        int index = 0;
+        String savedCategoryName = categoryNamesList.get(0);
+        Product firstHeader = new Product();
+        firstHeader.setCategoryName(savedCategoryName);
+        firstHeader.setViewType(MainActivity.MENU_HEADER);
+        productList.add(0, firstHeader);
+        index++;
+
+        for (int i = 1; i < productList.size(); i++) {
+            if (!productList.get(i).getCategoryName().equals(savedCategoryName)) {
+                Product categoryName = new Product();
+                categoryName.setCategoryName(savedCategoryName);
+                categoryName.setViewType(MainActivity.MENU_HEADER);
+                productList.add(i, categoryName);
+
+                savedCategoryName = categoryNamesList.get(index);
+                index++;
+            }
+        }
+    }
+
+    private void replaceToMenuFragment(boolean isMenu, List<Product> productList) {
+        List<Product> result = getConvertedProductListForRecyclerView(productList);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.mainContainer, MenuFragment.newInstance(
+                isMenu, result));
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+    public void getFavoriteProductsFromFireStore() {
+        firebaseFirestore.collection(COLLECTION_PRODUCTS)
+                .whereArrayContains("likedUserIds", firebaseUser.getUid())
+                .whereGreaterThanOrEqualTo("productsLeft", 1).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Restaurant restaurant = task.getResult().toObject(Restaurant.class);
-                        restaurant.setRestaurantId(task.getResult().getId());
-                        restaurantList.add(restaurant);
-
-                        firebaseFirestore.collection(COLLECTION_RESTAURANTS).document(restaurant.getRestaurantId())
-                                .collection(COLLECTION_PRODUCTS)
-                                .whereEqualTo("onMenuWeekdays." + currentWeekday, true)
-                                .whereGreaterThan("count", 0)
-                                .get()
-                                .addOnCompleteListener(task1 -> {
-                                    if (task1.isSuccessful()) {
-                                        List<Product> productList = new ArrayList<>();
-                                        for (QueryDocumentSnapshot document : task1.getResult()) {
-                                            Product product = document.toObject(Product.class);
-                                            product.setProductId(document.getId());
-                                            productList.add(product);
-                                        }
-                                        restaurantList.get(0).setProductList(productList);
-
-                                        firebaseFirestore.collection(COLLECTION_RESTAURANTS).document(CAFE_DOCUMENT_ID).get()
-                                                .addOnCompleteListener(task11 -> {
-                                                    if (task11.isSuccessful()) {
-                                                        Restaurant restaurant1 = task11.getResult().toObject(Restaurant.class);
-                                                        restaurant1.setRestaurantId(task11.getResult().getId());
-                                                        restaurantList.add(restaurant1);
-
-                                                        firebaseFirestore.collection(COLLECTION_RESTAURANTS).document(restaurant.getRestaurantId())
-                                                                .collection(COLLECTION_PRODUCTS)
-                                                                .whereEqualTo("onMenuWeekdays." + currentWeekday, true)
-                                                                .whereGreaterThan("count", 0)
-                                                                .get()
-                                                                .addOnCompleteListener(task111 -> {
-                                                                    List<Product> productList1 = new ArrayList<>();
-                                                                    for (QueryDocumentSnapshot document : task111.getResult()) {
-                                                                        Product product = document.toObject(Product.class);
-                                                                        product.setProductId(document.getId());
-                                                                        productList1.add(product);
-                                                                    }
-                                                                    restaurantList.get(1).setProductList(productList1);
-                                                                    setFragmentMenu();
-                                                                });
-                                                    }
-                                                });
-                                    }
-                                });
+                        List<Product> productList = new ArrayList<>();
+                        for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
+                            Product product = queryDocumentSnapshot.toObject(Product.class);
+                            product.setProductId(queryDocumentSnapshot.getId());
+                            productList.add(product);
+                        }
+                        replaceToMenuFragment(false, productList);
+                        Log.d(TAG, "getFavoriteProductsFromFireStore(): Success!");
+                    } else {
+                        Log.d(TAG, "getFavoriteProductsFromFireStore(): Failed!");
                     }
                 });
     }
+
+    public void getProductsFromFireStore(Restaurant restaurant) {
+        firebaseFirestore.collection(COLLECTION_PRODUCTS)
+                .whereEqualTo("restaurantId", restaurant.getRestaurantId())
+                .whereGreaterThanOrEqualTo("productsLeft", 1).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<Product> productList = new ArrayList<>();
+                        for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
+                            Product product = queryDocumentSnapshot.toObject(Product.class);
+                            product.setProductId(queryDocumentSnapshot.getId());
+                            productList.add(product);
+                        }
+                        replaceToMenuFragment(true, productList);
+                        Log.d(TAG, "getProductsFromFireStore(): Success!");
+                    } else {
+                        Log.d(TAG, "getProductsFromFireStore(): Failed!");
+                    }
+                });
+    }
+
+//    private void readRestaurant_badWayForHack() {
+//        firebaseFirestore.collection(COLLECTION_RESTAURANTS).document(CANTEEN_DOCUMENT_ID).get()
+//                .addOnCompleteListener(task -> {
+//                    if (task.isSuccessful()) {
+//                        Restaurant restaurant = task.getResult().toObject(Restaurant.class);
+//                        restaurant.setRestaurantId(task.getResult().getId());
+//                        restaurantList.add(restaurant);
+//
+//                        firebaseFirestore.collection(COLLECTION_RESTAURANTS).document(restaurant.getRestaurantId())
+//                                .collection(COLLECTION_PRODUCTS)
+//                                .whereEqualTo("onMenuWeekdays." + currentWeekday, true)
+//                                .whereGreaterThan("count", 0)
+//                                .get()
+//                                .addOnCompleteListener(task1 -> {
+//                                    if (task1.isSuccessful()) {
+//                                        List<Product> productList = new ArrayList<>();
+//                                        for (QueryDocumentSnapshot document : task1.getResult()) {
+//                                            Product product = document.toObject(Product.class);
+//                                            product.setProductId(document.getId());
+//                                            productList.add(product);
+//                                        }
+//                                        restaurantList.get(0).setProductList(productList);
+//
+//                                        firebaseFirestore.collection(COLLECTION_RESTAURANTS).document(CAFE_DOCUMENT_ID).get()
+//                                                .addOnCompleteListener(task11 -> {
+//                                                    if (task11.isSuccessful()) {
+//                                                        Restaurant restaurant1 = task11.getResult().toObject(Restaurant.class);
+//                                                        restaurant1.setRestaurantId(task11.getResult().getId());
+//                                                        restaurantList.add(restaurant1);
+//
+//                                                        firebaseFirestore.collection(COLLECTION_RESTAURANTS).document(restaurant.getRestaurantId())
+//                                                                .collection(COLLECTION_PRODUCTS)
+//                                                                .whereEqualTo("onMenuWeekdays." + currentWeekday, true)
+//                                                                .whereGreaterThan("count", 0)
+//                                                                .get()
+//                                                                .addOnCompleteListener(task111 -> {
+//                                                                    List<Product> productList1 = new ArrayList<>();
+//                                                                    for (QueryDocumentSnapshot document : task111.getResult()) {
+//                                                                        Product product = document.toObject(Product.class);
+//                                                                        product.setProductId(document.getId());
+//                                                                        productList1.add(product);
+//                                                                    }
+//                                                                    restaurantList.get(1).setProductList(productList1);
+//                                                                    setFragmentMenu();
+//                                                                });
+//                                                    }
+//                                                });
+//                                    }
+//                                });
+//                    }
+//                });
+//    }
 
 //    private void readAllRestaurants() {
 //        firebaseFirestore.collection(COLLECTION_RESTAURANTS).get()
@@ -709,41 +848,34 @@ public class MainActivity extends AppCompatActivity
 
         if (id != previousBottomNavigationTabId) {
             int currentDirection = 0;
-            Fragment fragment = MenuFragment.newInstance(true, restaurantList.get(0).getProductList());
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
             if (id == R.id.menuItemRestaurants) {
-                fragment = MenuFragment.newInstance(true, restaurantList.get(0).getProductList());
-            } else if (id == R.id.menuItemCafe) {
-                currentDirection = 1;
-                fragment = MenuFragment.newInstance(true, restaurantList.get(1).getProductList());
-            } else if (id == R.id.menuItemOrders) {
-                currentDirection = 2;
-
+                getRestraintsFromFireStore();
+//            } else if (id == R.id.menuItemOrders) {
+//                currentDirection = 1;
+//
             } else if (id == R.id.menuItemFavoriteProducts) {
-                currentDirection = 3;
-                fragment = MenuFragment.newInstance(false,  restaurantList.get(1).getProductList());
-            } else if (id == R.id.menuItemCart) {
-                currentDirection = 4;
-                fragment = new CartFragment();
+                getFavoriteProductsFromFireStore();
             }
-
-            if (previousDirection < currentDirection) {
-                fragmentTransaction.setCustomAnimations(
-                        R.anim.enter_from_right, R.anim.exit_to_left,
-                        R.anim.enter_from_right, R.anim.exit_to_left);
-            } else {
-                fragmentTransaction.setCustomAnimations(
-                        R.anim.enter_from_left, R.anim.exit_to_right,
-                        R.anim.enter_from_left, R.anim.exit_to_right);
-            }
-
-            if (id == R.id.menuItemRestaurants || id == R.id.menuItemCafe) {
-                fragmentTransaction.replace(R.id.mainContainer, fragment, MENU_FRAGMENT);
-            } else fragmentTransaction.replace(R.id.mainContainer, fragment);
-            fragmentTransaction.commit();
-
+//            else if (id == R.id.menuItemCart) {
+//                currentDirection = 3;
+//                fragment = new CartFragment();
+//            }
+//
+//            if (previousDirection < currentDirection) {
+//                fragmentTransaction.setCustomAnimations(
+//                        R.anim.enter_from_right, R.anim.exit_to_left,
+//                        R.anim.enter_from_right, R.anim.exit_to_left);
+//            } else {
+//                fragmentTransaction.setCustomAnimations(
+//                        R.anim.enter_from_left, R.anim.exit_to_right,
+//                        R.anim.enter_from_left, R.anim.exit_to_right);
+//            }
+//
+//            if (id == R.id.menuItemRestaurants || id == R.id.menuItemCafe) {
+//                fragmentTransaction.replace(R.id.mainContainer, fragment, MENU_FRAGMENT);
+//            } else fragmentTransaction.replace(R.id.mainContainer, fragment);
+//            fragmentTransaction.commit();
+//
             previousDirection = currentDirection;
             previousBottomNavigationTabId = id;
         }

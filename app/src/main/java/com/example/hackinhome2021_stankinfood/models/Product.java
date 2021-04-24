@@ -2,9 +2,6 @@ package com.example.hackinhome2021_stankinfood.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
-
-import androidx.annotation.NonNull;
 
 import com.google.firebase.firestore.Exclude;
 
@@ -13,6 +10,7 @@ import java.util.Comparator;
 public class Product implements Parcelable, Cloneable {
     private String productId;
 
+    private String restaurantId;
     private String imageURL;
     private String categoryName;
     private String productName;
@@ -28,48 +26,17 @@ public class Product implements Parcelable, Cloneable {
 
     private int viewType;
 
+
     public Product() {
     }
 
-    @Override
-    @NonNull
-    public Product clone() {
+    public Object clone() {
         try {
-            return (Product) super.clone();
+            return super.clone();
         } catch (CloneNotSupportedException cloneNotSupportedException) {
             cloneNotSupportedException.printStackTrace();
-            throw new InternalError();
         }
-    }
-
-    public Product(String imageURL, String categoryName,
-                   String productName, String description,
-                   int productsLeft, int price, int likesCount, boolean isLiked) {
-        this.imageURL = imageURL;
-        this.categoryName =categoryName;
-        this.productName = productName;
-        this.description = description;
-        this.productsLeft = productsLeft;
-        this.price = price;
-        this.likesCount = likesCount;
-        this.isLiked = isLiked;
-    }
-
-    public Product(String productId, String imageURL, String categoryName, String productName,
-                   String description, int productsLeft, int countForOrder, float rating, int price,
-                   int likesCount, boolean isLiked, int viewType) {
-        this.productId = productId;
-        this.imageURL = imageURL;
-        this.categoryName = categoryName;
-        this.productName = productName;
-        this.description = description;
-        this.productsLeft = productsLeft;
-        this.countForOrder = countForOrder;
-        this.rating = rating;
-        this.price = price;
-        this.likesCount = likesCount;
-        this.isLiked = isLiked;
-        this.viewType = viewType;
+        return null;
     }
 
     protected Product(Parcel in) {
@@ -99,6 +66,7 @@ public class Product implements Parcelable, Cloneable {
         }
     };
 
+
     @Exclude
     public String getProductId() {
         return productId;
@@ -108,6 +76,16 @@ public class Product implements Parcelable, Cloneable {
         this.productId = productId;
     }
 
+
+    public String getRestaurantId() {
+        return restaurantId;
+    }
+
+    public void setRestaurantId(String restaurantId) {
+        this.restaurantId = restaurantId;
+    }
+
+
     public String getImageURL() {
         return imageURL;
     }
@@ -115,6 +93,7 @@ public class Product implements Parcelable, Cloneable {
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
     }
+
 
     public String getCategoryName() {
         return categoryName;
@@ -124,6 +103,7 @@ public class Product implements Parcelable, Cloneable {
         this.categoryName = categoryName;
     }
 
+
     public String getProductName() {
         return productName;
     }
@@ -131,6 +111,7 @@ public class Product implements Parcelable, Cloneable {
     public void setProductName(String productName) {
         this.productName = productName;
     }
+
 
     public String getDescription() {
         return description;
@@ -140,6 +121,7 @@ public class Product implements Parcelable, Cloneable {
         this.description = description;
     }
 
+
     public int getProductsLeft() {
         return productsLeft;
     }
@@ -147,6 +129,7 @@ public class Product implements Parcelable, Cloneable {
     public void setProductsLeft(int productsLeft) {
         this.productsLeft = productsLeft;
     }
+
 
     @Exclude
     public int getCountForOrder() {
@@ -157,6 +140,7 @@ public class Product implements Parcelable, Cloneable {
         this.countForOrder = countForOrder;
     }
 
+
     @Exclude
     public float getRating() {
         return rating;
@@ -166,6 +150,7 @@ public class Product implements Parcelable, Cloneable {
         this.rating = rating;
     }
 
+
     public int getPrice() {
         return price;
     }
@@ -173,6 +158,7 @@ public class Product implements Parcelable, Cloneable {
     public void setPrice(int price) {
         this.price = price;
     }
+
 
     public int getLikesCount() {
         return likesCount;
@@ -182,6 +168,7 @@ public class Product implements Parcelable, Cloneable {
         this.likesCount = likesCount;
     }
 
+
     public boolean isLiked() {
         return isLiked;
     }
@@ -189,6 +176,7 @@ public class Product implements Parcelable, Cloneable {
     public void setLiked(boolean liked) {
         isLiked = liked;
     }
+
 
     @Exclude
     public int getViewType() {
@@ -198,6 +186,7 @@ public class Product implements Parcelable, Cloneable {
     public void setViewType(int viewType) {
         this.viewType = viewType;
     }
+
 
     @Override
     public int describeContents() {
@@ -219,6 +208,7 @@ public class Product implements Parcelable, Cloneable {
         dest.writeByte((byte) (isLiked ? 1 : 0));
         dest.writeInt(viewType);
     }
+
 
     public static final Comparator<Product> PRODUCT_COMPARATOR = (product_1, product_2) -> {
         if (product_1.getCategoryName().compareTo(product_2.getCategoryName()) < 0) {

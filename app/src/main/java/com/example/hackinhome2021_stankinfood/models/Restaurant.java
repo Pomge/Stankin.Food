@@ -5,39 +5,23 @@ import android.os.Parcelable;
 
 import com.google.firebase.firestore.Exclude;
 
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
 public class Restaurant implements Parcelable {
-    @Exclude
     private String restaurantId;
     private String name;
     private String address;
     private Date openingHours;
     private Date closingHours;
-    @Exclude
-    private List<Order> orderList;
-    @Exclude
-    private List<Product> productList;
 
     public Restaurant() {
-    }
-
-    public Restaurant(String restaurantId, String name, String address, Date openingHours, Date closingHours) {
-        this.restaurantId = restaurantId;
-        this.name = name;
-        this.address = address;
-        this.openingHours = openingHours;
-        this.closingHours = closingHours;
     }
 
     protected Restaurant(Parcel in) {
         restaurantId = in.readString();
         name = in.readString();
         address = in.readString();
-        orderList = in.createTypedArrayList(Order.CREATOR);
-        productList = in.createTypedArrayList(Product.CREATOR);
     }
 
     public static final Creator<Restaurant> CREATOR = new Creator<Restaurant>() {
@@ -52,6 +36,8 @@ public class Restaurant implements Parcelable {
         }
     };
 
+
+    @Exclude
     public String getRestaurantId() {
         return restaurantId;
     }
@@ -59,6 +45,7 @@ public class Restaurant implements Parcelable {
     public void setRestaurantId(String restaurantId) {
         this.restaurantId = restaurantId;
     }
+
 
     public String getName() {
         return name;
@@ -68,6 +55,7 @@ public class Restaurant implements Parcelable {
         this.name = name;
     }
 
+
     public String getAddress() {
         return address;
     }
@@ -75,6 +63,7 @@ public class Restaurant implements Parcelable {
     public void setAddress(String address) {
         this.address = address;
     }
+
 
     public Date getOpeningHours() {
         return openingHours;
@@ -84,6 +73,7 @@ public class Restaurant implements Parcelable {
         this.openingHours = openingHours;
     }
 
+
     public Date getClosingHours() {
         return closingHours;
     }
@@ -92,21 +82,6 @@ public class Restaurant implements Parcelable {
         this.closingHours = closingHours;
     }
 
-    public List<Order> getOrderList() {
-        return orderList;
-    }
-
-    public void setOrderList(List<Order> orderList) {
-        this.orderList = orderList;
-    }
-
-    public List<Product> getProductList() {
-        return productList;
-    }
-
-    public void setProductList(List<Product> productList) {
-        this.productList = productList;
-    }
 
     @Override
     public int describeContents() {
@@ -118,9 +93,8 @@ public class Restaurant implements Parcelable {
         dest.writeString(restaurantId);
         dest.writeString(name);
         dest.writeString(address);
-        dest.writeTypedList(orderList);
-        dest.writeTypedList(productList);
     }
+
 
     @Exclude
     @Override

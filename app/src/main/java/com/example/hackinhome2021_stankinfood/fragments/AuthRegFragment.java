@@ -69,8 +69,6 @@ public class AuthRegFragment extends Fragment implements
         initImageButton(view);
         initEditTexts(view);
 
-        Log.d("LOG_MESSAGE", editTextPassword.getInputType() + "");
-
         return view;
     }
 

@@ -24,7 +24,7 @@ public class RestaurantRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         implements Filterable, OnRecyclerViewClickListener {
 
     private List<Restaurant> restaurantList;
-    private List<Restaurant> restaurantListFull;
+    private List<Restaurant> restaurantListFull = new ArrayList<>();
     private OnRecyclerViewClickListener onRecyclerViewClickListener;
 
     public RestaurantRecyclerViewAdapter(List<Restaurant> restaurantList,
@@ -68,7 +68,7 @@ public class RestaurantRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
 
     @Override
     public Filter getFilter() {
-        return null;
+        return restaurantFilter;
     }
 
     private Filter restaurantFilter = new Filter() {

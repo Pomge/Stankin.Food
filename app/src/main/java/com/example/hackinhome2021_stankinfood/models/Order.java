@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Order implements Parcelable {
-    @Exclude
     private String orderId;
     private String name;
     private Timestamp pickupTime;
@@ -19,14 +18,6 @@ public class Order implements Parcelable {
     private List<Product> positions;
 
     public Order() {
-    }
-
-    public Order(String orderId, String name, Timestamp pickupTime, boolean isDone) {
-        this.orderId = orderId;
-        this.name = name;
-        this.pickupTime = pickupTime;
-        this.isDone = isDone;
-        positions = new ArrayList<>();
     }
 
     protected Order(Parcel in) {
@@ -48,6 +39,8 @@ public class Order implements Parcelable {
         }
     };
 
+
+    @Exclude
     public String getOrderId() {
         return orderId;
     }
@@ -55,6 +48,7 @@ public class Order implements Parcelable {
     public void setOrderId(String orderId) {
         this.orderId = orderId;
     }
+
 
     public String getName() {
         return name;
@@ -64,6 +58,7 @@ public class Order implements Parcelable {
         this.name = name;
     }
 
+
     public Timestamp getPickupTime() {
         return pickupTime;
     }
@@ -71,6 +66,7 @@ public class Order implements Parcelable {
     public void setPickupTime(Timestamp pickupTime) {
         this.pickupTime = pickupTime;
     }
+
 
     public boolean isDone() {
         return isDone;
@@ -80,6 +76,7 @@ public class Order implements Parcelable {
         isDone = done;
     }
 
+
     public List<Product> getPositions() {
         return positions;
     }
@@ -87,6 +84,7 @@ public class Order implements Parcelable {
     public void setPositions(List<Product> positions) {
         this.positions = positions;
     }
+
 
     @Override
     public int describeContents() {
@@ -101,8 +99,9 @@ public class Order implements Parcelable {
         dest.writeTypedList(positions);
     }
 
+
     public void addNewPosition(Product product) {
-        Product productForAdding = product.clone();
+        Product productForAdding = (Product) product.clone();
         productForAdding.setCountForOrder(3);
         productForAdding.setViewType(MainActivity.ORDER_PRODUCT_ACTIVE);
         positions.add(productForAdding);
@@ -116,6 +115,7 @@ public class Order implements Parcelable {
             }
         }
     }
+
 
     @Override
     public String toString() {

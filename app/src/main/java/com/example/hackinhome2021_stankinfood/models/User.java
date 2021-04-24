@@ -10,7 +10,6 @@ import java.util.List;
 public class User implements Parcelable {
     private String userId;
     private String restaurantId;
-    @Exclude
     private List<Order> orderList;
 
     public User() {
@@ -34,6 +33,7 @@ public class User implements Parcelable {
         }
     };
 
+
     public String getUserId() {
         return userId;
     }
@@ -42,6 +42,7 @@ public class User implements Parcelable {
         this.userId = userId;
     }
 
+
     public String getRestaurantId() {
         return restaurantId;
     }
@@ -49,6 +50,17 @@ public class User implements Parcelable {
     public void setRestaurantId(String restaurantId) {
         this.restaurantId = restaurantId;
     }
+
+
+    @Exclude
+    public List<Order> getOrderList() {
+        return orderList;
+    }
+
+    public void setOrderList(List<Order> orderList) {
+        this.orderList = orderList;
+    }
+
 
     @Override
     public int describeContents() {
@@ -61,6 +73,7 @@ public class User implements Parcelable {
         dest.writeString(restaurantId);
         dest.writeTypedList(orderList);
     }
+
 
     @Exclude
     @Override

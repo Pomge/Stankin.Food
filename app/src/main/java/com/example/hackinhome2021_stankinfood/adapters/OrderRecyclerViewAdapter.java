@@ -24,7 +24,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         implements Filterable, OnRecyclerViewClickListener {
 
     private List<Order> orderList;
-    private List<Order> orderListFull;
+    private List<Order> orderListFull = new ArrayList<>();
     private OnRecyclerViewClickListener onRecyclerViewClickListener;
 
     public OrderRecyclerViewAdapter(List<Order> orderList,
@@ -82,7 +82,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @Override
     public Filter getFilter() {
-        return null;
+        return orderFilter;
     }
 
     private Filter orderFilter = new Filter() {
