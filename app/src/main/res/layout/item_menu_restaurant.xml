@@ -96,7 +96,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center_vertical|end"
-            android:text="Opening Hours"
+            android:text="Closing Hours"
             android:textSize="?attr/textSizeMedium"
             app:layout_constraintBottom_toBottomOf="@id/textViewClosingHours"
             app:layout_constraintEnd_toEndOf="parent"
