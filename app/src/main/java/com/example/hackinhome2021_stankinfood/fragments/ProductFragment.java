@@ -31,6 +31,7 @@ public class ProductFragment extends Fragment implements
 
     private TextView textViewName;
     private ImageView imageViewProductImage;
+    private ImageButton imageButtonLiked;
     private RatingBar ratingBar;
     private TextView textViewDescription;
     private Button buttonProductPrice;
@@ -110,9 +111,12 @@ public class ProductFragment extends Fragment implements
     private void initImageButton(View view) {
         imageButtonMinus = view.findViewById(R.id.imageButtonMinus);
         imageButtonPlus = view.findViewById(R.id.imageButtonPlus);
+        imageButtonLiked = view.findViewById(R.id.imageButtonLiked);
+        imageButtonLiked.setSelected(product.isLiked());
 
         imageButtonMinus.setOnClickListener(this);
         imageButtonPlus.setOnClickListener(this);
+        imageButtonLiked.setOnClickListener(this);
     }
 
     private void initTextViewName(View view) {
@@ -197,10 +201,14 @@ public class ProductFragment extends Fragment implements
                 Snackbar.make(getView(), noProductLeft, BaseTransientBottomBar.LENGTH_SHORT).show();
             }
         }
+        if (id == R.id.imageButtonLiked) {
+            ((MainActivity) getActivity()).markProductAsLiked(product, !product.isLiked());
+            product.setLiked(!product.isLiked());
+            imageButtonLiked.setSelected(product.isLiked());
+        }
         textViewCount.setText(String.valueOf(product.getCountForOrder()));
         textViewRealTotalPrice.setText(getTotalPriceString());
         textViewRealProductsLeft.setText(String.valueOf(savedProductsLeft - product.getCountForOrder()));
-
         Log.d("LOG_MESSAGE", "productsLeft after: " + product.getProductsLeft());
     }
 
