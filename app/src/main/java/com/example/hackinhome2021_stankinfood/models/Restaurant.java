@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.google.firebase.firestore.Exclude;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 public class Restaurant implements Parcelable {
     @Exclude
@@ -14,6 +15,10 @@ public class Restaurant implements Parcelable {
     private String address;
     private Timestamp openingHours;
     private Timestamp closingHours;
+    @Exclude
+    private List<Order> orderList;
+    @Exclude
+    private List<Product> productList;
 
     public Restaurant() {
     }
@@ -30,6 +35,8 @@ public class Restaurant implements Parcelable {
         restaurantId = in.readString();
         name = in.readString();
         address = in.readString();
+        orderList = in.createTypedArrayList(Order.CREATOR);
+        productList = in.createTypedArrayList(Product.CREATOR);
     }
 
     public static final Creator<Restaurant> CREATOR = new Creator<Restaurant>() {
@@ -84,6 +91,22 @@ public class Restaurant implements Parcelable {
         this.closingHours = closingHours;
     }
 
+    public List<Order> getOrderList() {
+        return orderList;
+    }
+
+    public void setOrderList(List<Order> orderList) {
+        this.orderList = orderList;
+    }
+
+    public List<Product> getProductList() {
+        return productList;
+    }
+
+    public void setProductList(List<Product> productList) {
+        this.productList = productList;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -94,6 +117,8 @@ public class Restaurant implements Parcelable {
         dest.writeString(restaurantId);
         dest.writeString(name);
         dest.writeString(address);
+        dest.writeTypedList(orderList);
+        dest.writeTypedList(productList);
     }
 
     @Exclude

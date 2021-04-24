@@ -55,4 +55,5 @@
     <string name="verification_email_message">A verification message was sent to your email address:</string>
 
     <string name="error_verify_email">Error: Please verify your email address!</string>
+    <string name="reset_password">A password reset email was sent to:</string>
 </resources>

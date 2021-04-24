@@ -135,7 +135,8 @@ public class AuthRegFragment extends Fragment implements
         builder.setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
-                //TODO кнопка справа Yes
+                String email = editTextEmail.getText().toString();
+                ((MainActivity) getActivity()).sendResetPasswordByEmail(email);
             }
         });
         builder.setNegativeButton(getResources().getString(R.string.cancel), (dialog, id) -> {
@@ -177,6 +178,12 @@ public class AuthRegFragment extends Fragment implements
         editTextPassword.setSelection(editTextPassword.getText().toString().length());
     }
 
+    public void showSnackBarResetPassword(String email) {
+        Snackbar.make(getView(),
+                getResources().getString(R.string.reset_password) + " " + email,
+                BaseTransientBottomBar.LENGTH_LONG).show();
+    }
+
     @Override
     public void onClick(View v) {
         int id = v.getId();
@@ -203,7 +210,9 @@ public class AuthRegFragment extends Fragment implements
         } else if (id == R.id.buttonRequestGoogle) {
             ((MainActivity) getActivity()).signInWithGoogle();
         } else if (id == R.id.textViewForgotPassword) {
-            showAlertDialogForgotPassword();
+            if (isEmailCorrect()) {
+                showAlertDialogForgotPassword();
+            }
         }
         if (id == R.id.imageButtonViewPassword) {
             hidePassword(imageButtonViewPassword.isSelected());
