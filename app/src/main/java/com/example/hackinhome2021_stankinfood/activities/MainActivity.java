@@ -33,25 +33,20 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
 
 import org.apache.commons.net.time.TimeTCPClient;
 
 import java.io.IOException;
 import java.security.SecureRandom;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -138,7 +133,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         initBottomNavigationView();
-        previousBottomNavigationTabId = R.id.menuItemCanteen;
+        previousBottomNavigationTabId = R.id.menuItemRestaurants;
 
         firebaseUser = firebaseAuth.getCurrentUser();
 
@@ -579,9 +574,9 @@ public class MainActivity extends AppCompatActivity
 
     private void setBottomNavigationViewToZeroPosition() {
         previousDirection = 0;
-        previousBottomNavigationTabId = R.id.menuItemCanteen;
+        previousBottomNavigationTabId = R.id.menuItemRestaurants;
         bottomNavigationView.setOnNavigationItemSelectedListener(null);
-        bottomNavigationView.setSelectedItemId(R.id.menuItemCanteen);
+        bottomNavigationView.setSelectedItemId(R.id.menuItemRestaurants);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
     }
 
@@ -718,7 +713,7 @@ public class MainActivity extends AppCompatActivity
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-            if (id == R.id.menuItemCanteen) {
+            if (id == R.id.menuItemRestaurants) {
                 fragment = MenuFragment.newInstance(true, restaurantList.get(0).getProductList());
             } else if (id == R.id.menuItemCafe) {
                 currentDirection = 1;
@@ -744,7 +739,7 @@ public class MainActivity extends AppCompatActivity
                         R.anim.enter_from_left, R.anim.exit_to_right);
             }
 
-            if (id == R.id.menuItemCanteen || id == R.id.menuItemCafe) {
+            if (id == R.id.menuItemRestaurants || id == R.id.menuItemCafe) {
                 fragmentTransaction.replace(R.id.mainContainer, fragment, MENU_FRAGMENT);
             } else fragmentTransaction.replace(R.id.mainContainer, fragment);
             fragmentTransaction.commit();

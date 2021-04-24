@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hackinhome2021_stankinfood.R;
-import com.example.hackinhome2021_stankinfood.adapters.MyRecyclerViewAdapter;
+import com.example.hackinhome2021_stankinfood.adapters.ProductRecyclerViewAdapter;
 import com.example.hackinhome2021_stankinfood.interfaces.OnRecyclerViewClickListener;
 import com.example.hackinhome2021_stankinfood.models.Order;
 import com.example.hackinhome2021_stankinfood.models.Product;
@@ -101,9 +101,9 @@ public class OrderFragment extends Fragment implements OnRecyclerViewClickListen
     private void initRecyclerViewProducts(View view) {
         RecyclerView recyclerViewProducts = view.findViewById(R.id.recyclerViewProducts);
         recyclerViewProducts.getItemAnimator().setChangeDuration(0);
-        MyRecyclerViewAdapter myRecyclerViewAdapter = new MyRecyclerViewAdapter(
+        ProductRecyclerViewAdapter productRecyclerViewAdapter = new ProductRecyclerViewAdapter(
                 order.getPositions(), this);
-        recyclerViewProducts.setAdapter(myRecyclerViewAdapter);
+        recyclerViewProducts.setAdapter(productRecyclerViewAdapter);
     }
 
     private void initImageViewOR(View view) {

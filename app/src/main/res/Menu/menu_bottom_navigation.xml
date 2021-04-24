@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/menuItemCanteen"
-        android:icon="@drawable/ic_canteen_24dp"
-        android:title="@string/canteen" />
-
-    <item
-        android:id="@+id/menuItemCafe"
-        android:icon="@drawable/ic_cafe_24dp"
-        android:title="@string/cafe" />
+        android:id="@+id/menuItemRestaurants"
+        android:icon="@drawable/ic_restaurant_24dp"
+        android:title="@string/restaurants" />
 
     <item
         android:id="@+id/menuItemOrders"

@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hackinhome2021_stankinfood.R;
 import com.example.hackinhome2021_stankinfood.activities.MainActivity;
-import com.example.hackinhome2021_stankinfood.adapters.MyRecyclerViewAdapter;
+import com.example.hackinhome2021_stankinfood.adapters.ProductRecyclerViewAdapter;
 import com.example.hackinhome2021_stankinfood.interfaces.OnBackPressedFragment;
 import com.example.hackinhome2021_stankinfood.interfaces.OnRecyclerViewClickListener;
 import com.example.hackinhome2021_stankinfood.models.Product;
@@ -48,7 +48,7 @@ public class MenuFragment extends Fragment implements
     private RecyclerView recyclerViewMenu;
     private GridLayoutManager gridLayoutManager;
     private RecyclerView.SmoothScroller smoothScroller;
-    private MyRecyclerViewAdapter myRecyclerViewAdapter;
+    private ProductRecyclerViewAdapter productRecyclerViewAdapter;
 
     public MenuFragment() {
     }
@@ -149,9 +149,9 @@ public class MenuFragment extends Fragment implements
 
         recyclerViewMenu = view.findViewById(R.id.recyclerViewMenu);
         recyclerViewMenu.getItemAnimator().setChangeDuration(0);
-        myRecyclerViewAdapter = new MyRecyclerViewAdapter(productList, this);
+        productRecyclerViewAdapter = new ProductRecyclerViewAdapter(productList, this);
         recyclerViewMenu.setLayoutManager(gridLayoutManager);
-        recyclerViewMenu.setAdapter(myRecyclerViewAdapter);
+        recyclerViewMenu.setAdapter(productRecyclerViewAdapter);
         recyclerViewMenu.addOnScrollListener(myOnScrollListener);
     }
 
@@ -184,7 +184,7 @@ public class MenuFragment extends Fragment implements
             tabLayout.setVisibility(View.VISIBLE);
             ((MainActivity) getActivity()).hideBottomNavigationView(false);
         }
-        myRecyclerViewAdapter.getFilter().filter(newText);
+        productRecyclerViewAdapter.getFilter().filter(newText);
 
         return false;
     }
@@ -259,9 +259,9 @@ public class MenuFragment extends Fragment implements
             currentProduct.setLiked(!currentProduct.isLiked());
             if (!isMenu) {
                 productList.remove(currentProduct);
-                myRecyclerViewAdapter.notifyItemRemoved(position);
-                myRecyclerViewAdapter.notifyItemRangeChanged(position, productList.size());
-            } else myRecyclerViewAdapter.notifyItemChanged(position);
+                productRecyclerViewAdapter.notifyItemRemoved(position);
+                productRecyclerViewAdapter.notifyItemRangeChanged(position, productList.size());
+            } else productRecyclerViewAdapter.notifyItemChanged(position);
         } else {
             Log.d("LOG_MESSAGE", "productsLeft before: " + currentProduct.getProductsLeft());
 
@@ -289,12 +289,12 @@ public class MenuFragment extends Fragment implements
                 }
             }
             Log.d("LOG_MESSAGE", "productsLeft after: " + currentProduct.getProductsLeft());
-            myRecyclerViewAdapter.notifyItemChanged(position);
+            productRecyclerViewAdapter.notifyItemChanged(position);
         }
     }
 
     public void restoreCardViewClick() {
-        myRecyclerViewAdapter.notifyItemChanged(savedCardViewPosition);
+        productRecyclerViewAdapter.notifyItemChanged(savedCardViewPosition);
         savedCardViewClick = -1;
         savedCardViewPosition = -1;
     }

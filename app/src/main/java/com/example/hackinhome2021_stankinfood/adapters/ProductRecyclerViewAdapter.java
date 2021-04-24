@@ -24,15 +24,15 @@ import com.example.hackinhome2021_stankinfood.models.Product;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         implements Filterable {
 
     private final List<Product> productList;
     private final List<Product> productListFull = new ArrayList<>();
     private final OnRecyclerViewClickListener onRecyclerViewClickListener;
 
-    public MyRecyclerViewAdapter(List<Product> productList,
-                                 OnRecyclerViewClickListener onRecyclerViewClickListener) {
+    public ProductRecyclerViewAdapter(List<Product> productList,
+                                      OnRecyclerViewClickListener onRecyclerViewClickListener) {
         this.productList = productList;
         productListFull.addAll(productList);
         this.onRecyclerViewClickListener = onRecyclerViewClickListener;

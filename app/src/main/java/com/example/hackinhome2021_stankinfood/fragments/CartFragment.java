@@ -1,7 +1,6 @@
 package com.example.hackinhome2021_stankinfood.fragments;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,11 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.hackinhome2021_stankinfood.R;
 import com.example.hackinhome2021_stankinfood.activities.MainActivity;
-import com.example.hackinhome2021_stankinfood.adapters.MyRecyclerViewAdapter;
+import com.example.hackinhome2021_stankinfood.adapters.ProductRecyclerViewAdapter;
 import com.example.hackinhome2021_stankinfood.interfaces.OnRecyclerViewClickListener;
 import com.example.hackinhome2021_stankinfood.models.Order;
 import com.example.hackinhome2021_stankinfood.models.Product;
@@ -41,7 +39,7 @@ public class CartFragment extends Fragment implements
     private TextView textViewClearCart;
     private TextView textViewRealTotalPrice;
 
-    private MyRecyclerViewAdapter myRecyclerViewAdapter;
+    private ProductRecyclerViewAdapter productRecyclerViewAdapter;
 
     public CartFragment() {
     }
@@ -124,8 +122,8 @@ public class CartFragment extends Fragment implements
     private void initRecyclerViewProducts(View view) {
         RecyclerView recyclerViewProducts = view.findViewById(R.id.recyclerViewProducts);
         recyclerViewProducts.getItemAnimator().setChangeDuration(0);
-        myRecyclerViewAdapter = new MyRecyclerViewAdapter(order.getPositions(), this);
-        recyclerViewProducts.setAdapter(myRecyclerViewAdapter);
+        productRecyclerViewAdapter = new ProductRecyclerViewAdapter(order.getPositions(), this);
+        recyclerViewProducts.setAdapter(productRecyclerViewAdapter);
     }
 
 
@@ -179,15 +177,15 @@ public class CartFragment extends Fragment implements
 
     private void restoreItem(int position) {
         order.getPositions().get(position).setCountForOrder(1);
-        myRecyclerViewAdapter.notifyItemChanged(position);
+        productRecyclerViewAdapter.notifyItemChanged(position);
     }
 
     private void removeItem(String productId, int position) {
         Log.d("LOG_MESSAGE", "productId: " + productId);
         Log.d("LOG_MESSAGE", "position: " + position);
         order.removePosition(productId);
-        myRecyclerViewAdapter.notifyItemRemoved(position);
-        myRecyclerViewAdapter.notifyItemRangeChanged(position, order.getPositions().size());
+        productRecyclerViewAdapter.notifyItemRemoved(position);
+        productRecyclerViewAdapter.notifyItemRangeChanged(position, order.getPositions().size());
     }
 
     @Override
@@ -204,6 +202,6 @@ public class CartFragment extends Fragment implements
         } else if (id == R.id.imageButtonPlus) {
             currentProduct.setCountForOrder(currentCount + 1);
         }
-        myRecyclerViewAdapter.notifyItemChanged(position);
+        productRecyclerViewAdapter.notifyItemChanged(position);
     }
 }
