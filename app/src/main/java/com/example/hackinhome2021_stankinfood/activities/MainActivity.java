@@ -32,6 +32,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.AuthCredential;
@@ -138,7 +139,6 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        firebaseAuth.signOut();
         firebaseUser = firebaseAuth.getCurrentUser();
 
         if (firebaseUser == null) {
@@ -451,6 +451,15 @@ public class MainActivity extends AppCompatActivity
                 });
     }
 
+    public void sendResetPasswordByEmail(String email) {
+        firebaseAuth.sendPasswordResetEmail(email)
+                .addOnSuccessListener(aVoid -> {
+                    Fragment fragment = getSupportFragmentManager().findFragmentByTag(AUTH_REG_FRAGMENT);
+                    ((AuthRegFragment) fragment).showSnackBarResetPassword(email);
+                })
+                .addOnFailureListener(e -> Log.d("LOG_MESSAGE", "sendResetPasswordByEmail(): Failture!"));
+    }
+
 
     private void setFragmentMenuFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -461,6 +470,7 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction.replace(R.id.mainContainer,
                 MenuFragment.newInstance(true, canteenProductList), MENU_FRAGMENT);
         fragmentTransaction.commit();
+        hideBottomNavigationView(false);
     }
 
     public void addFragmentAuthRegFragment(boolean isRegistration) {
@@ -533,18 +543,6 @@ public class MainActivity extends AppCompatActivity
         } else bottomNavigationView.setVisibility(View.VISIBLE);
     }
 
-//    public void replaceFragmentFromProductFragmentToMenuFragment() {
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.setCustomAnimations(
-//                R.anim.enter_from_top, R.anim.exit_to_bottom,
-//                R.anim.enter_from_top, R.anim.exit_to_bottom);
-//        Fragment fragment = fragmentManager.findFragmentByTag(MENU_FRAGMENT);
-//        ((MenuFragment) fragment).restoreCardViewClick();
-//        fragmentTransaction.remove(fragmentManager.findFragmentByTag(PRODUCT_FRAGMENT));
-//        fragmentTransaction.show(fragmentManager.findFragmentByTag(MENU_FRAGMENT));
-//        fragmentTransaction.commit();
-//    }
 
     public void removeCartFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
