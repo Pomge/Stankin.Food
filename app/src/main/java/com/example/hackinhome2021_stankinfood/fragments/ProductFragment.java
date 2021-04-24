@@ -31,6 +31,8 @@ public class ProductFragment extends Fragment implements View.OnClickListener {
     private TextView textViewTotalPrice;
     private TextView textViewRealSinglePrice;
     private TextView textViewRealTotalPrice;
+    private TextView textViewProductsLeft;
+    private TextView textViewRealProductsLeft;
     private Button buttonProductPrice;
     private ImageButton imageButtonMinus;
     private TextView textViewCount;
@@ -89,6 +91,8 @@ public class ProductFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initTexts(View view) {
+        String stringRealSinglePrice = product.getPrice() +
+                " " + view.getResources().getString(R.string.currency);
         textViewName = view.findViewById(R.id.textViewName);
         textViewName.setText(product.getProductName());
         textViewProductDescription = view.findViewById(R.id.textViewProductDescription);
@@ -96,7 +100,10 @@ public class ProductFragment extends Fragment implements View.OnClickListener {
         textViewSinglePrice = view.findViewById(R.id.textViewSinglePrice);
         textViewTotalPrice = view.findViewById(R.id.textViewTotalPrice);
         textViewRealSinglePrice = view.findViewById(R.id.textViewRealSinglePrice);
+        textViewRealSinglePrice.setText(stringRealSinglePrice);
         textViewRealTotalPrice = view.findViewById(R.id.textViewRealTotalPrice);
+        textViewProductsLeft = view.findViewById(R.id.textViewProductsLeft);
+        textViewRealProductsLeft = view.findViewById(R.id.textViewRealProductsLeft);
         textViewCount = view.findViewById(R.id.textViewCount);
     }
 
@@ -115,6 +122,10 @@ public class ProductFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.buttonProductPrice) {
+            String stringRealTotalPrice = product.getPrice() +
+                    " " + v.getResources().getString(R.string.currency);
+            textViewRealTotalPrice.setText(stringRealTotalPrice);
+            textViewRealProductsLeft.setText(product.getProductsLeft());
             product.setCountForOrder(1);
             textViewCount.setText(String.valueOf(product.getCountForOrder()));
             buttonProductPrice.setVisibility(View.GONE);
@@ -125,16 +136,34 @@ public class ProductFragment extends Fragment implements View.OnClickListener {
             textViewRealSinglePrice.setVisibility(View.VISIBLE);
             textViewTotalPrice.setVisibility(View.VISIBLE);
             textViewSinglePrice.setVisibility(View.VISIBLE);
+            textViewProductsLeft.setVisibility(View.VISIBLE);
+            textViewRealProductsLeft.setVisibility(View.VISIBLE);
         }
         else if (id == R.id.imageButtonPlus) {
-            int count = product.getCountForOrder() + 1;
-            product.setCountForOrder(count);
-            textViewCount.setText(String.valueOf(product.getCountForOrder()));
+            int productLeft = product.getProductsLeft() - 1;
+            product.setProductsLeft(productLeft);
+            if (productLeft > 0) {
+                int count = product.getCountForOrder() + 1;
+                int realTotalPrice = product.getPrice() * count;
+                product.setCountForOrder(count);
+                textViewCount.setText(String.valueOf(product.getCountForOrder()));
+                String stringRealTotalPrice = realTotalPrice +
+                        " " + v.getResources().getString(R.string.currency);
+                textViewRealTotalPrice.setText(stringRealTotalPrice);
+            }
+            textViewRealProductsLeft.setText(String.valueOf(product.getProductsLeft()));
         }
         else if (id == R.id.imageButtonMinus) {
             int count = product.getCountForOrder() - 1;
+            int productLeft = product.getProductsLeft() - 1;
+            int realTotalPrice = product.getPrice() * count;
             product.setCountForOrder(count);
             textViewCount.setText(String.valueOf(product.getCountForOrder()));
+            product.setProductsLeft(productLeft);
+            textViewRealProductsLeft.setText(String.valueOf(product.getProductsLeft()));
+            String stringRealTotalPrice = realTotalPrice +
+                    " " + v.getResources().getString(R.string.currency);
+            textViewRealTotalPrice.setText(stringRealTotalPrice);
             if (count == 0) {
                 buttonProductPrice.setVisibility(View.VISIBLE);
                 imageButtonPlus.setVisibility(View.GONE);
@@ -144,6 +173,8 @@ public class ProductFragment extends Fragment implements View.OnClickListener {
                 textViewRealSinglePrice.setVisibility(View.GONE);
                 textViewTotalPrice.setVisibility(View.GONE);
                 textViewSinglePrice.setVisibility(View.GONE);
+                textViewProductsLeft.setVisibility(View.GONE);
+                textViewRealProductsLeft.setVisibility(View.GONE);
             }
         }
     }
