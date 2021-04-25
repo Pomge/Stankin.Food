@@ -26,7 +26,7 @@ out/
 .gradle/
 build/
 google-services.json
-client_secret_310284880548-p1sbnk1mvnbig5ma277hjcup3rlu26uj.apps.googleusercontent.com
+client_secret_310284880548-p1sbnk1mvnbig5ma277hjcup3rlu26uj.apps.googleusercontent.com.json
 client_secret_310284880548-72n8l3vve0fhguer5bo2kf2jk68jeagt.apps.googleusercontent.com.json
 
 # Local configuration file (sdk path, etc)
