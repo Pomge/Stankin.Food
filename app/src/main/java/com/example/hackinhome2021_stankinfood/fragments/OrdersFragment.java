@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hackinhome2021_stankinfood.R;
-import com.example.hackinhome2021_stankinfood.activities.Capture;
 import com.example.hackinhome2021_stankinfood.activities.MainActivity;
 import com.example.hackinhome2021_stankinfood.adapters.OrderRecyclerViewAdapter;
 import com.example.hackinhome2021_stankinfood.interfaces.OnBackPressedFragment;
