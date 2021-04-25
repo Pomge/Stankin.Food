@@ -15,6 +15,7 @@ import java.util.List;
 public class Order implements Parcelable {
     private String orderId;
     private String userId;
+    private String restaurantId;
     private String name;
     private Date pickupTime;
     private boolean isDone;
@@ -26,6 +27,7 @@ public class Order implements Parcelable {
     protected Order(Parcel in) {
         orderId = in.readString();
         userId = in.readString();
+        restaurantId = in.readString();
         name = in.readString();
         isDone = in.readByte() != 0;
         positions = in.createTypedArrayList(Product.CREATOR);
@@ -60,6 +62,15 @@ public class Order implements Parcelable {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+
+    public String getRestaurantId() {
+        return restaurantId;
+    }
+
+    public void setRestaurantId(String restaurantId) {
+        this.restaurantId = restaurantId;
     }
 
 
@@ -158,6 +169,7 @@ public class Order implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(orderId);
         dest.writeString(userId);
+        dest.writeString(restaurantId);
         dest.writeString(name);
         dest.writeByte((byte) (isDone ? 1 : 0));
         dest.writeTypedList(positions);

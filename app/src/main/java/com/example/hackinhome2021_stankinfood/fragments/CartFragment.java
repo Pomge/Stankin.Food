@@ -218,6 +218,8 @@ public class CartFragment extends Fragment implements
         } else {
             if (order.getPositions().size() > 0) {
                 order.setDone(false);
+                order.setRestaurantId(order.getPositions().get(0).getRestaurantId());
+
                 if (order.getPickupTime() == null) {
                     order.setPickupTime(Calendar.getInstance().getTime());
                 }

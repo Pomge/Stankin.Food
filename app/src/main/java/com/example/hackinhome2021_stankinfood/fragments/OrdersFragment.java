@@ -141,7 +141,7 @@ public class OrdersFragment extends Fragment implements
     public void onItemClick(View view, int position) {
         if (view.getId() == R.id.cardView) {
             ((MainActivity) getActivity()).replaceFragmentToOrderFragment(
-                    false, orderList.get(position));
+                    orderList.get(position));
         }
     }
 

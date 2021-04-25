@@ -311,6 +311,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
@@ -324,7 +326,7 @@ public class MainActivity extends AppCompatActivity
             IntentResult intentResult = IntentIntegrator.parseActivityResult(
                     requestCode, requestCode, data);
 
-            Log.d(TAG, "onActivityResult: " + intentResult.getContents());
+            Log.d(TAG, "onActivityResult(): " + intentResult.getContents());
             if (intentResult.getContents() != null) {
                 getOrderFromFireStore(intentResult.getContents());
             } else {
@@ -332,7 +334,6 @@ public class MainActivity extends AppCompatActivity
                         BaseTransientBottomBar.LENGTH_SHORT).show();
             }
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     public void firebaseAuthWithGoogle(String idToken) {
@@ -463,12 +464,14 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction.commit();
     }
 
-    public void replaceFragmentToOrderFragment(boolean isManagerView, Order order) {
+    public void replaceFragmentToOrderFragment(Order order) {
+        boolean isManagerView = userData.getRestaurantId() != null;
         order.setViewTypeForPositions(isManagerView);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.mainContainer, OrderFragment.newInstance(false, order));
+        fragmentTransaction.replace(R.id.mainContainer, OrderFragment.newInstance(
+                isManagerView, order));
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
@@ -642,6 +645,25 @@ public class MainActivity extends AppCompatActivity
                 });
     }
 
+    public void getRestaurantOrdersFromFireStore() {
+        firebaseFirestore.collection(COLLECTION_ORDERS)
+                .whereEqualTo("restaurantId", userData.getRestaurantId()).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<Order> restaurantOrders = new ArrayList<>();
+                        for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
+                            Order order = queryDocumentSnapshot.toObject(Order.class);
+                            order.setOrderId(queryDocumentSnapshot.getId());
+                            restaurantOrders.add(order);
+                        }
+                        replaceFragmentToOrdersFragment(restaurantOrders);
+                        Log.d(TAG, "getUserOrdersFromFireStore(): Successful!");
+                    } else {
+                        Log.d(TAG, "getUserOrdersFromFireStore(): Failure!");
+                    }
+                });
+    }
+
     public void getUserOrdersFromFireStore() {
         firebaseFirestore.collection(COLLECTION_ORDERS)
                 .whereEqualTo("userId", currentUser.getUid()).get()
@@ -666,8 +688,7 @@ public class MainActivity extends AppCompatActivity
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Order order = task.getResult().toObject(Order.class);
-                        replaceFragmentToOrderFragment(
-                                userData.getRestaurantId() != null, order);
+                        replaceFragmentToOrderFragment(order);
                         Log.d(TAG, "getOrderFromFireStore(): Successful!");
                     } else {
                         Log.d(TAG, "getOrderFromFireStore(): Failed!");
@@ -703,7 +724,9 @@ public class MainActivity extends AppCompatActivity
             } else if (id == R.id.menuItemFavoriteProducts) {
                 getFavoriteProductsFromFireStore();
             } else if (id == R.id.menuItemOrders) {
-                getUserOrdersFromFireStore();
+                if (userData.getRestaurantId() == null) {
+                    getUserOrdersFromFireStore();
+                } else getRestaurantOrdersFromFireStore();
             } else if (id == R.id.menuItemCart) {
                 replaceFragmentToCardFragment();
             }
