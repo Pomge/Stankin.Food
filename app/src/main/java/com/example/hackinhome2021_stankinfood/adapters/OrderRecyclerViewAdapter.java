@@ -98,7 +98,8 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
                 String searchQuery = constraint.toString().toLowerCase().trim();
 
                 for (Order order : orderFiltered) {
-                    if (order.getName().toLowerCase().contains(searchQuery)) {
+                    if (order.getName().toLowerCase().contains(searchQuery) ||
+                            order.getOrderId().toLowerCase().contains(searchQuery)) {
                         orderFiltered.add(order);
                     }
                 }

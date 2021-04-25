@@ -136,7 +136,8 @@ public class OrderFragment extends Fragment implements OnRecyclerViewClickListen
     private void setImageViewQR() {
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
         try {
-            BitMatrix bitMatrix = multiFormatWriter.encode(order.getOrderId(), BarcodeFormat.QR_CODE,
+            BitMatrix bitMatrix = multiFormatWriter.encode(
+                    order.getOrderId(), BarcodeFormat.QR_CODE,
                     500, 500);
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
             Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
