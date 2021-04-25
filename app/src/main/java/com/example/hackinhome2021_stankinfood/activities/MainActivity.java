@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity
 
     private View parentLayout;
     private ProgressBar progressBar;
+    private int currentDirection = 0;
     private int previousDirection = 0;
     private int previousBottomNavigationTabId;
 
@@ -380,10 +381,25 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    private void animationFragmentManager(FragmentTransaction fragmentTransaction) {
+        Log.d(TAG, "currentDirection: " + currentDirection + "; previousDirection: " + previousDirection);
+        if (currentDirection < previousDirection) {
+            fragmentTransaction.setCustomAnimations(
+                    R.anim.enter_from_left, R.anim.exit_to_right,
+                    R.anim.enter_from_right, R.anim.exit_to_left);
+        } else {
+            fragmentTransaction.setCustomAnimations(
+                    R.anim.enter_from_right, R.anim.exit_to_left,
+                    R.anim.enter_from_left, R.anim.exit_to_right);
+        }
+    }
+
+
     public void replaceFragmentToAuthRegChooseFragment() {
         hideProgressBar(true);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        animationFragmentManager(fragmentTransaction);
         fragmentTransaction.replace(R.id.mainContainer,
                 new AuthRegChooseFragment(), AUTH_REG_CHOOSE_FRAGMENT);
         fragmentTransaction.addToBackStack(null);
@@ -394,6 +410,7 @@ public class MainActivity extends AppCompatActivity
         hideProgressBar(true);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        animationFragmentManager(fragmentTransaction);
         fragmentTransaction.replace(R.id.mainContainer,
                 AuthRegFragment.newInstance(isRegistration), AUTH_REG_FRAGMENT);
         fragmentTransaction.addToBackStack(null);
@@ -405,6 +422,7 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.popBackStack();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        animationFragmentManager(fragmentTransaction);
         fragmentTransaction.replace(R.id.mainContainer,
                 RestaurantsFragment.newInstance(restaurantList));
         fragmentTransaction.addToBackStack(null);
@@ -415,6 +433,7 @@ public class MainActivity extends AppCompatActivity
         hideProgressBar(true);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        animationFragmentManager(fragmentTransaction);
         fragmentTransaction.replace(R.id.mainContainer,
                 ProductFragment.newInstance(productList.get(position)));
         fragmentTransaction.addToBackStack(null);
@@ -430,6 +449,7 @@ public class MainActivity extends AppCompatActivity
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        animationFragmentManager(fragmentTransaction);
         fragmentTransaction.replace(R.id.mainContainer,
                 MenuFragment.newInstance(isMenu, result));
         fragmentTransaction.addToBackStack(null);
@@ -442,6 +462,7 @@ public class MainActivity extends AppCompatActivity
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        animationFragmentManager(fragmentTransaction);
         fragmentTransaction.replace(R.id.mainContainer, CartFragment.newInstance(userOrder));
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
@@ -454,6 +475,7 @@ public class MainActivity extends AppCompatActivity
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        animationFragmentManager(fragmentTransaction);
         fragmentTransaction.replace(R.id.mainContainer, OrderFragment.newInstance(
                 isManagerView, order));
         fragmentTransaction.addToBackStack(null);
@@ -464,6 +486,7 @@ public class MainActivity extends AppCompatActivity
         hideProgressBar(true);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        animationFragmentManager(fragmentTransaction);
         fragmentTransaction.replace(R.id.mainContainer, OrdersFragment.newInstance(
                 userData.getRestaurantId() != null, orderList));
         fragmentTransaction.addToBackStack(null);
@@ -487,7 +510,7 @@ public class MainActivity extends AppCompatActivity
 
 
     private void setBottomNavigationViewToZeroPosition() {
-        previousDirection = 0;
+        currentDirection = 0;
         previousBottomNavigationTabId = R.id.menuItemRestaurants;
         bottomNavigationView.setOnNavigationItemSelectedListener(null);
         bottomNavigationView.setSelectedItemId(R.id.menuItemRestaurants);
@@ -708,19 +731,22 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id != previousBottomNavigationTabId) {
-            int currentDirection = 0;
+            previousDirection = currentDirection;
             if (id == R.id.menuItemRestaurants) {
+                currentDirection = 0;
                 getRestaurantsFromFireStore();
-            } else if (id == R.id.menuItemFavoriteProducts) {
-                getFavoriteProductsFromFireStore();
             } else if (id == R.id.menuItemOrders) {
+                currentDirection = 1;
                 if (userData.getRestaurantId() == null) {
                     getUserOrdersFromFireStore();
                 } else getRestaurantOrdersFromFireStore();
+            } else if (id == R.id.menuItemFavoriteProducts) {
+                currentDirection = 2;
+                getFavoriteProductsFromFireStore();
             } else if (id == R.id.menuItemCart) {
+                currentDirection = 3;
                 replaceFragmentToCardFragment();
             }
-            previousDirection = currentDirection;
             previousBottomNavigationTabId = id;
         }
 
