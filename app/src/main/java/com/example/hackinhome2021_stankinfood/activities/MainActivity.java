@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity
 
     private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private final FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-    
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
