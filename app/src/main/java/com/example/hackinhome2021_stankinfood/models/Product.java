@@ -222,17 +222,27 @@ public class Product implements Parcelable, Cloneable {
     }
 
 
-    public static final Comparator<Product> PRODUCT_COMPARATOR = (product_1, product_2) -> {
-        if (product_1.getCategoryName().compareTo(product_2.getCategoryName()) < 0) {
-            return -1;
-        } else if (product_1.getCategoryName().compareTo(product_2.getCategoryName()) == 0) {
-            if (product_1.getRating() > product_2.getRating()) {
-                return -1;
-            } else if (product_1.getRating() == product_2.getRating()) {
-                return Integer.compare(product_1.getProductName().compareTo(product_2.getProductName()), 0);
-            } else return 1;
-        } else return 1;
-    };
+    public static final Comparator<Product> PRODUCT_COMPARATOR_WITH_CATEGORIES =
+            (product_1, product_2) -> {
+                if (product_1.getCategoryName().compareTo(product_2.getCategoryName()) < 0) {
+                    return -1;
+                } else if (product_1.getCategoryName().compareTo(product_2.getCategoryName()) == 0) {
+                    if (product_1.getRating() > product_2.getRating()) {
+                        return -1;
+                    } else if (product_1.getRating() == product_2.getRating()) {
+                        return Integer.compare(product_1.getProductName().compareTo(product_2.getProductName()), 0);
+                    } else return 1;
+                } else return 1;
+            };
+
+    public static final Comparator<Product> PRODUCT_COMPARATOR_WITHOUT_CATEGORIES =
+            (product_1, product_2) -> {
+                if (product_1.getRating() > product_2.getRating()) {
+                    return -1;
+                } else if (product_1.getRating() == product_2.getRating()) {
+                    return Integer.compare(product_1.getProductName().compareTo(product_2.getProductName()), 0);
+                } else return 1;
+            };
 
 
     @Override
