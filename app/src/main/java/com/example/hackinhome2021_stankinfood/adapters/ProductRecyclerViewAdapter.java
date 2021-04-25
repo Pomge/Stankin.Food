@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.hackinhome2021_stankinfood.R;
 import com.example.hackinhome2021_stankinfood.activities.MainActivity;
 import com.example.hackinhome2021_stankinfood.interfaces.OnRecyclerViewClickListener;
@@ -154,6 +155,8 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             ViewHolderMenuProduct viewHolderMenuProduct,
             Product product, MyOnClickListener myOnClickListener) {
         viewHolderMenuProduct.imageButtonLiked.setSelected(product.isLiked());
+        Glide.with(viewHolderMenuProduct.itemView.getContext()).load(product.getImageURL())
+                .into(viewHolderMenuProduct.imageViewPicture);
 //        viewHolderMenuProduct.imageViewProductImage.setImageBitmap(product.image);
         viewHolderMenuProduct.textViewName.setText(product.getProductName());
         viewHolderMenuProduct.ratingBar.setRating(product.getRating());
@@ -178,6 +181,8 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             ViewHolderMenuProduct viewHolderMenuProduct,
             Product product, MyOnClickListener myOnClickListener) {
         viewHolderMenuProduct.imageButtonLiked.setSelected(product.isLiked());
+        Glide.with(viewHolderMenuProduct.itemView.getContext()).load(product.getImageURL())
+                .into(viewHolderMenuProduct.imageViewPicture);
 //        viewHolderMenuProduct.imageViewProductImage.setImageBitmap(product.image);
         viewHolderMenuProduct.textViewName.setText(product.getProductName());
         viewHolderMenuProduct.ratingBar.setRating(product.getRating());
@@ -201,6 +206,8 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     private void setDataForViewHolderOrderProductInactive(
             ViewHolderOrderProduct viewHolderOrderProduct,
             Product product) {
+        Glide.with(viewHolderOrderProduct.itemView.getContext()).load(product.getImageURL())
+                .into(viewHolderOrderProduct.imageViewPicture);
         //viewHolderProduct.imageViewProductImage.setImageBitmap(product.image);
         viewHolderOrderProduct.textViewName.setText(product.getProductName());
         String totalPrice = product.getPrice() * product.getCountForOrder() + " " +
@@ -215,6 +222,8 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     private void setDataForViewHolderOrderProductActive(
             ViewHolderOrderProduct viewHolderOrderProduct,
             Product product, MyOnClickListener myOnClickListener) {
+        Glide.with(viewHolderOrderProduct.itemView.getContext()).load(product.getImageURL())
+                .into(viewHolderOrderProduct.imageViewPicture);
         //viewHolderProduct.imageViewProductImage.setImageBitmap(productClient.image);
         viewHolderOrderProduct.textViewName.setText(product.getProductName());
         String totalPrice = product.getPrice() * product.getCountForOrder() + " " +

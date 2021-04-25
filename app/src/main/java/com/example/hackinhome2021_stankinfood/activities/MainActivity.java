@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.bumptech.glide.Glide;
 import com.example.hackinhome2021_stankinfood.R;
 import com.example.hackinhome2021_stankinfood.fragments.AuthRegChooseFragment;
 import com.example.hackinhome2021_stankinfood.fragments.AuthRegFragment;
@@ -47,6 +48,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import org.apache.commons.net.time.TimeTCPClient;
@@ -113,12 +115,13 @@ public class MainActivity extends AppCompatActivity
 
     private User userData;
     private FirebaseUser currentUser = null;
-    private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private static final int RC_SIGN_IN = 9001;
     private GoogleSignInClient googleSignInClient;
 
+    private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private final FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-    private StorageReference storageReference;
+    private final FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+    private StorageReference storageReference = firebaseStorage.getReference();
 
 
     @Override
@@ -677,6 +680,7 @@ public class MainActivity extends AppCompatActivity
                     }
                 });
     }
+
 
     public void markProductAsLiked(Product product, boolean isLiked) {
         firebaseFirestore.collection(COLLECTION_PRODUCTS).document(product.getProductId())

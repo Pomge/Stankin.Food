@@ -28,6 +28,7 @@
             android:layout_height="128dp"
             android:layout_margin="8dp"
             android:contentDescription="@null"
+            android:scaleType="centerInside"
             android:src="@drawable/ic_no_image_64dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
