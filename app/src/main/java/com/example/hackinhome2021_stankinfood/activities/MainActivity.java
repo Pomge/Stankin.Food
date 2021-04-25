@@ -121,7 +121,6 @@ public class MainActivity extends AppCompatActivity
     private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private final FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
     private final FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-    private StorageReference storageReference = firebaseStorage.getReference();
 
 
     @Override
