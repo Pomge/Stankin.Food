@@ -485,11 +485,6 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction.commit();
     }
 
-//    public void restoreCardViewClickListener() {
-//        Fragment menuFragment = getSupportFragmentManager().findFragmentByTag(MENU_FRAGMENT);
-//        ((MenuFragment) menuFragment).restoreCardViewClick();
-//    }
-
     private void hideKeyboard(Activity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         View view = activity.getCurrentFocus();
