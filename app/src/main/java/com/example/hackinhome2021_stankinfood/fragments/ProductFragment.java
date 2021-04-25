@@ -179,33 +179,35 @@ public class ProductFragment extends Fragment implements
         int id = v.getId();
 
         Log.d("LOG_MESSAGE", "productsLeft before: " + product.getProductsLeft());
-        if (id == R.id.buttonProductPrice) {
-            product.setCountForOrder(1);
-            product.setViewType(MainActivity.MENU_PRODUCT_ACTIVE);
-            textViewRealProductsLeft.setText(String.valueOf(savedProductsLeft - 1));
-            hideViewsByButtonClick(true);
-        } else if (id == R.id.imageButtonMinus) {
-            if (product.getCountForOrder() - 1 == 0) {
-                product.setViewType(MainActivity.MENU_PRODUCT_INACTIVE);
-                hideViewsByButtonClick(false);
-            } else product.setViewType(MainActivity.MENU_PRODUCT_ACTIVE);
-            product.setCountForOrder(product.getCountForOrder() - 1);
-            product.setProductsLeft(savedProductsLeft - product.getCountForOrder());
-        } else if (id == R.id.imageButtonPlus) {
-            if (product.getCountForOrder() + 1 <= savedProductsLeft) {
-                product.setCountForOrder(product.getCountForOrder() + 1);
-                product.setProductsLeft(savedProductsLeft - product.getCountForOrder());
-                product.setViewType(MainActivity.MENU_PRODUCT_ACTIVE);
-            } else {
-                String noProductLeft = getResources().getString(R.string.no_product_left);
-                Snackbar.make(getView(), noProductLeft, BaseTransientBottomBar.LENGTH_SHORT).show();
-            }
-        }
         if (id == R.id.imageButtonLiked) {
             ((MainActivity) getActivity()).markProductAsLiked(product, !product.isLiked());
             product.setLiked(!product.isLiked());
 
             imageButtonLiked.setSelected(product.isLiked());
+        } else {
+            if (id == R.id.buttonProductPrice) {
+                product.setCountForOrder(1);
+                product.setViewType(MainActivity.MENU_PRODUCT_ACTIVE);
+                textViewRealProductsLeft.setText(String.valueOf(savedProductsLeft - 1));
+                hideViewsByButtonClick(true);
+            } else if (id == R.id.imageButtonMinus) {
+                if (product.getCountForOrder() - 1 == 0) {
+                    product.setViewType(MainActivity.MENU_PRODUCT_INACTIVE);
+                    hideViewsByButtonClick(false);
+                } else product.setViewType(MainActivity.MENU_PRODUCT_ACTIVE);
+                product.setCountForOrder(product.getCountForOrder() - 1);
+                product.setProductsLeft(savedProductsLeft - product.getCountForOrder());
+            } else if (id == R.id.imageButtonPlus) {
+                if (product.getCountForOrder() + 1 <= savedProductsLeft) {
+                    product.setCountForOrder(product.getCountForOrder() + 1);
+                    product.setProductsLeft(savedProductsLeft - product.getCountForOrder());
+                    product.setViewType(MainActivity.MENU_PRODUCT_ACTIVE);
+                } else {
+                    String noProductLeft = getResources().getString(R.string.no_product_left);
+                    Snackbar.make(getView(), noProductLeft, BaseTransientBottomBar.LENGTH_SHORT).show();
+                }
+            }
+            MainActivity.userOrder.addPosition(product);
         }
         textViewCount.setText(String.valueOf(product.getCountForOrder()));
         textViewRealTotalPrice.setText(getTotalPriceString());

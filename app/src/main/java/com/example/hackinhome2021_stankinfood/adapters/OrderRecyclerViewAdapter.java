@@ -52,11 +52,11 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             viewHolderOrder.textViewOrderId.setText(currentOrder.getOrderId());
             String pickupTimeString = new SimpleDateFormat("HH:mm", Locale.ENGLISH)
                     .format(currentOrder.getPickupTime());
-            viewHolderOrder.textViewPickupTime.setText(pickupTimeString);
+            viewHolderOrder.textViewRealPickupTime.setText(pickupTimeString);
         } else {
             viewHolderOrder.textViewOrderId.setText("");
             viewHolderOrder.textViewName.setText(currentOrder.getName());
-            viewHolderOrder.textViewPickupTime.setText("");
+            viewHolderOrder.textViewRealPickupTime.setText("");
         }
 
         viewHolderOrder.cardView.setOnClickListener(new MyOnClickListener(position));
@@ -129,7 +129,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         private final CardView cardView;
         private final TextView textViewOrderId;
         private final TextView textViewName;
-        private final TextView textViewPickupTime;
+        private final TextView textViewRealPickupTime;
 
         public ViewHolderOrder(@NonNull View itemView) {
             super(itemView);
@@ -137,7 +137,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             cardView = itemView.findViewById(R.id.cardView);
             textViewOrderId = itemView.findViewById(R.id.textViewOrderId);
             textViewName = itemView.findViewById(R.id.textViewName);
-            textViewPickupTime = itemView.findViewById(R.id.textViewPickupTime);
+            textViewRealPickupTime = itemView.findViewById(R.id.textViewRealPickupTime);
         }
     }
 }

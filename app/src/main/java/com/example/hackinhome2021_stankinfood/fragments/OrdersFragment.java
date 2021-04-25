@@ -19,6 +19,7 @@ import com.example.hackinhome2021_stankinfood.adapters.OrderRecyclerViewAdapter;
 import com.example.hackinhome2021_stankinfood.interfaces.OnBackPressedFragment;
 import com.example.hackinhome2021_stankinfood.interfaces.OnRecyclerViewClickListener;
 import com.example.hackinhome2021_stankinfood.models.Order;
+import com.example.hackinhome2021_stankinfood.models.Product;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -115,9 +116,10 @@ public class OrdersFragment extends Fragment implements
 
     @Override
     public void onItemClick(View view, int position) {
-        int id = view.getId();
-
-        Log.d("LOG_MESSAGE", "Click: " + id + " -> " + position);
+        if (view.getId() == R.id.cardView) {
+            ((MainActivity) getActivity()).replaceFragmentToOrderFragment(
+                    false, orderList.get(position));
+        }
     }
 
 

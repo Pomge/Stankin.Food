@@ -18,7 +18,10 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.hackinhome2021_stankinfood.R;
 import com.example.hackinhome2021_stankinfood.fragments.AuthRegChooseFragment;
 import com.example.hackinhome2021_stankinfood.fragments.AuthRegFragment;
+import com.example.hackinhome2021_stankinfood.fragments.CartFragment;
 import com.example.hackinhome2021_stankinfood.fragments.MenuFragment;
+import com.example.hackinhome2021_stankinfood.fragments.OrderFragment;
+import com.example.hackinhome2021_stankinfood.fragments.OrdersFragment;
 import com.example.hackinhome2021_stankinfood.fragments.ProductFragment;
 import com.example.hackinhome2021_stankinfood.fragments.RestaurantsFragment;
 import com.example.hackinhome2021_stankinfood.interfaces.OnBackPressedFragment;
@@ -32,6 +35,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -44,6 +48,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
 
 import org.apache.commons.net.time.TimeTCPClient;
@@ -98,7 +103,7 @@ public class MainActivity extends AppCompatActivity
 
     private String currentWeekday;
     private Date currentDate = null;
-    private Order userOrder = new Order();
+    public static Order userOrder = new Order();
 
     private View parentLayout;
     private int previousDirection = 0;
@@ -108,7 +113,7 @@ public class MainActivity extends AppCompatActivity
 
     private CurrentTimeGetterThread currentTimeGetterThread = null;
 
-    private FirebaseUser firebaseUser = null;
+    private FirebaseUser currentUser = null;
     private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private static final int RC_SIGN_IN = 9001;
     private GoogleSignInClient googleSignInClient;
@@ -126,9 +131,9 @@ public class MainActivity extends AppCompatActivity
         initBottomNavigationView();
         previousBottomNavigationTabId = R.id.menuItemRestaurants;
 
-        firebaseUser = firebaseAuth.getCurrentUser();
+        currentUser = firebaseAuth.getCurrentUser();
 
-        if (firebaseUser == null) {
+        if (currentUser == null) {
             hideBottomNavigationView(true);
             replaceFragmentToAuthRegChooseFragment();
         } else {
@@ -166,7 +171,6 @@ public class MainActivity extends AppCompatActivity
                     client.setKeepAlive(false);
 
                     currentDate = client.getDate();
-                    ;
                     client.disconnect();
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
@@ -180,7 +184,7 @@ public class MainActivity extends AppCompatActivity
                 if (currentDate != null) {
                     DateFormat weekdayString = new SimpleDateFormat("EEEE", Locale.ENGLISH);
                     currentWeekday = weekdayString.format(currentDate);
-                    getRestaurantsFromFireStore();
+                    findUserInDatabase();
                     break;
                 }
             }
@@ -261,8 +265,8 @@ public class MainActivity extends AppCompatActivity
                         Log.d(TAG, "createUserWithEmailAndPassword(): Task Successful!");
                         hideKeyboard(this);
 
-                        firebaseUser = firebaseAuth.getCurrentUser();
-                        firebaseUser.sendEmailVerification();
+                        currentUser = firebaseAuth.getCurrentUser();
+                        currentUser.sendEmailVerification();
 
                         Fragment fragment = getSupportFragmentManager().findFragmentByTag(AUTH_REG_FRAGMENT);
                         ((AuthRegFragment) fragment).showAlertDialogVerificationMessage(email);
@@ -279,8 +283,8 @@ public class MainActivity extends AppCompatActivity
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         Log.d(TAG, "authUserWithEmailAndPassword(): Task Successful!");
-                        firebaseUser = firebaseAuth.getCurrentUser();
-                        if (!firebaseUser.isEmailVerified()) {
+                        currentUser = firebaseAuth.getCurrentUser();
+                        if (!currentUser.isEmailVerified()) {
                             Fragment fragment = getSupportFragmentManager().findFragmentByTag(AUTH_REG_FRAGMENT);
                             ((AuthRegFragment) fragment).showSnackBarEmailNotVerified();
                         } else findUserInDatabase();
@@ -321,9 +325,8 @@ public class MainActivity extends AppCompatActivity
                         if (task.isSuccessful()) {
 
                             Log.d(TAG, "signInWithCredential:success");
-                            firebaseUser = firebaseAuth.getCurrentUser();
+                            currentUser = firebaseAuth.getCurrentUser();
                             findUserInDatabase();
-//                            updateUI(user);
                         } else {
 
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -336,14 +339,13 @@ public class MainActivity extends AppCompatActivity
 
     private void findUserInDatabase() {
         User user = new User();
-        user.setUserId(firebaseUser.getUid());
+        user.setUserId(currentUser.getUid());
         user.setRestaurantId(null);
 
         firebaseFirestore.collection(COLLECTION_USERS).whereEqualTo(
-                "userId", firebaseUser.getUid()).get()
+                "userId", user.getUserId()).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Log.d(TAG, "findUserInDatabase(): Task Successful!");
                         if (currentTimeGetterThread == null) {
                             currentTimeGetterThread = new CurrentTimeGetterThread();
                             currentTimeGetterThread.start();
@@ -351,7 +353,10 @@ public class MainActivity extends AppCompatActivity
                         if (task.getResult().isEmpty()) {
                             createUserInDatabase(user);
                         }
+                        setBottomNavigationViewToZeroPosition();
                         getRestaurantsFromFireStore();
+                        userOrder.setUserId(currentUser.getUid());
+                        Log.d(TAG, "findUserInDatabase(): Task Successful!");
                     } else {
                         Log.d(TAG, "findUserInDatabase(): Task Failure!");
                     }
@@ -363,7 +368,6 @@ public class MainActivity extends AppCompatActivity
                 .addOnCompleteListener(taskInner -> {
                     if (taskInner.isSuccessful()) {
                         Log.d(TAG, "createUserInDatabase(): Task Successful!");
-                        getRestaurantsFromFireStore();
                     } else {
                         Log.d(TAG, "createUserInDatabase(): Task Failure!");
                     }
@@ -426,6 +430,33 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction.commit();
     }
 
+    private void replaceFragmentToCardFragment() {
+        userOrder.setViewTypeForPositions(true);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.mainContainer, CartFragment.newInstance(userOrder));
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+    public void replaceFragmentToOrderFragment(boolean isManagerView, Order order) {
+        order.setViewTypeForPositions(isManagerView);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.mainContainer, OrderFragment.newInstance(false, order));
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+    private void replaceFragmentToOrdersFragment(List<Order> orderList) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.mainContainer, OrdersFragment.newInstance(orderList));
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
 
 //    public void restoreCardViewClickListener() {
 //        Fragment menuFragment = getSupportFragmentManager().findFragmentByTag(MENU_FRAGMENT);
@@ -469,6 +500,7 @@ public class MainActivity extends AppCompatActivity
                             restaurant.setRestaurantId(queryDocumentSnapshot.getId());
                             restaurantList.add(restaurant);
                         }
+                        setBottomNavigationViewToZeroPosition();
                         replaceRestaurantsToFragment(restaurantList);
                     } else {
                         Log.d(TAG, "getRestraintsFromFireStore(): Failed!");
@@ -520,7 +552,7 @@ public class MainActivity extends AppCompatActivity
 
     public void getFavoriteProductsFromFireStore() {
         firebaseFirestore.collection(COLLECTION_PRODUCTS)
-                .whereArrayContains("likedUserIds", firebaseUser.getUid())
+                .whereArrayContains("likedUserIds", currentUser.getUid())
                 .whereGreaterThanOrEqualTo("productsLeft", 1).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -552,8 +584,8 @@ public class MainActivity extends AppCompatActivity
                             Product product = queryDocumentSnapshot.toObject(Product.class);
                             product.setProductId(queryDocumentSnapshot.getId());
                             if (product.getLikedUserIds() != null && product.getLikedUserIds().size() != 0) {
-                                if (product.getLikedUserIds().contains(firebaseUser.getUid())) {
-                                    product.setLikedUserIds(Collections.singletonList(firebaseUser.getUid()));
+                                if (product.getLikedUserIds().contains(currentUser.getUid())) {
+                                    product.setLikedUserIds(Collections.singletonList(currentUser.getUid()));
                                     product.setLiked(true);
                                 } else {
                                     product.setLikedUserIds(null);
@@ -570,11 +602,46 @@ public class MainActivity extends AppCompatActivity
                 });
     }
 
+    public void addOrderToFireStore(Order order) {
+        for (Product product : order.getPositions()) {
+            product.setProductsLeft(product.getCountForOrder());
+        }
+
+        firebaseFirestore.collection(COLLECTION_ORDERS).add(order)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        order.clearPositions();
+                        setBottomNavigationViewToZeroPosition();
+                        getRestaurantsFromFireStore();
+                        Log.d(TAG, "addOrderToFireStore(): Successful!");
+                    } else Log.d(TAG, "addOrderToFireStore(): Failure!");
+                });
+    }
+
+    public void getUserOrdersFromFireStore() {
+        firebaseFirestore.collection(COLLECTION_ORDERS)
+                .whereEqualTo("userId", currentUser.getUid()).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<Order> userOrders = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Order order = document.toObject(Order.class);
+                            order.setOrderId(document.getId());
+                            userOrders.add(order);
+                        }
+                        replaceFragmentToOrdersFragment(userOrders);
+                        Log.d(TAG, "getUserOrdersFromFireStore(): Successful!");
+                    } else {
+                        Log.d(TAG, "getUserOrdersFromFireStore(): Failure!");
+                    }
+                });
+    }
+
     public void markProductAsLiked(Product product, boolean isLiked) {
         firebaseFirestore.collection(COLLECTION_PRODUCTS).document(product.getProductId())
                 .update("likedUserIds", isLiked ?
-                        FieldValue.arrayUnion(firebaseUser.getUid()) :
-                        FieldValue.arrayRemove(firebaseUser.getUid()))
+                        FieldValue.arrayUnion(currentUser.getUid()) :
+                        FieldValue.arrayRemove(currentUser.getUid()))
                 .addOnCompleteListener(task -> {
                     String message = isLiked ? getResources().getString(R.string.like_add) :
                             getResources().getString(R.string.like_remove);
@@ -597,6 +664,10 @@ public class MainActivity extends AppCompatActivity
 //
             } else if (id == R.id.menuItemFavoriteProducts) {
                 getFavoriteProductsFromFireStore();
+            } else if (id == R.id.menuItemOrders) {
+                getUserOrdersFromFireStore();
+            } else if (id == R.id.menuItemCart) {
+                replaceFragmentToCardFragment();
             }
 //            else if (id == R.id.menuItemCart) {
 //                currentDirection = 3;

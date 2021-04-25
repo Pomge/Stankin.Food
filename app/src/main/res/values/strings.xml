@@ -62,4 +62,7 @@
 
     <string name="opening_hours">Opening hours</string>
     <string name="closing_hours">Closing hours</string>
+
+    <string name="order_created_title">Order created</string>
+    <string name="order_created_message">Your order has been added to processing</string>
 </resources>

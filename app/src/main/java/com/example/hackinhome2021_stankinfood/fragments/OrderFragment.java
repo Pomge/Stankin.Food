@@ -1,5 +1,6 @@
 package com.example.hackinhome2021_stankinfood.fragments;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,14 @@ import com.example.hackinhome2021_stankinfood.adapters.ProductRecyclerViewAdapte
 import com.example.hackinhome2021_stankinfood.interfaces.OnRecyclerViewClickListener;
 import com.example.hackinhome2021_stankinfood.models.Order;
 import com.example.hackinhome2021_stankinfood.models.Product;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
+
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 
 public class OrderFragment extends Fragment implements OnRecyclerViewClickListener {
@@ -26,6 +35,7 @@ public class OrderFragment extends Fragment implements OnRecyclerViewClickListen
     private boolean isOrder; //true- кассир, false - клиент
     private Order order;
     private ImageView imageViewQR;
+    private TextView textViewRealPickupTime;
     private Button buttonCloseOrder;
 
     public OrderFragment() {
@@ -51,6 +61,9 @@ public class OrderFragment extends Fragment implements OnRecyclerViewClickListen
             isOrder = getArguments().getBoolean(IS_ORDER);
             order = savedInstanceState.getParcelable(ORDER);
         }
+        for (Product product : order.getPositions()) {
+            product.setCountForOrder(product.getProductsLeft());
+        }
     }
 
     @Override
@@ -67,6 +80,7 @@ public class OrderFragment extends Fragment implements OnRecyclerViewClickListen
 
         initTextViewOrderId(view);
         initTextViewRealTotalPrice(view);
+        initTextViewRealPickupTime(view);
         initRecyclerViewProducts(view);
         initImageViewOR(view);
         initButtonCloseOrder(view);
@@ -108,23 +122,34 @@ public class OrderFragment extends Fragment implements OnRecyclerViewClickListen
 
     private void initImageViewOR(View view) {
         imageViewQR = view.findViewById(R.id.imageViewQR);
-        if (isOrder) imageViewQR.setVisibility(View.GONE);
-
+        if (isOrder) {
+            imageViewQR.setVisibility(View.GONE);
+        } else setImageViewQR();
     }
 
     private void initButtonCloseOrder(View view) {
         buttonCloseOrder = view.findViewById(R.id.buttonCloseOrder);
         if (isOrder) buttonCloseOrder.setVisibility(View.VISIBLE);
-
     }
 
 
     private void setImageViewQR() {
-        //TODO установить QR на ImageView
+        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+        try {
+            BitMatrix bitMatrix = multiFormatWriter.encode(order.getOrderId(), BarcodeFormat.QR_CODE,
+                    500, 500);
+            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+            Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
+            imageViewQR.setImageBitmap(bitmap);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void initTextViewPickupTime() {
-        //TODO установить время
+    private void initTextViewRealPickupTime(View view) {
+        textViewRealPickupTime = view.findViewById(R.id.textViewRealPickupTime);
+        textViewRealPickupTime.setText(new SimpleDateFormat("HH:mm", Locale.ENGLISH)
+                .format(order.getPickupTime()));
     }
 
 

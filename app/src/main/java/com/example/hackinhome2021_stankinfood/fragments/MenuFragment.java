@@ -286,14 +286,9 @@ public class MenuFragment extends Fragment implements
                 }
             }
             productRecyclerViewAdapter.notifyItemChanged(position);
+            MainActivity.userOrder.addPosition(currentProduct);
         }
     }
-
-//    public void restoreCardViewClick() {
-//        productRecyclerViewAdapter.notifyItemChanged(savedCardViewPosition);
-//        savedCardViewClick = -1;
-//        savedCardViewPosition = -1;
-//    }
 
 
     @Override

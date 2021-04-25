@@ -45,6 +45,15 @@ public class Product implements Parcelable, Cloneable {
         viewType = in.readInt();
     }
 
+    public Object clone() {
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException cloneNotSupportedException) {
+            cloneNotSupportedException.printStackTrace();
+        }
+        return null;
+    }
+
     public static final Creator<Product> CREATOR = new Creator<Product>() {
         @Override
         public Product createFromParcel(Parcel in) {
@@ -56,15 +65,6 @@ public class Product implements Parcelable, Cloneable {
             return new Product[size];
         }
     };
-
-    public Object clone() {
-        try {
-            return super.clone();
-        } catch (CloneNotSupportedException cloneNotSupportedException) {
-            cloneNotSupportedException.printStackTrace();
-        }
-        return null;
-    }
 
 
     @Exclude

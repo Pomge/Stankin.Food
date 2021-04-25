@@ -1,16 +1,17 @@
 package com.example.hackinhome2021_stankinfood.fragments;
 
 import android.app.AlertDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.hackinhome2021_stankinfood.R;
@@ -21,7 +22,7 @@ import com.example.hackinhome2021_stankinfood.models.Order;
 import com.example.hackinhome2021_stankinfood.models.Product;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
 
 
@@ -32,12 +33,15 @@ public class CartFragment extends Fragment implements
     private static final String ORDER = "order";
 
     private Order order;
+    private String restaurantId;
 
     private TextView textViewRealAddress;
     private TextView textViewPickupTime;
     private TextView textViewRealPickupTime;
     private TextView textViewClearCart;
     private TextView textViewRealTotalPrice;
+    private Button buttonMakeOrder;
+    private Button buttonPayWithGoogle;
 
     private ProductRecyclerViewAdapter productRecyclerViewAdapter;
 
@@ -61,6 +65,11 @@ public class CartFragment extends Fragment implements
         if (savedInstanceState != null) {
             order = savedInstanceState.getParcelable(ORDER);
         }
+        order.setDone(false);
+        order.setPickupTime(null);
+        if (order.getPositions().size() > 0) {
+            restaurantId = order.getPositions().get(0).getRestaurantId();
+        }
     }
 
     @Override
@@ -73,6 +82,7 @@ public class CartFragment extends Fragment implements
         initTextViewClearCart(view);
         initTextViewTotalPrice(view);
         initRecyclerViewProducts(view);
+        initButtons(view);
 
         return view;
     }
@@ -96,6 +106,8 @@ public class CartFragment extends Fragment implements
             String date = new SimpleDateFormat("HH:mm", Locale.ENGLISH).format(order.getPickupTime());
             textViewRealPickupTime.setText(date);
         } else textViewRealPickupTime.setText(getResources().getString(R.string.change_time));
+
+        textViewRealPickupTime.setOnClickListener(this);
     }
 
     private void initTextViewClearCart(View view) {
@@ -106,6 +118,14 @@ public class CartFragment extends Fragment implements
     private void initTextViewTotalPrice(View view) {
         textViewRealTotalPrice = view.findViewById(R.id.textViewRealTotalPrice);
         textViewRealTotalPrice.setText(getTotalPriceToString());
+    }
+
+    private void initButtons(View view) {
+        buttonMakeOrder = view.findViewById(R.id.buttonMakeOrder);
+        buttonPayWithGoogle = view.findViewById(R.id.buttonPayWithGoogle);
+
+        buttonMakeOrder.setOnClickListener(this);
+        buttonPayWithGoogle.setOnClickListener(this);
     }
 
     private String getTotalPriceToString() {
@@ -127,6 +147,29 @@ public class CartFragment extends Fragment implements
     }
 
 
+    private void showAlertDialogOrderCreated() {
+        String title = getResources().getString(R.string.order_created_title);
+        String message = getResources().getString(R.string.order_created_message);
+
+        String address = getResources().getString(R.string.address);
+        String totalPrice = getResources().getString(R.string.total_price);
+
+        String messageFull =
+                message + "\n\n" +
+                        address + ": " + textViewRealAddress.getText().toString() + "\n" +
+                        totalPrice + " " + getTotalPriceToString();
+        String buttonOkString = getResources().getString(R.string.ok);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(title);
+        builder.setMessage(messageFull);
+        builder.setPositiveButton(buttonOkString, (dialog, id) ->
+                ((MainActivity) getActivity()).addOrderToFireStore(order));
+        builder.setCancelable(false);
+        builder.create();
+        builder.show();
+    }
+
     private void showAlertDialogClearCart() {
         String title = getResources().getString(R.string.clear_cart);
         String message = getResources().getString(R.string.cart_clear_message);
@@ -145,9 +188,11 @@ public class CartFragment extends Fragment implements
     }
 
     private void clearCart() {
-        order.setPositions(new ArrayList<>());
-//        ((MainActivity) getActivity()).removeCartFragment();
+        order.clearPositions();
+        ((MainActivity) getActivity()).getRestaurantsFromFireStore();
     }
+
+    private int hourTimer, minuteTimer;
 
     @Override
     public void onClick(View v) {
@@ -155,6 +200,32 @@ public class CartFragment extends Fragment implements
 
         if (id == R.id.textViewClearCart) {
             showAlertDialogClearCart();
+        } else if (id == R.id.textViewRealPickupTime) {
+            TimePickerDialog timePickerDialog = new TimePickerDialog(
+                    getActivity(), (view, hourOfDay, minute) -> {
+                hourTimer = hourOfDay;
+                minuteTimer = minute;
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(2000, 1, 1, hourTimer, minuteTimer);
+
+                order.setPickupTime(calendar.getTime());
+                String time = new SimpleDateFormat("HH:mm", Locale.ENGLISH).format(calendar.getTime());
+                textViewRealPickupTime.setText(time);
+            }, 12, 0, true);
+            timePickerDialog.updateTime(hourTimer, minuteTimer);
+            timePickerDialog.show();
+        } else {
+            if (order.getPositions().size() > 0) {
+                order.setDone(false);
+                if (order.getPickupTime() == null) {
+                    order.setPickupTime(Calendar.getInstance().getTime());
+                }
+
+                if (id == R.id.buttonMakeOrder || id == R.id.buttonPayWithGoogle) {
+                    showAlertDialogOrderCreated();
+                }
+            }
         }
     }
 
@@ -168,7 +239,7 @@ public class CartFragment extends Fragment implements
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(title);
         builder.setMessage(message);
-        builder.setPositiveButton(buttonOkString, (dialog, id) -> removeItem(productId, position));
+        builder.setPositiveButton(buttonOkString, (dialog, id) -> removeItem(position));
         builder.setNegativeButton(buttonCancelString, (dialog, id) -> restoreItem(position));
         builder.setCancelable(false);
         builder.create();
@@ -180,9 +251,8 @@ public class CartFragment extends Fragment implements
         productRecyclerViewAdapter.notifyItemChanged(position);
     }
 
-    private void removeItem(String productId, int position) {
-        Log.d("LOG_MESSAGE", "productId: " + productId);
-        Log.d("LOG_MESSAGE", "position: " + position);
+    private void removeItem(int position) {
+        order.addPosition(order.getPositions().get(position));
         productRecyclerViewAdapter.notifyItemRemoved(position);
         productRecyclerViewAdapter.notifyItemRangeChanged(position, order.getPositions().size());
     }
@@ -200,7 +270,9 @@ public class CartFragment extends Fragment implements
             currentProduct.setCountForOrder(currentCount - 1);
         } else if (id == R.id.imageButtonPlus) {
             currentProduct.setCountForOrder(currentCount + 1);
+            order.addPosition(currentProduct);
         }
+        textViewRealTotalPrice.setText(getTotalPriceToString());
         productRecyclerViewAdapter.notifyItemChanged(position);
     }
 }

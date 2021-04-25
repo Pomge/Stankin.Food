@@ -9,12 +9,14 @@ import com.google.firebase.firestore.Exclude;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Order implements Parcelable {
     private String orderId;
+    private String userId;
     private String name;
-    private Timestamp pickupTime;
+    private Date pickupTime;
     private boolean isDone;
     private List<Product> positions = new ArrayList<>();
 
@@ -23,6 +25,7 @@ public class Order implements Parcelable {
 
     protected Order(Parcel in) {
         orderId = in.readString();
+        userId = in.readString();
         name = in.readString();
         isDone = in.readByte() != 0;
         positions = in.createTypedArrayList(Product.CREATOR);
@@ -51,6 +54,15 @@ public class Order implements Parcelable {
     }
 
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+
     public String getName() {
         return name;
     }
@@ -60,11 +72,11 @@ public class Order implements Parcelable {
     }
 
 
-    public Timestamp getPickupTime() {
+    public Date getPickupTime() {
         return pickupTime;
     }
 
-    public void setPickupTime(Timestamp pickupTime) {
+    public void setPickupTime(Date pickupTime) {
         this.pickupTime = pickupTime;
     }
 
@@ -87,6 +99,56 @@ public class Order implements Parcelable {
     }
 
 
+    public void clearPositions() {
+        positions.clear();
+        Log.d("LOG_MESSAGE", positions.toString());
+    }
+
+    public void addPosition(Product productInput) {
+        Product productSaved = null;
+        boolean isNewProduct = true;
+        for (Product productInList : positions) {
+            if (productInput.getProductId().equals(productInList.getProductId())) {
+                productSaved = productInList;
+                isNewProduct = false;
+                break;
+            }
+        }
+
+        if (isNewProduct) {
+            Product productNew = (Product) productInput.clone();
+            productNew.setLikesCount(0);
+            productNew.setLikedUserIds(null);
+            productNew.setProductsLeft(productNew.getCountForOrder());
+            productNew.setViewType(MainActivity.ORDER_PRODUCT_INACTIVE);
+            positions.add(productNew);
+        } else {
+            if (productInput.getCountForOrder() != 0) {
+                productSaved.setCountForOrder(productInput.getCountForOrder());
+            } else removePosition(productSaved.getProductId());
+        }
+    }
+
+    public void setViewTypeForPositions(boolean isActive) {
+        for (Product product : positions) {
+            if (isActive) {
+                product.setViewType(MainActivity.ORDER_PRODUCT_ACTIVE);
+            } else {
+                product.setViewType(MainActivity.ORDER_PRODUCT_INACTIVE);
+            }
+        }
+    }
+
+    public void removePosition(String productId) {
+        for (Product productInList : positions) {
+            if (productId.equals(productInList.getProductId())) {
+                positions.remove(productInList);
+                break;
+            }
+        }
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -95,15 +157,10 @@ public class Order implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(orderId);
+        dest.writeString(userId);
         dest.writeString(name);
         dest.writeByte((byte) (isDone ? 1 : 0));
         dest.writeTypedList(positions);
-    }
-
-
-    public void clearPositions() {
-        positions.clear();
-        Log.d("LOG_MESSAGE", positions.toString());
     }
 
 
