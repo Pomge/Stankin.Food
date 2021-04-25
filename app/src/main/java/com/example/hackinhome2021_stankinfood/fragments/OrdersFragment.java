@@ -148,7 +148,6 @@ public class OrdersFragment extends Fragment implements
             IntentIntegrator intentIntegrator = new IntentIntegrator((MainActivity) getActivity());
             intentIntegrator.setBeepEnabled(true);
             intentIntegrator.setOrientationLocked(true);
-            intentIntegrator.setCaptureActivity(Capture.class);
             IntentIntegrator.forSupportFragment(OrdersFragment.this).initiateScan();
         }
     }
