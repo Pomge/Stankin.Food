@@ -78,6 +78,9 @@ public class MainActivity extends AppCompatActivity
     public static final int ORDER_PRODUCT_INACTIVE = 3;
     public static final int ORDER_PRODUCT_ACTIVE = 4;
 
+    private static final String USER_DATA_KEY = "userData";
+    private static final String CURRENT_USER_KEY = "currentUser";
+
     private static final String COLLECTION_RESTAURANTS = "restaurants";
     private static final String COLLECTION_ORDERS = "orders";
     private static final String COLLECTION_PRODUCTS = "products";
@@ -104,7 +107,6 @@ public class MainActivity extends AppCompatActivity
     private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private final FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,8 +116,10 @@ public class MainActivity extends AppCompatActivity
         initBottomNavigationView();
         previousBottomNavigationTabId = R.id.menuItemRestaurants;
 
-        firebaseAuth.signOut();
-        currentUser = firebaseAuth.getCurrentUser();
+        if (savedInstanceState != null) {
+            currentUser = savedInstanceState.getParcelable(CURRENT_USER_KEY);
+            userData = savedInstanceState.getParcelable(CURRENT_USER_KEY);
+        }
 
         if (currentUser == null) {
             hideBottomNavigationView(true);
@@ -136,6 +140,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelable(CURRENT_USER_KEY, currentUser);
+        outState.putParcelable(USER_DATA_KEY, userData);
         super.onSaveInstanceState(outState);
     }
 
