@@ -1,5 +1,9 @@
 package com.example.hackinhome2021_stankinfood.adapters;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +18,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -114,6 +119,10 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         return viewHolder.itemView.getResources().getString(R.string.currency);
     }
 
+    private Drawable getNoImageDrawable(RecyclerView.ViewHolder holder) {
+        return ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.ic_no_image_64dp);
+    }
+
 
     private String getStringSinglePriceWithNumber(RecyclerView.ViewHolder viewHolder,
                                                   int singlePrice) {
@@ -155,9 +164,13 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             ViewHolderMenuProduct viewHolderMenuProduct,
             Product product, MyOnClickListener myOnClickListener) {
         viewHolderMenuProduct.imageButtonLiked.setSelected(product.isLiked());
-        Glide.with(viewHolderMenuProduct.itemView.getContext()).load(product.getImageURL())
-                .into(viewHolderMenuProduct.imageViewPicture);
-//        viewHolderMenuProduct.imageViewProductImage.setImageBitmap(product.image);
+        if (product.getImageURL() != null) {
+            Glide.with(viewHolderMenuProduct.itemView.getContext()).load(product.getImageURL())
+                    .into(viewHolderMenuProduct.imageViewPicture);
+        } else {
+            viewHolderMenuProduct.imageViewPicture.setImageDrawable(
+                    getNoImageDrawable(viewHolderMenuProduct));
+        }
         viewHolderMenuProduct.textViewName.setText(product.getProductName());
         viewHolderMenuProduct.ratingBar.setRating(product.getRating());
 
@@ -181,9 +194,13 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             ViewHolderMenuProduct viewHolderMenuProduct,
             Product product, MyOnClickListener myOnClickListener) {
         viewHolderMenuProduct.imageButtonLiked.setSelected(product.isLiked());
-        Glide.with(viewHolderMenuProduct.itemView.getContext()).load(product.getImageURL())
-                .into(viewHolderMenuProduct.imageViewPicture);
-//        viewHolderMenuProduct.imageViewProductImage.setImageBitmap(product.image);
+        if (product.getImageURL() != null) {
+            Glide.with(viewHolderMenuProduct.itemView.getContext()).load(product.getImageURL())
+                    .into(viewHolderMenuProduct.imageViewPicture);
+        } else {
+            viewHolderMenuProduct.imageViewPicture.setImageDrawable(
+                    getNoImageDrawable(viewHolderMenuProduct));
+        }
         viewHolderMenuProduct.textViewName.setText(product.getProductName());
         viewHolderMenuProduct.ratingBar.setRating(product.getRating());
 
@@ -206,9 +223,13 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     private void setDataForViewHolderOrderProductInactive(
             ViewHolderOrderProduct viewHolderOrderProduct,
             Product product) {
-        Glide.with(viewHolderOrderProduct.itemView.getContext()).load(product.getImageURL())
-                .into(viewHolderOrderProduct.imageViewPicture);
-        //viewHolderProduct.imageViewProductImage.setImageBitmap(product.image);
+        if (product.getImageURL() != null) {
+            Glide.with(viewHolderOrderProduct.itemView.getContext()).load(product.getImageURL())
+                    .into(viewHolderOrderProduct.imageViewPicture);
+        } else {
+            viewHolderOrderProduct.imageViewPicture.setImageDrawable(
+                    getNoImageDrawable(viewHolderOrderProduct));
+        }
         viewHolderOrderProduct.textViewName.setText(product.getProductName());
         String totalPrice = product.getPrice() * product.getCountForOrder() + " " +
                 getStringResourceCurrency(viewHolderOrderProduct);
@@ -222,9 +243,13 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     private void setDataForViewHolderOrderProductActive(
             ViewHolderOrderProduct viewHolderOrderProduct,
             Product product, MyOnClickListener myOnClickListener) {
-        Glide.with(viewHolderOrderProduct.itemView.getContext()).load(product.getImageURL())
-                .into(viewHolderOrderProduct.imageViewPicture);
-        //viewHolderProduct.imageViewProductImage.setImageBitmap(productClient.image);
+        if (product.getImageURL() != null) {
+            Glide.with(viewHolderOrderProduct.itemView.getContext()).load(product.getImageURL())
+                    .into(viewHolderOrderProduct.imageViewPicture);
+        } else {
+            viewHolderOrderProduct.imageViewPicture.setImageDrawable(
+                    getNoImageDrawable(viewHolderOrderProduct));
+        }
         viewHolderOrderProduct.textViewName.setText(product.getProductName());
         String totalPrice = product.getPrice() * product.getCountForOrder() + " " +
                 getStringResourceCurrency(viewHolderOrderProduct);

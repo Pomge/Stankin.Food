@@ -12,8 +12,10 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.example.hackinhome2021_stankinfood.R;
 import com.example.hackinhome2021_stankinfood.activities.MainActivity;
 import com.example.hackinhome2021_stankinfood.interfaces.OnBackPressedFragment;
@@ -167,10 +169,15 @@ public class ProductFragment extends Fragment implements
 
     private void initImageView(View view) {
         imageViewProductImage = view.findViewById(R.id.imageViewPicture);
-    }
-
-    private void setImageForImageView() {
-        //TODO установить картинку
+        if (product.getImageURL() != null) {
+            Glide.with(getContext()).load(product.getImageURL()).into(imageViewProductImage);
+        }
+        if (product.getImageURL() != null) {
+            Glide.with(getContext()).load(product.getImageURL()).into(imageViewProductImage);
+        } else {
+            imageViewProductImage.setImageDrawable(ContextCompat.getDrawable(getContext(),
+                    R.drawable.ic_no_image_64dp));
+        }
     }
 
 

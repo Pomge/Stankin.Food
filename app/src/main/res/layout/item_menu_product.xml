@@ -12,6 +12,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/textViewName"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:gravity="start|center_vertical"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="ProductName"
+            android:textSize="?attr/textSizeMedium"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/imageButtonLiked"
+            app:layout_constraintEnd_toStartOf="@id/imageButtonLiked"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/imageButtonLiked" />
+
         <ImageButton
             android:id="@+id/imageButtonLiked"
             android:layout_width="32dp"
@@ -24,28 +40,15 @@
 
         <ImageView
             android:id="@+id/imageViewPicture"
-            android:layout_width="128dp"
-            android:layout_height="128dp"
+            android:layout_width="match_parent"
+            android:layout_height="96dp"
             android:layout_margin="8dp"
             android:contentDescription="@null"
             android:scaleType="centerInside"
             android:src="@drawable/ic_no_image_64dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/textViewName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:gravity="center"
-            android:text="ProductName"
-            android:textSize="?attr/textSizeMedium"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/imageViewPicture" />
+            app:layout_constraintTop_toBottomOf="@id/textViewName" />
 
         <RatingBar
             android:id="@+id/ratingBar"
@@ -59,7 +62,7 @@
             android:scaleY=".75"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewName" />
+            app:layout_constraintTop_toBottomOf="@id/imageViewPicture" />
 
         <TextView
             android:id="@+id/textViewDescription"
