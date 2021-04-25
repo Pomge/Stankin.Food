@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.bumptech.glide.Glide;
 import com.example.hackinhome2021_stankinfood.R;
 import com.example.hackinhome2021_stankinfood.fragments.AuthRegChooseFragment;
 import com.example.hackinhome2021_stankinfood.fragments.AuthRegFragment;
@@ -49,7 +48,6 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import org.apache.commons.net.time.TimeTCPClient;
 
@@ -87,20 +85,6 @@ public class MainActivity extends AppCompatActivity
     private static final String COLLECTION_USERS = "users";
 
 
-    private final Random random = new SecureRandom();
-    private final List<String> categoriesNames = Arrays.asList(
-            "Супы", "Мясо", "Напитки");
-    private final List<String> soupNames = Arrays.asList(
-            "Харчо", "Затируха", "Томатный",
-            "Куриный", "Любимый", "Солянка", "Гречневый");
-    private final List<String> meatNames = Arrays.asList(
-            "Свиннина", "Говядина", "Телятина",
-            "Баранина", "Крольчатина", "Оленина", "Ягнятина");
-    private final List<String> drinkNames = Arrays.asList(
-            "7UP", "Lipton", "AQUA",
-            "Mirinda", "MountainDew", "Pepsi", "Drive");
-
-
     private String currentWeekday;
     private Date currentDate = null;
     public static Order userOrder = new Order();
@@ -132,6 +116,7 @@ public class MainActivity extends AppCompatActivity
         initBottomNavigationView();
         previousBottomNavigationTabId = R.id.menuItemRestaurants;
 
+        firebaseAuth.signOut();
         currentUser = firebaseAuth.getCurrentUser();
 
         if (currentUser == null) {
@@ -193,70 +178,70 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private void generateData() {
-        List<Product> productList = new ArrayList<>();
+//    private void generateData() {
+//        List<Product> productList = new ArrayList<>();
+//
+//        for (String soupName : soupNames) {
+//            Product product = new Product();
+//            product.setRestaurantId("XUqz9HedsagJwuZV1ur7");
+//            product.setProductsLeft(getRandomInteger(0, 10));
+//            product.setProductName(soupName);
+//            product.setPrice(getRandomInteger(50, 100));
+//            product.setLikesCount(getRandomInteger(0, 20));
+//            product.setImageURL(getRandomString(100));
+//            product.setDescription(getRandomString(255));
+//            product.setCategoryName(categoriesNames.get(0));
+//            productList.add(product);
+//        }
+//
+//        for (String meatName : meatNames) {
+//            Product product = new Product();
+//            product.setRestaurantId("XUqz9HedsagJwuZV1ur7");
+//            product.setProductsLeft(getRandomInteger(0, 10));
+//            product.setProductName(meatName);
+//            product.setPrice(getRandomInteger(50, 100));
+//            product.setLikesCount(getRandomInteger(0, 20));
+//            product.setImageURL(getRandomString(100));
+//            product.setDescription(getRandomString(255));
+//            product.setCategoryName(categoriesNames.get(1));
+//            productList.add(product);
+//        }
+//
+//        for (String drinkName : drinkNames) {
+//            Product product = new Product();
+//            product.setRestaurantId("XUqz9HedsagJwuZV1ur7");
+//            product.setProductsLeft(getRandomInteger(0, 10));
+//            product.setProductName(drinkName);
+//            product.setPrice(getRandomInteger(50, 100));
+//            product.setLikesCount(getRandomInteger(0, 20));
+//            product.setImageURL(getRandomString(100));
+//            product.setDescription(getRandomString(255));
+//            product.setCategoryName(categoriesNames.get(2));
+//            productList.add(product);
+//        }
+//
+//        for (Product product : productList) {
+//            firebaseFirestore.collection(COLLECTION_PRODUCTS).add(product);
+//        }
+//    }
 
-        for (String soupName : soupNames) {
-            Product product = new Product();
-            product.setRestaurantId("XUqz9HedsagJwuZV1ur7");
-            product.setProductsLeft(getRandomInteger(0, 10));
-            product.setProductName(soupName);
-            product.setPrice(getRandomInteger(50, 100));
-            product.setLikesCount(getRandomInteger(0, 20));
-            product.setImageURL(getRandomString(100));
-            product.setDescription(getRandomString(255));
-            product.setCategoryName(categoriesNames.get(0));
-            productList.add(product);
-        }
+//    private String getRandomString(int length) {
+//        int leftLimit = 97;     // letter 'a'
+//        int rightLimit = 122;   // letter 'z'
+//
+//        StringBuilder buffer = new StringBuilder(length);
+//        for (int i = 0; i < length; i++) {
+//            int randomLimitedInt = leftLimit +
+//                    (int) (random.nextFloat() * (rightLimit - leftLimit + 1));
+//            buffer.append((char) randomLimitedInt);
+//        }
+//
+//        return buffer.toString();
+//    }
 
-        for (String meatName : meatNames) {
-            Product product = new Product();
-            product.setRestaurantId("XUqz9HedsagJwuZV1ur7");
-            product.setProductsLeft(getRandomInteger(0, 10));
-            product.setProductName(meatName);
-            product.setPrice(getRandomInteger(50, 100));
-            product.setLikesCount(getRandomInteger(0, 20));
-            product.setImageURL(getRandomString(100));
-            product.setDescription(getRandomString(255));
-            product.setCategoryName(categoriesNames.get(1));
-            productList.add(product);
-        }
-
-        for (String drinkName : drinkNames) {
-            Product product = new Product();
-            product.setRestaurantId("XUqz9HedsagJwuZV1ur7");
-            product.setProductsLeft(getRandomInteger(0, 10));
-            product.setProductName(drinkName);
-            product.setPrice(getRandomInteger(50, 100));
-            product.setLikesCount(getRandomInteger(0, 20));
-            product.setImageURL(getRandomString(100));
-            product.setDescription(getRandomString(255));
-            product.setCategoryName(categoriesNames.get(2));
-            productList.add(product);
-        }
-
-        for (Product product : productList) {
-            firebaseFirestore.collection(COLLECTION_PRODUCTS).add(product);
-        }
-    }
-
-    private String getRandomString(int length) {
-        int leftLimit = 97;     // letter 'a'
-        int rightLimit = 122;   // letter 'z'
-
-        StringBuilder buffer = new StringBuilder(length);
-        for (int i = 0; i < length; i++) {
-            int randomLimitedInt = leftLimit +
-                    (int) (random.nextFloat() * (rightLimit - leftLimit + 1));
-            buffer.append((char) randomLimitedInt);
-        }
-
-        return buffer.toString();
-    }
-
-    private int getRandomInteger(int min, int max) {
-        return random.nextInt(max - min) + min;
-    }
+//    private int getRandomInteger(int min, int max) {
+//        return random.nextInt(max - min) + min;
+//    }
 
 
     public void createUserWithEmailAndPassword(String email, String password) {
@@ -393,7 +378,8 @@ public class MainActivity extends AppCompatActivity
     public void replaceFragmentToAuthRegChooseFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.mainContainer, new AuthRegChooseFragment(), AUTH_REG_CHOOSE_FRAGMENT);
+        fragmentTransaction.replace(R.id.mainContainer,
+                new AuthRegChooseFragment(), AUTH_REG_CHOOSE_FRAGMENT);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
@@ -401,7 +387,8 @@ public class MainActivity extends AppCompatActivity
     public void replaceFragmentToAuthRegFragment(boolean isRegistration) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.mainContainer, AuthRegFragment.newInstance(isRegistration), AUTH_REG_FRAGMENT);
+        fragmentTransaction.replace(R.id.mainContainer,
+                AuthRegFragment.newInstance(isRegistration), AUTH_REG_FRAGMENT);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
@@ -410,7 +397,8 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.popBackStack();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.mainContainer, RestaurantsFragment.newInstance(restaurantList));
+        fragmentTransaction.replace(R.id.mainContainer,
+                RestaurantsFragment.newInstance(restaurantList));
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
@@ -418,8 +406,8 @@ public class MainActivity extends AppCompatActivity
     public void replaceFragmentToProductFragment(List<Product> productList, int position) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.mainContainer, ProductFragment.newInstance(
-                productList.get(position)));
+        fragmentTransaction.replace(R.id.mainContainer,
+                ProductFragment.newInstance(productList.get(position)));
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
@@ -429,9 +417,8 @@ public class MainActivity extends AppCompatActivity
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.mainContainer, MenuFragment.newInstance(
-                isMenu, result));
-//        if (isMenu)
+        fragmentTransaction.replace(R.id.mainContainer,
+                MenuFragment.newInstance(isMenu, result));
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }

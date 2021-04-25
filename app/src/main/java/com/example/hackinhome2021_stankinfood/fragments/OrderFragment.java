@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hackinhome2021_stankinfood.R;
 import com.example.hackinhome2021_stankinfood.adapters.ProductRecyclerViewAdapter;
+import com.example.hackinhome2021_stankinfood.interfaces.OnBackPressedFragment;
 import com.example.hackinhome2021_stankinfood.interfaces.OnRecyclerViewClickListener;
 import com.example.hackinhome2021_stankinfood.models.Order;
 import com.example.hackinhome2021_stankinfood.models.Product;
@@ -29,7 +30,9 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 
-public class OrderFragment extends Fragment implements OnRecyclerViewClickListener {
+public class OrderFragment extends Fragment implements
+        OnRecyclerViewClickListener,
+        OnBackPressedFragment {
     private static final String IS_ORDER = "isOrder";
     private static final String ORDER = "order";
 
@@ -159,5 +162,11 @@ public class OrderFragment extends Fragment implements OnRecyclerViewClickListen
     @Override
     public void onItemClick(View view, int position) {
 
+    }
+
+
+    @Override
+    public boolean onBackPressed() {
+        return false;
     }
 }
