@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -90,6 +91,7 @@ public class MainActivity extends AppCompatActivity
     public static Order userOrder = new Order();
 
     private View parentLayout;
+    private ProgressBar progressBar;
     private int previousDirection = 0;
     private int previousBottomNavigationTabId;
 
@@ -111,6 +113,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         parentLayout = findViewById(android.R.id.content);
+        progressBar = findViewById(R.id.progressBar);
         initBottomNavigationView();
         previousBottomNavigationTabId = R.id.menuItemRestaurants;
 
@@ -248,6 +251,12 @@ public class MainActivity extends AppCompatActivity
 //    }
 
 
+    private void hideProgressBar(boolean hide) {
+        if (hide) {
+            progressBar.setVisibility(View.GONE);
+        } else progressBar.setVisibility(View.VISIBLE);
+    }
+
     public void createUserWithEmailAndPassword(String email, String password) {
         firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
@@ -289,7 +298,6 @@ public class MainActivity extends AppCompatActivity
         Intent signInWithGoogle = googleSignInClient.getSignInIntent();
         startActivityForResult(signInWithGoogle, RC_SIGN_IN);
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -373,6 +381,7 @@ public class MainActivity extends AppCompatActivity
 
 
     public void replaceFragmentToAuthRegChooseFragment() {
+        hideProgressBar(true);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.mainContainer,
@@ -382,6 +391,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void replaceFragmentToAuthRegFragment(boolean isRegistration) {
+        hideProgressBar(true);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.mainContainer,
@@ -391,6 +401,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void replaceRestaurantsToFragment(List<Restaurant> restaurantList) {
+        hideProgressBar(true);
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.popBackStack();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -401,6 +412,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void replaceFragmentToProductFragment(List<Product> productList, int position) {
+        hideProgressBar(true);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.mainContainer,
@@ -412,6 +424,7 @@ public class MainActivity extends AppCompatActivity
     private void replaceFragmentToMenuFragment(boolean isMenu,
                                                boolean withCategoriesSort,
                                                List<Product> productList) {
+        hideProgressBar(true);
         List<Product> result = getConvertedProductListForRecyclerView(
                 productList, isMenu, withCategoriesSort);
 
@@ -424,6 +437,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void replaceFragmentToCardFragment() {
+        hideProgressBar(true);
         userOrder.setViewTypeForPositions(true);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -434,6 +448,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void replaceFragmentToOrderFragment(Order order) {
+        hideProgressBar(true);
         boolean isManagerView = userData.getRestaurantId() != null;
         order.setViewTypeForPositions(isManagerView);
 
@@ -446,6 +461,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void replaceFragmentToOrdersFragment(List<Order> orderList) {
+        hideProgressBar(true);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.mainContainer, OrdersFragment.newInstance(
@@ -480,6 +496,7 @@ public class MainActivity extends AppCompatActivity
 
 
     public void getRestaurantsFromFireStore() {
+        hideProgressBar(false);
         firebaseFirestore.collection(COLLECTION_RESTAURANTS).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -547,6 +564,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void getFavoriteProductsFromFireStore() {
+        hideProgressBar(false);
         firebaseFirestore.collection(COLLECTION_PRODUCTS)
                 .whereArrayContains("likedUserIds", currentUser.getUid())
                 .whereGreaterThanOrEqualTo("productsLeft", 1).get()
@@ -568,6 +586,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void getMenuFromFireStore(Restaurant restaurant) {
+        hideProgressBar(false);
         userOrder.clearPositions();
 
         firebaseFirestore.collection(COLLECTION_PRODUCTS)
@@ -615,6 +634,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void getRestaurantOrdersFromFireStore() {
+        hideProgressBar(false);
         firebaseFirestore.collection(COLLECTION_ORDERS)
                 .whereEqualTo("restaurantId", userData.getRestaurantId()).get()
                 .addOnCompleteListener(task -> {
@@ -634,6 +654,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void getUserOrdersFromFireStore() {
+        hideProgressBar(false);
         firebaseFirestore.collection(COLLECTION_ORDERS)
                 .whereEqualTo("userId", currentUser.getUid()).get()
                 .addOnCompleteListener(task -> {
@@ -653,6 +674,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void getOrderFromFireStore(String orderId) {
+        hideProgressBar(false);
         firebaseFirestore.collection(COLLECTION_ORDERS).document(orderId).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
