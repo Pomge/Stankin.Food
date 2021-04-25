@@ -124,8 +124,10 @@ public class MainActivity extends AppCompatActivity
             hideBottomNavigationView(true);
             replaceFragmentToAuthRegChooseFragment();
         } else {
-            currentTimeGetterThread = new CurrentTimeGetterThread();
-            currentTimeGetterThread.start();
+            findUserInDatabase();
+
+//            currentTimeGetterThread = new CurrentTimeGetterThread();
+//            currentTimeGetterThread.start();
         }
 
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -172,7 +174,7 @@ public class MainActivity extends AppCompatActivity
                 if (currentDate != null) {
                     DateFormat weekdayString = new SimpleDateFormat("EEEE", Locale.ENGLISH);
                     currentWeekday = weekdayString.format(currentDate);
-                    findUserInDatabase();
+//                    findUserInDatabase();
                     break;
                 }
             }
