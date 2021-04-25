@@ -536,22 +536,24 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
-        int index = 0;
-        String savedCategoryName = categoryNamesList.get(0);
-        Product firstHeader = new Product();
-        firstHeader.setCategoryName(savedCategoryName);
-        firstHeader.setViewType(MainActivity.MENU_HEADER);
-        productList.add(0, firstHeader);
-        index++;
+        if (categoryNamesList.size() > 0) {
+            int index = 0;
+            String savedCategoryName = categoryNamesList.get(0);
+            Product firstHeader = new Product();
+            firstHeader.setCategoryName(savedCategoryName);
+            firstHeader.setViewType(MainActivity.MENU_HEADER);
+            productList.add(0, firstHeader);
+            index++;
 
-        for (int i = 1; i < productList.size(); i++) {
-            if (!productList.get(i).getCategoryName().equals(savedCategoryName)) {
-                savedCategoryName = categoryNamesList.get(index);
-                Product categoryName = new Product();
-                categoryName.setCategoryName(savedCategoryName);
-                categoryName.setViewType(MainActivity.MENU_HEADER);
-                productList.add(i, categoryName);
-                index++;
+            for (int i = 1; i < productList.size(); i++) {
+                if (!productList.get(i).getCategoryName().equals(savedCategoryName)) {
+                    savedCategoryName = categoryNamesList.get(index);
+                    Product categoryName = new Product();
+                    categoryName.setCategoryName(savedCategoryName);
+                    categoryName.setViewType(MainActivity.MENU_HEADER);
+                    productList.add(i, categoryName);
+                    index++;
+                }
             }
         }
     }
