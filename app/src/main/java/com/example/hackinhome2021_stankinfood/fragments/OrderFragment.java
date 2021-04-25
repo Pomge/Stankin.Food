@@ -2,6 +2,7 @@ package com.example.hackinhome2021_stankinfood.fragments;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -136,9 +137,10 @@ public class OrderFragment extends Fragment implements OnRecyclerViewClickListen
     private void setImageViewQR() {
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
         try {
+            Log.d("LOG_MESSAGE", order.getOrderId());
             BitMatrix bitMatrix = multiFormatWriter.encode(
                     order.getOrderId(), BarcodeFormat.QR_CODE,
-                    500, 500);
+                    250, 250);
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
             Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
             imageViewQR.setImageBitmap(bitmap);

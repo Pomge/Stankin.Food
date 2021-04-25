@@ -1,14 +1,19 @@
 package com.example.hackinhome2021_stankinfood.fragments;
 
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,7 +25,12 @@ import com.example.hackinhome2021_stankinfood.interfaces.OnBackPressedFragment;
 import com.example.hackinhome2021_stankinfood.interfaces.OnRecyclerViewClickListener;
 import com.example.hackinhome2021_stankinfood.models.Order;
 import com.example.hackinhome2021_stankinfood.models.Product;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+import com.journeyapps.barcodescanner.CaptureActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,23 +38,28 @@ import java.util.List;
 public class OrdersFragment extends Fragment implements
         SearchView.OnQueryTextListener,
         OnRecyclerViewClickListener,
-        OnBackPressedFragment {
+        OnBackPressedFragment,
+        View.OnClickListener {
 
+    private static final String IS_MANAGER_VIEW = "isManagerView";
     private static final String ORDER_LIST = "orderList";
 
+    private boolean isManagerView;
     private List<Order> orderList;
 
     private SearchView searchView;
     private RecyclerView recyclerViewMenu;
     private LinearLayoutManager linearLayoutManager;
     private OrderRecyclerViewAdapter orderRecyclerViewAdapter;
+    private Button buttonScanQR;
 
     public OrdersFragment() {
     }
 
-    public static OrdersFragment newInstance(List<Order> orderList) {
+    public static OrdersFragment newInstance(boolean isManagerView, List<Order> orderList) {
         OrdersFragment fragment = new OrdersFragment();
         Bundle args = new Bundle();
+        args.putBoolean(IS_MANAGER_VIEW, isManagerView);
         args.putParcelableArrayList(ORDER_LIST, (ArrayList<? extends Parcelable>) orderList);
         fragment.setArguments(args);
         return fragment;
@@ -54,9 +69,11 @@ public class OrdersFragment extends Fragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            isManagerView = getArguments().getBoolean(IS_MANAGER_VIEW);
             orderList = getArguments().getParcelableArrayList(ORDER_LIST);
         }
         if (savedInstanceState != null) {
+            isManagerView = savedInstanceState.getBoolean(IS_MANAGER_VIEW);
             orderList = savedInstanceState.getParcelableArrayList(ORDER_LIST);
         }
     }
@@ -76,6 +93,7 @@ public class OrdersFragment extends Fragment implements
         linearLayoutManager = new LinearLayoutManager(view.getContext());
         initRecyclerViewMenu(view);
         initTabLayout(view);
+        if (isManagerView) initButtonScanQR(view);
 
         return view;
     }
@@ -99,6 +117,11 @@ public class OrdersFragment extends Fragment implements
         tabLayout.setVisibility(View.GONE);
     }
 
+    private void initButtonScanQR(View view) {
+        buttonScanQR = view.findViewById(R.id.buttonScanQR);
+        buttonScanQR.setOnClickListener(this);
+        buttonScanQR.setVisibility(View.VISIBLE);
+    }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
@@ -119,6 +142,14 @@ public class OrdersFragment extends Fragment implements
         if (view.getId() == R.id.cardView) {
             ((MainActivity) getActivity()).replaceFragmentToOrderFragment(
                     false, orderList.get(position));
+        }
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.buttonScanQR) {
+            ((MainActivity) getActivity()).createIntentIntegrator();
         }
     }
 

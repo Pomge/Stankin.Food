@@ -65,4 +65,7 @@
 
     <string name="order_created_title">Order created</string>
     <string name="order_created_message">Your order has been added to processing</string>
+
+    <string name="scan_qr">Scan QR</string>
+    <string name="scan_error">Failed to scan QR code!</string>
 </resources>

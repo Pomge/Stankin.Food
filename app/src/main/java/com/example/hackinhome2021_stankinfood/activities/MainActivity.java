@@ -35,7 +35,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -48,8 +47,9 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import org.apache.commons.net.time.TimeTCPClient;
 
@@ -113,6 +113,7 @@ public class MainActivity extends AppCompatActivity
 
     private CurrentTimeGetterThread currentTimeGetterThread = null;
 
+    private User userData;
     private FirebaseUser currentUser = null;
     private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private static final int RC_SIGN_IN = 9001;
@@ -300,20 +301,38 @@ public class MainActivity extends AppCompatActivity
         startActivityForResult(signInWithGoogle, RC_SIGN_IN);
     }
 
+    public void createIntentIntegrator() {
+        IntentIntegrator intentIntegrator = new IntentIntegrator(MainActivity.this);
+        intentIntegrator.setBeepEnabled(true);
+        intentIntegrator.setOrientationLocked(true);
+        intentIntegrator.setCaptureActivity(Capture.class);
+        intentIntegrator.initiateScan();
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                Log.d("LOG_MESSAGE", "onActivityResult: " + account.getId());
+                Log.d(TAG, "onActivityResult: " + account.getId());
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException apiException) {
                 apiException.printStackTrace();
             }
+        } else {
+            IntentResult intentResult = IntentIntegrator.parseActivityResult(
+                    requestCode, requestCode, data);
+
+            Log.d(TAG, "onActivityResult: " + intentResult.getContents());
+            if (intentResult.getContents() != null) {
+                getOrderFromFireStore(intentResult.getContents());
+            } else {
+                Snackbar.make(parentLayout, getResources().getString(R.string.scan_error),
+                        BaseTransientBottomBar.LENGTH_SHORT).show();
+            }
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     public void firebaseAuthWithGoogle(String idToken) {
@@ -346,6 +365,10 @@ public class MainActivity extends AppCompatActivity
                 "userId", user.getUserId()).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
+                            userData = queryDocumentSnapshot.toObject(User.class);
+                            Log.d("LOG_MESSAGE", userData.toString());
+                        }
                         if (currentTimeGetterThread == null) {
                             currentTimeGetterThread = new CurrentTimeGetterThread();
                             currentTimeGetterThread.start();
@@ -453,7 +476,8 @@ public class MainActivity extends AppCompatActivity
     private void replaceFragmentToOrdersFragment(List<Order> orderList) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.mainContainer, OrdersFragment.newInstance(orderList));
+        fragmentTransaction.replace(R.id.mainContainer, OrdersFragment.newInstance(
+                userData.getRestaurantId() != null, orderList));
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
@@ -624,15 +648,29 @@ public class MainActivity extends AppCompatActivity
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         List<Order> userOrders = new ArrayList<>();
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            Order order = document.toObject(Order.class);
-                            order.setOrderId(document.getId());
+                        for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
+                            Order order = queryDocumentSnapshot.toObject(Order.class);
+                            order.setOrderId(queryDocumentSnapshot.getId());
                             userOrders.add(order);
                         }
                         replaceFragmentToOrdersFragment(userOrders);
                         Log.d(TAG, "getUserOrdersFromFireStore(): Successful!");
                     } else {
                         Log.d(TAG, "getUserOrdersFromFireStore(): Failure!");
+                    }
+                });
+    }
+
+    public void getOrderFromFireStore(String orderId) {
+        firebaseFirestore.collection(COLLECTION_ORDERS).document(orderId).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Order order = task.getResult().toObject(Order.class);
+                        replaceFragmentToOrderFragment(
+                                userData.getRestaurantId() != null, order);
+                        Log.d(TAG, "getOrderFromFireStore(): Successful!");
+                    } else {
+                        Log.d(TAG, "getOrderFromFireStore(): Failed!");
                     }
                 });
     }
