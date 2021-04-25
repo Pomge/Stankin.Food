@@ -3,6 +3,7 @@ package com.example.hackinhome2021_stankinfood.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +17,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hackinhome2021_stankinfood.R;
+import com.example.hackinhome2021_stankinfood.activities.Capture;
 import com.example.hackinhome2021_stankinfood.activities.MainActivity;
 import com.example.hackinhome2021_stankinfood.adapters.OrderRecyclerViewAdapter;
 import com.example.hackinhome2021_stankinfood.interfaces.OnBackPressedFragment;
 import com.example.hackinhome2021_stankinfood.interfaces.OnRecyclerViewClickListener;
 import com.example.hackinhome2021_stankinfood.models.Order;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
@@ -147,6 +153,7 @@ public class OrdersFragment extends Fragment implements
             IntentIntegrator intentIntegrator = new IntentIntegrator((MainActivity) getActivity());
             intentIntegrator.setBeepEnabled(true);
             intentIntegrator.setOrientationLocked(true);
+//            intentIntegrator.setCaptureActivity(Capture.class);
             IntentIntegrator.forSupportFragment(OrdersFragment.this).initiateScan();
         }
     }
