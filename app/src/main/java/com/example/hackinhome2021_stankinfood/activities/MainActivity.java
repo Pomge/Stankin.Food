@@ -184,73 +184,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
-
-
-//    private void generateData() {
-//        List<Product> productList = new ArrayList<>();
-//
-//        for (String soupName : soupNames) {
-//            Product product = new Product();
-//            product.setRestaurantId("XUqz9HedsagJwuZV1ur7");
-//            product.setProductsLeft(getRandomInteger(0, 10));
-//            product.setProductName(soupName);
-//            product.setPrice(getRandomInteger(50, 100));
-//            product.setLikesCount(getRandomInteger(0, 20));
-//            product.setImageURL(getRandomString(100));
-//            product.setDescription(getRandomString(255));
-//            product.setCategoryName(categoriesNames.get(0));
-//            productList.add(product);
-//        }
-//
-//        for (String meatName : meatNames) {
-//            Product product = new Product();
-//            product.setRestaurantId("XUqz9HedsagJwuZV1ur7");
-//            product.setProductsLeft(getRandomInteger(0, 10));
-//            product.setProductName(meatName);
-//            product.setPrice(getRandomInteger(50, 100));
-//            product.setLikesCount(getRandomInteger(0, 20));
-//            product.setImageURL(getRandomString(100));
-//            product.setDescription(getRandomString(255));
-//            product.setCategoryName(categoriesNames.get(1));
-//            productList.add(product);
-//        }
-//
-//        for (String drinkName : drinkNames) {
-//            Product product = new Product();
-//            product.setRestaurantId("XUqz9HedsagJwuZV1ur7");
-//            product.setProductsLeft(getRandomInteger(0, 10));
-//            product.setProductName(drinkName);
-//            product.setPrice(getRandomInteger(50, 100));
-//            product.setLikesCount(getRandomInteger(0, 20));
-//            product.setImageURL(getRandomString(100));
-//            product.setDescription(getRandomString(255));
-//            product.setCategoryName(categoriesNames.get(2));
-//            productList.add(product);
-//        }
-//
-//        for (Product product : productList) {
-//            firebaseFirestore.collection(COLLECTION_PRODUCTS).add(product);
-//        }
-//    }
-
-//    private String getRandomString(int length) {
-//        int leftLimit = 97;     // letter 'a'
-//        int rightLimit = 122;   // letter 'z'
-//
-//        StringBuilder buffer = new StringBuilder(length);
-//        for (int i = 0; i < length; i++) {
-//            int randomLimitedInt = leftLimit +
-//                    (int) (random.nextFloat() * (rightLimit - leftLimit + 1));
-//            buffer.append((char) randomLimitedInt);
-//        }
-//
-//        return buffer.toString();
-//    }
-
-//    private int getRandomInteger(int min, int max) {
-//        return random.nextInt(max - min) + min;
-//    }
-
+    
 
     private void hideProgressBar(boolean hide) {
         if (hide) {
@@ -381,8 +315,8 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private void animationFragmentManager(FragmentTransaction fragmentTransaction) {
-        Log.d(TAG, "currentDirection: " + currentDirection + "; previousDirection: " + previousDirection);
+//    private void animationFragmentManager(FragmentTransaction fragmentTransaction) {
+//        Log.d(TAG, "currentDirection: " + currentDirection + "; previousDirection: " + previousDirection);
 //        if (currentDirection < previousDirection) {
 //            fragmentTransaction.setCustomAnimations(
 //                    R.anim.enter_from_left, R.anim.exit_to_right,
@@ -392,7 +326,7 @@ public class MainActivity extends AppCompatActivity
 //                    R.anim.enter_from_right, R.anim.exit_to_left,
 //                    R.anim.enter_from_left, R.anim.exit_to_right);
 //        }
-    }
+//    }
 
 
     public void replaceFragmentToAuthRegChooseFragment() {
