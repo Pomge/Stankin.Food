@@ -114,6 +114,7 @@ public class MainActivity extends AppCompatActivity
         initBottomNavigationView();
         previousBottomNavigationTabId = R.id.menuItemRestaurants;
 
+        currentUser = firebaseAuth.getCurrentUser();
         if (savedInstanceState != null) {
             currentUser = savedInstanceState.getParcelable(CURRENT_USER_KEY);
             userData = savedInstanceState.getParcelable(CURRENT_USER_KEY);
@@ -249,7 +250,7 @@ public class MainActivity extends AppCompatActivity
         firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        Log.d(TAG, "createUserWithEmailAndPassword(): Task Successful!");
+                        Log.d(TAG, "createUserWithEmailAndPassword(): Successful!");
                         hideKeyboard(this);
 
                         currentUser = firebaseAuth.getCurrentUser();
@@ -258,7 +259,7 @@ public class MainActivity extends AppCompatActivity
                         Fragment fragment = getSupportFragmentManager().findFragmentByTag(AUTH_REG_FRAGMENT);
                         ((AuthRegFragment) fragment).showAlertDialogVerificationMessage(email);
                     } else {
-                        Log.d(TAG, "createUserWithEmailAndPassword(): Task Failure!");
+                        Log.d(TAG, "createUserWithEmailAndPassword(): Failed!");
                     }
                 });
     }
@@ -269,14 +270,14 @@ public class MainActivity extends AppCompatActivity
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        Log.d(TAG, "authUserWithEmailAndPassword(): Task Successful!");
+                        Log.d(TAG, "authUserWithEmailAndPassword(): Successful!");
                         currentUser = firebaseAuth.getCurrentUser();
                         if (!currentUser.isEmailVerified()) {
                             Fragment fragment = getSupportFragmentManager().findFragmentByTag(AUTH_REG_FRAGMENT);
                             ((AuthRegFragment) fragment).showSnackBarEmailNotVerified();
                         } else findUserInDatabase();
                     } else {
-                        Log.d(TAG, "authUserWithEmailAndPassword(): Task Failure!");
+                        Log.d(TAG, "authUserWithEmailAndPassword(): Failed!");
                     }
                 });
     }
@@ -307,19 +308,13 @@ public class MainActivity extends AppCompatActivity
     public void firebaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         firebaseAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-
-                            Log.d(TAG, "signInWithCredential:success");
-                            currentUser = firebaseAuth.getCurrentUser();
-                            findUserInDatabase();
-                        } else {
-
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-//                            updateUI(null);
-                        }
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "signInWithCredential: Successful!");
+                        currentUser = firebaseAuth.getCurrentUser();
+                        findUserInDatabase();
+                    } else {
+                        Log.w(TAG, "signInWithCredential: Failed!", task.getException());
                     }
                 });
     }
@@ -334,9 +329,9 @@ public class MainActivity extends AppCompatActivity
                 "userId", user.getUserId()).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        Log.d(TAG, "findUserInDatabase(): Task Successful!");
                         for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
                             userData = queryDocumentSnapshot.toObject(User.class);
-                            Log.d("LOG_MESSAGE", userData.toString());
                         }
                         if (currentTimeGetterThread == null) {
                             currentTimeGetterThread = new CurrentTimeGetterThread();
@@ -348,9 +343,8 @@ public class MainActivity extends AppCompatActivity
                         setBottomNavigationViewToZeroPosition();
                         getRestaurantsFromFireStore();
                         userOrder.setUserId(currentUser.getUid());
-                        Log.d(TAG, "findUserInDatabase(): Task Successful!");
                     } else {
-                        Log.d(TAG, "findUserInDatabase(): Task Failure!");
+                        Log.d(TAG, "findUserInDatabase(): Task Failed!");
                     }
                 });
     }
@@ -361,7 +355,7 @@ public class MainActivity extends AppCompatActivity
                     if (taskInner.isSuccessful()) {
                         Log.d(TAG, "createUserInDatabase(): Task Successful!");
                     } else {
-                        Log.d(TAG, "createUserInDatabase(): Task Failure!");
+                        Log.d(TAG, "createUserInDatabase(): Task Failed!");
                     }
                 });
     }
@@ -372,7 +366,7 @@ public class MainActivity extends AppCompatActivity
                     Fragment fragment = getSupportFragmentManager().findFragmentByTag(AUTH_REG_FRAGMENT);
                     ((AuthRegFragment) fragment).showSnackBarResetPassword(email);
                 })
-                .addOnFailureListener(e -> Log.d("LOG_MESSAGE", "sendResetPasswordByEmail(): Failture!"));
+                .addOnFailureListener(e -> Log.d(TAG, "sendResetPasswordByEmail(): Failed!"));
     }
 
 
@@ -459,12 +453,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void hideKeyboard(Activity activity) {
-        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager)
+                activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         View view = activity.getCurrentFocus();
-
-        if (view == null) {
-            view = new View(activity);
-        }
+        if (view == null) view = new View(activity);
 
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
@@ -489,6 +481,7 @@ public class MainActivity extends AppCompatActivity
         firebaseFirestore.collection(COLLECTION_RESTAURANTS).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        Log.d(TAG, "getRestraintsFromFireStore(): Successful!");
                         List<Restaurant> restaurantList = new ArrayList<>();
                         for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
                             Restaurant restaurant = queryDocumentSnapshot.toObject(Restaurant.class);
@@ -557,6 +550,7 @@ public class MainActivity extends AppCompatActivity
                 .whereGreaterThanOrEqualTo("productsLeft", 1).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        Log.d(TAG, "getFavoriteProductsFromFireStore(): Success!");
                         List<Product> productList = new ArrayList<>();
                         for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
                             Product product = queryDocumentSnapshot.toObject(Product.class);
@@ -565,7 +559,6 @@ public class MainActivity extends AppCompatActivity
                             productList.add(product);
                         }
                         replaceFragmentToMenuFragment(false, false, productList);
-                        Log.d(TAG, "getFavoriteProductsFromFireStore(): Success!");
                     } else {
                         Log.d(TAG, "getFavoriteProductsFromFireStore(): Failed!");
                     }
@@ -580,6 +573,7 @@ public class MainActivity extends AppCompatActivity
                 .whereGreaterThanOrEqualTo("productsLeft", 1).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        Log.d(TAG, "getProductsFromFireStore(): Success!");
                         List<Product> productList = new ArrayList<>();
                         for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
                             Product product = queryDocumentSnapshot.toObject(Product.class);
@@ -596,7 +590,6 @@ public class MainActivity extends AppCompatActivity
                             productList.add(product);
                         }
                         replaceFragmentToMenuFragment(true, true, productList);
-                        Log.d(TAG, "getProductsFromFireStore(): Success!");
                     } else {
                         Log.d(TAG, "getProductsFromFireStore(): Failed!");
                     }
@@ -611,10 +604,10 @@ public class MainActivity extends AppCompatActivity
         firebaseFirestore.collection(COLLECTION_ORDERS).add(order)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        Log.d(TAG, "addOrderToFireStore(): Successful!");
                         order.clearPositions();
                         setBottomNavigationViewToZeroPosition();
                         getRestaurantsFromFireStore();
-                        Log.d(TAG, "addOrderToFireStore(): Successful!");
                     } else Log.d(TAG, "addOrderToFireStore(): Failure!");
                 });
     }
@@ -624,6 +617,7 @@ public class MainActivity extends AppCompatActivity
                 .whereEqualTo("restaurantId", userData.getRestaurantId()).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        Log.d(TAG, "getUserOrdersFromFireStore(): Successful!");
                         List<Order> restaurantOrders = new ArrayList<>();
                         for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
                             Order order = queryDocumentSnapshot.toObject(Order.class);
@@ -631,7 +625,6 @@ public class MainActivity extends AppCompatActivity
                             restaurantOrders.add(order);
                         }
                         replaceFragmentToOrdersFragment(restaurantOrders);
-                        Log.d(TAG, "getUserOrdersFromFireStore(): Successful!");
                     } else {
                         Log.d(TAG, "getUserOrdersFromFireStore(): Failure!");
                     }
@@ -643,6 +636,7 @@ public class MainActivity extends AppCompatActivity
                 .whereEqualTo("userId", currentUser.getUid()).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        Log.d(TAG, "getUserOrdersFromFireStore(): Successful!");
                         List<Order> userOrders = new ArrayList<>();
                         for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
                             Order order = queryDocumentSnapshot.toObject(Order.class);
@@ -650,7 +644,6 @@ public class MainActivity extends AppCompatActivity
                             userOrders.add(order);
                         }
                         replaceFragmentToOrdersFragment(userOrders);
-                        Log.d(TAG, "getUserOrdersFromFireStore(): Successful!");
                     } else {
                         Log.d(TAG, "getUserOrdersFromFireStore(): Failure!");
                     }
@@ -661,10 +654,10 @@ public class MainActivity extends AppCompatActivity
         firebaseFirestore.collection(COLLECTION_ORDERS).document(orderId).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        Log.d(TAG, "getOrderFromFireStore(): Successful!");
                         Order order = task.getResult().toObject(Order.class);
                         order.setOrderId(task.getResult().getId());
                         replaceFragmentToOrderFragment(order);
-                        Log.d(TAG, "getOrderFromFireStore(): Successful!");
                     } else {
                         Log.d(TAG, "getOrderFromFireStore(): Failed!");
                     }
@@ -694,9 +687,6 @@ public class MainActivity extends AppCompatActivity
             int currentDirection = 0;
             if (id == R.id.menuItemRestaurants) {
                 getRestaurantsFromFireStore();
-//            } else if (id == R.id.menuItemOrders) {
-//                currentDirection = 1;
-//
             } else if (id == R.id.menuItemFavoriteProducts) {
                 getFavoriteProductsFromFireStore();
             } else if (id == R.id.menuItemOrders) {
@@ -706,26 +696,6 @@ public class MainActivity extends AppCompatActivity
             } else if (id == R.id.menuItemCart) {
                 replaceFragmentToCardFragment();
             }
-//            else if (id == R.id.menuItemCart) {
-//                currentDirection = 3;
-//                fragment = new CartFragment();
-//            }
-//
-//            if (previousDirection < currentDirection) {
-//                fragmentTransaction.setCustomAnimations(
-//                        R.anim.enter_from_right, R.anim.exit_to_left,
-//                        R.anim.enter_from_right, R.anim.exit_to_left);
-//            } else {
-//                fragmentTransaction.setCustomAnimations(
-//                        R.anim.enter_from_left, R.anim.exit_to_right,
-//                        R.anim.enter_from_left, R.anim.exit_to_right);
-//            }
-//
-//            if (id == R.id.menuItemRestaurants || id == R.id.menuItemCafe) {
-//                fragmentTransaction.replace(R.id.mainContainer, fragment, MENU_FRAGMENT);
-//            } else fragmentTransaction.replace(R.id.mainContainer, fragment);
-//            fragmentTransaction.commit();
-//
             previousDirection = currentDirection;
             previousBottomNavigationTabId = id;
         }

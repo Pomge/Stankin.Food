@@ -20,6 +20,8 @@ import com.example.hackinhome2021_stankinfood.adapters.ProductRecyclerViewAdapte
 import com.example.hackinhome2021_stankinfood.interfaces.OnRecyclerViewClickListener;
 import com.example.hackinhome2021_stankinfood.models.Order;
 import com.example.hackinhome2021_stankinfood.models.Product;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -194,6 +196,11 @@ public class CartFragment extends Fragment implements
 
     private int hourTimer, minuteTimer;
 
+    private void showSnackBarEmptyCart() {
+        String message = getResources().getString(R.string.error_empty_cart);
+        Snackbar.make(getView(), message, BaseTransientBottomBar.LENGTH_LONG).show();
+    }
+
     @Override
     public void onClick(View v) {
         int id = v.getId();
@@ -227,7 +234,7 @@ public class CartFragment extends Fragment implements
                 if (id == R.id.buttonMakeOrder || id == R.id.buttonPayWithGoogle) {
                     showAlertDialogOrderCreated();
                 }
-            }
+            } else showSnackBarEmptyCart();
         }
     }
 

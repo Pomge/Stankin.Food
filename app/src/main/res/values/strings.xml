@@ -68,4 +68,6 @@
 
     <string name="scan_qr">Scan QR</string>
     <string name="scan_error">Failed to scan QR code!</string>
+
+    <string name="error_empty_cart">Error: cart is empty!</string>
 </resources>
