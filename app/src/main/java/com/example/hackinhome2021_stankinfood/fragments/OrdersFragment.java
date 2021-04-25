@@ -1,6 +1,5 @@
 package com.example.hackinhome2021_stankinfood.fragments;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -10,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,18 +17,21 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hackinhome2021_stankinfood.R;
+import com.example.hackinhome2021_stankinfood.activities.Capture;
 import com.example.hackinhome2021_stankinfood.activities.MainActivity;
 import com.example.hackinhome2021_stankinfood.adapters.OrderRecyclerViewAdapter;
 import com.example.hackinhome2021_stankinfood.interfaces.OnBackPressedFragment;
 import com.example.hackinhome2021_stankinfood.interfaces.OnRecyclerViewClickListener;
 import com.example.hackinhome2021_stankinfood.models.Order;
-import com.example.hackinhome2021_stankinfood.models.Product;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.journeyapps.barcodescanner.CaptureActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -149,8 +150,27 @@ public class OrdersFragment extends Fragment implements
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.buttonScanQR) {
-            ((MainActivity) getActivity()).createIntentIntegrator();
+            IntentIntegrator intentIntegrator = new IntentIntegrator((MainActivity) getActivity());
+            intentIntegrator.setBeepEnabled(true);
+            intentIntegrator.setOrientationLocked(true);
+//            intentIntegrator.setCaptureActivity(Capture.class);
+            IntentIntegrator.forSupportFragment(OrdersFragment.this).initiateScan();
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        IntentResult intentResult = IntentIntegrator.parseActivityResult(
+                requestCode, resultCode, data);
+
+        if (intentResult != null) {
+            if (intentResult.getContents() != null) {
+                ((MainActivity) getActivity()).getOrderFromFireStore(intentResult.getContents());
+            } else {
+                Snackbar.make(getView(), getResources().getString(R.string.scan_error),
+                        BaseTransientBottomBar.LENGTH_SHORT).show();
+            }
+        } else super.onActivityResult(requestCode, resultCode, data);
     }
 
 

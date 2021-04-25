@@ -50,6 +50,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.StorageReference;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import org.apache.commons.net.time.TimeTCPClient;
 
@@ -302,11 +303,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void createIntentIntegrator() {
-        IntentIntegrator intentIntegrator = new IntentIntegrator(MainActivity.this);
-        intentIntegrator.setBeepEnabled(true);
-        intentIntegrator.setOrientationLocked(true);
-        intentIntegrator.setCaptureActivity(Capture.class);
-        intentIntegrator.initiateScan();
+//        IntentIntegrator intentIntegrator = new IntentIntegrator(MainActivity.this);
+//        intentIntegrator.setBeepEnabled(true);
+//        intentIntegrator.setOrientationLocked(true);
+//        intentIntegrator.setCaptureActivity(Capture.class);
+//        intentIntegrator.initiateScan();
     }
 
     @Override
@@ -326,12 +327,14 @@ public class MainActivity extends AppCompatActivity
             IntentResult intentResult = IntentIntegrator.parseActivityResult(
                     requestCode, requestCode, data);
 
-            Log.d(TAG, "onActivityResult(): " + intentResult.getContents());
-            if (intentResult.getContents() != null) {
-                getOrderFromFireStore(intentResult.getContents());
-            } else {
-                Snackbar.make(parentLayout, getResources().getString(R.string.scan_error),
-                        BaseTransientBottomBar.LENGTH_SHORT).show();
+            if (intentResult != null) {
+                if (intentResult.getContents() != null) {
+                    Log.d(TAG, intentResult.getContents());
+                    getOrderFromFireStore(intentResult.getContents());
+                } else {
+                    Snackbar.make(parentLayout, getResources().getString(R.string.scan_error),
+                            BaseTransientBottomBar.LENGTH_SHORT).show();
+                }
             }
         }
     }
