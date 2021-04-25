@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity
         currentUser = firebaseAuth.getCurrentUser();
         if (savedInstanceState != null) {
             currentUser = savedInstanceState.getParcelable(CURRENT_USER_KEY);
-            userData = savedInstanceState.getParcelable(CURRENT_USER_KEY);
+            userData = savedInstanceState.getParcelable(USER_DATA_KEY);
         }
 
         if (currentUser == null) {
@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
-    
+
 
     private void hideProgressBar(boolean hide) {
         if (hide) {
