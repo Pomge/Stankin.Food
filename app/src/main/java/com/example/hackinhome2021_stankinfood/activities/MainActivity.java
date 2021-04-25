@@ -383,15 +383,15 @@ public class MainActivity extends AppCompatActivity
 
     private void animationFragmentManager(FragmentTransaction fragmentTransaction) {
         Log.d(TAG, "currentDirection: " + currentDirection + "; previousDirection: " + previousDirection);
-        if (currentDirection < previousDirection) {
-            fragmentTransaction.setCustomAnimations(
-                    R.anim.enter_from_left, R.anim.exit_to_right,
-                    R.anim.enter_from_right, R.anim.exit_to_left);
-        } else {
-            fragmentTransaction.setCustomAnimations(
-                    R.anim.enter_from_right, R.anim.exit_to_left,
-                    R.anim.enter_from_left, R.anim.exit_to_right);
-        }
+//        if (currentDirection < previousDirection) {
+//            fragmentTransaction.setCustomAnimations(
+//                    R.anim.enter_from_left, R.anim.exit_to_right,
+//                    R.anim.enter_from_right, R.anim.exit_to_left);
+//        } else {
+//            fragmentTransaction.setCustomAnimations(
+//                    R.anim.enter_from_right, R.anim.exit_to_left,
+//                    R.anim.enter_from_left, R.anim.exit_to_right);
+//        }
     }
 
 
@@ -399,7 +399,7 @@ public class MainActivity extends AppCompatActivity
         hideProgressBar(true);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        animationFragmentManager(fragmentTransaction);
+//        animationFragmentManager(fragmentTransaction);
         fragmentTransaction.replace(R.id.mainContainer,
                 new AuthRegChooseFragment(), AUTH_REG_CHOOSE_FRAGMENT);
         fragmentTransaction.addToBackStack(null);
@@ -410,7 +410,7 @@ public class MainActivity extends AppCompatActivity
         hideProgressBar(true);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        animationFragmentManager(fragmentTransaction);
+//        animationFragmentManager(fragmentTransaction);
         fragmentTransaction.replace(R.id.mainContainer,
                 AuthRegFragment.newInstance(isRegistration), AUTH_REG_FRAGMENT);
         fragmentTransaction.addToBackStack(null);
@@ -422,7 +422,7 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.popBackStack();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        animationFragmentManager(fragmentTransaction);
+//        animationFragmentManager(fragmentTransaction);
         fragmentTransaction.replace(R.id.mainContainer,
                 RestaurantsFragment.newInstance(restaurantList));
         fragmentTransaction.addToBackStack(null);
@@ -433,7 +433,7 @@ public class MainActivity extends AppCompatActivity
         hideProgressBar(true);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        animationFragmentManager(fragmentTransaction);
+//        animationFragmentManager(fragmentTransaction);
         fragmentTransaction.replace(R.id.mainContainer,
                 ProductFragment.newInstance(productList.get(position)));
         fragmentTransaction.addToBackStack(null);
@@ -449,7 +449,7 @@ public class MainActivity extends AppCompatActivity
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        animationFragmentManager(fragmentTransaction);
+//        animationFragmentManager(fragmentTransaction);
         fragmentTransaction.replace(R.id.mainContainer,
                 MenuFragment.newInstance(isMenu, result));
         fragmentTransaction.addToBackStack(null);
@@ -462,7 +462,7 @@ public class MainActivity extends AppCompatActivity
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        animationFragmentManager(fragmentTransaction);
+//        animationFragmentManager(fragmentTransaction);
         fragmentTransaction.replace(R.id.mainContainer, CartFragment.newInstance(userOrder));
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
@@ -475,7 +475,7 @@ public class MainActivity extends AppCompatActivity
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        animationFragmentManager(fragmentTransaction);
+//        animationFragmentManager(fragmentTransaction);
         fragmentTransaction.replace(R.id.mainContainer, OrderFragment.newInstance(
                 isManagerView, order));
         fragmentTransaction.addToBackStack(null);
@@ -486,7 +486,7 @@ public class MainActivity extends AppCompatActivity
         hideProgressBar(true);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        animationFragmentManager(fragmentTransaction);
+//        animationFragmentManager(fragmentTransaction);
         fragmentTransaction.replace(R.id.mainContainer, OrdersFragment.newInstance(
                 userData.getRestaurantId() != null, orderList));
         fragmentTransaction.addToBackStack(null);

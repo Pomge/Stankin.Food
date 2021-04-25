@@ -35,7 +35,7 @@ public class CartFragment extends Fragment implements
     private static final String ORDER = "order";
 
     private Order order;
-    private String restaurantId;
+    private int hourTimer, minuteTimer;
 
     private TextView textViewRealAddress;
     private TextView textViewPickupTime;
@@ -70,7 +70,7 @@ public class CartFragment extends Fragment implements
         order.setDone(false);
         order.setPickupTime(null);
         if (order.getPositions().size() > 0) {
-            restaurantId = order.getPositions().get(0).getRestaurantId();
+            String restaurantId = order.getPositions().get(0).getRestaurantId();
         }
     }
 
@@ -194,12 +194,6 @@ public class CartFragment extends Fragment implements
         ((MainActivity) getActivity()).getRestaurantsFromFireStore();
     }
 
-    private int hourTimer, minuteTimer;
-
-    private void showSnackBarEmptyCart() {
-        String message = getResources().getString(R.string.error_empty_cart);
-        Snackbar.make(getView(), message, BaseTransientBottomBar.LENGTH_LONG).show();
-    }
 
     @Override
     public void onClick(View v) {
@@ -223,18 +217,16 @@ public class CartFragment extends Fragment implements
             timePickerDialog.updateTime(hourTimer, minuteTimer);
             timePickerDialog.show();
         } else {
-            if (order.getPositions().size() > 0) {
-                order.setDone(false);
-                order.setRestaurantId(order.getPositions().get(0).getRestaurantId());
+            order.setDone(false);
+            order.setRestaurantId(order.getPositions().get(0).getRestaurantId());
 
-                if (order.getPickupTime() == null) {
-                    order.setPickupTime(Calendar.getInstance().getTime());
-                }
+            if (order.getPickupTime() == null) {
+                order.setPickupTime(Calendar.getInstance().getTime());
+            }
 
-                if (id == R.id.buttonMakeOrder || id == R.id.buttonPayWithGoogle) {
-                    showAlertDialogOrderCreated();
-                }
-            } else showSnackBarEmptyCart();
+            if (id == R.id.buttonMakeOrder || id == R.id.buttonPayWithGoogle) {
+                showAlertDialogOrderCreated();
+            }
         }
     }
 

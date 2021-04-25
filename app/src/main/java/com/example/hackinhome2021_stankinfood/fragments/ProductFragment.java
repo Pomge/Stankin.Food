@@ -1,7 +1,6 @@
 package com.example.hackinhome2021_stankinfood.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -185,7 +184,6 @@ public class ProductFragment extends Fragment implements
     public void onClick(View v) {
         int id = v.getId();
 
-        Log.d("LOG_MESSAGE", "productsLeft before: " + product.getProductsLeft());
         if (id == R.id.imageButtonLiked) {
             ((MainActivity) getActivity()).markProductAsLiked(product, !product.isLiked());
             product.setLiked(!product.isLiked());
@@ -219,7 +217,6 @@ public class ProductFragment extends Fragment implements
         textViewCount.setText(String.valueOf(product.getCountForOrder()));
         textViewRealTotalPrice.setText(getTotalPriceString());
         textViewRealProductsLeft.setText(String.valueOf(savedProductsLeft - product.getCountForOrder()));
-        Log.d("LOG_MESSAGE", "productsLeft after: " + product.getProductsLeft());
     }
 
     private String getTotalPriceString() {
