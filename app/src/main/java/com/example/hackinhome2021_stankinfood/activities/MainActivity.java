@@ -84,7 +84,6 @@ public class MainActivity extends AppCompatActivity
     private static final String COLLECTION_FAVORITE_ORDERS = "favoriteOrders";
     private static final String COLLECTION_USERS = "users";
 
-
     private String currentWeekday;
     private Date currentDate = null;
     public static Order userOrder = new Order();
@@ -104,8 +103,7 @@ public class MainActivity extends AppCompatActivity
 
     private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private final FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-    private final FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
