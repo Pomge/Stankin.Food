@@ -69,8 +69,6 @@ public class MainActivity extends AppCompatActivity
 
     private static final String AUTH_REG_CHOOSE_FRAGMENT = "AUTH_REG_CHOOSE_FRAGMENT";
     private static final String AUTH_REG_FRAGMENT = "AUTH_REG_FRAGMENT";
-//    private static final String MENU_FRAGMENT = "MENU_FRAGMENT";
-//    private static final String PRODUCT_FRAGMENT = "PRODUCT_FRAGMENT";
 
     public static final int MENU_HEADER = 0;
     public static final int MENU_PRODUCT_INACTIVE = 1;
@@ -129,12 +127,11 @@ public class MainActivity extends AppCompatActivity
             currentTimeGetterThread.start();
         }
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-
-        googleSignInClient = GoogleSignIn.getClient(this, gso);
+        googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
     }
 
 
