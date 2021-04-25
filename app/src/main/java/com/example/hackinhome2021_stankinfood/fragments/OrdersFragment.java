@@ -47,7 +47,6 @@ public class OrdersFragment extends Fragment implements
     private RecyclerView recyclerViewMenu;
     private LinearLayoutManager linearLayoutManager;
     private OrderRecyclerViewAdapter orderRecyclerViewAdapter;
-    private Button buttonScanQR;
 
     public OrdersFragment() {
     }
@@ -114,7 +113,7 @@ public class OrdersFragment extends Fragment implements
     }
 
     private void initButtonScanQR(View view) {
-        buttonScanQR = view.findViewById(R.id.buttonScanQR);
+        Button buttonScanQR = view.findViewById(R.id.buttonScanQR);
         buttonScanQR.setOnClickListener(this);
         buttonScanQR.setVisibility(View.VISIBLE);
     }
