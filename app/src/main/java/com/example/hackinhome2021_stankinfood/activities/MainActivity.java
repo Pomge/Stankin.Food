@@ -72,8 +72,8 @@ public class MainActivity extends AppCompatActivity
 
     private static final String AUTH_REG_CHOOSE_FRAGMENT = "AUTH_REG_CHOOSE_FRAGMENT";
     private static final String AUTH_REG_FRAGMENT = "AUTH_REG_FRAGMENT";
-    private static final String MENU_FRAGMENT = "MENU_FRAGMENT";
-    private static final String PRODUCT_FRAGMENT = "PRODUCT_FRAGMENT";
+//    private static final String MENU_FRAGMENT = "MENU_FRAGMENT";
+//    private static final String PRODUCT_FRAGMENT = "PRODUCT_FRAGMENT";
 
     public static final int MENU_HEADER = 0;
     public static final int MENU_PRODUCT_INACTIVE = 1;
@@ -102,12 +102,12 @@ public class MainActivity extends AppCompatActivity
             "Mirinda", "MountainDew", "Pepsi", "Drive");
 
 
-    private String currentWeekday;
+//    private String currentWeekday;
     private Date currentDate = null;
     public static Order userOrder = new Order();
 
     private View parentLayout;
-    private int previousDirection = 0;
+//    private int previousDirection = 0;
     private int previousBottomNavigationTabId;
 
     private BottomNavigationView bottomNavigationView;
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity
     private GoogleSignInClient googleSignInClient;
 
     private final FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-    private StorageReference storageReference;
+//    private StorageReference storageReference;
 
 
     @Override
@@ -184,8 +184,8 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 if (currentDate != null) {
-                    DateFormat weekdayString = new SimpleDateFormat("EEEE", Locale.ENGLISH);
-                    currentWeekday = weekdayString.format(currentDate);
+//                    DateFormat weekdayString = new SimpleDateFormat("EEEE", Locale.ENGLISH);
+//                    currentWeekday = weekdayString.format(currentDate);
                     findUserInDatabase();
                     break;
                 }
@@ -507,7 +507,7 @@ public class MainActivity extends AppCompatActivity
 
 
     private void setBottomNavigationViewToZeroPosition() {
-        previousDirection = 0;
+//        previousDirection = 0;
         previousBottomNavigationTabId = R.id.menuItemRestaurants;
         bottomNavigationView.setOnNavigationItemSelectedListener(null);
         bottomNavigationView.setSelectedItemId(R.id.menuItemRestaurants);
@@ -748,7 +748,7 @@ public class MainActivity extends AppCompatActivity
 //            } else fragmentTransaction.replace(R.id.mainContainer, fragment);
 //            fragmentTransaction.commit();
 //
-            previousDirection = currentDirection;
+//            previousDirection = currentDirection;
             previousBottomNavigationTabId = id;
         }
 

@@ -255,6 +255,8 @@ public class MenuFragment extends Fragment implements
         } else if (id == R.id.imageButtonLiked) {
             ((MainActivity) getActivity()).markProductAsLiked(currentProduct, !currentProduct.isLiked());
             currentProduct.setLiked(!currentProduct.isLiked());
+            currentProduct.setRating((float) currentProduct.getLikesCount() / (float) (
+                    productList.size() - titleIndexesList.size() + 1));
 
             if (!isMenu) {
                 productList.remove(currentProduct);
