@@ -413,8 +413,11 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction.commit();
     }
 
-    private void replaceFragmentToMenuFragment(boolean isMenu, boolean withCategoriesSort, List<Product> productList) {
-        List<Product> result = getConvertedProductListForRecyclerView(productList, isMenu, withCategoriesSort);
+    private void replaceFragmentToMenuFragment(boolean isMenu,
+                                               boolean withCategoriesSort,
+                                               List<Product> productList) {
+        List<Product> result = getConvertedProductListForRecyclerView(
+                productList, isMenu, withCategoriesSort);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
