@@ -48,6 +48,9 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.StorageReference;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import org.apache.commons.net.time.TimeTCPClient;
 
@@ -69,8 +72,8 @@ public class MainActivity extends AppCompatActivity
 
     private static final String AUTH_REG_CHOOSE_FRAGMENT = "AUTH_REG_CHOOSE_FRAGMENT";
     private static final String AUTH_REG_FRAGMENT = "AUTH_REG_FRAGMENT";
-//    private static final String MENU_FRAGMENT = "MENU_FRAGMENT";
-//    private static final String PRODUCT_FRAGMENT = "PRODUCT_FRAGMENT";
+    private static final String MENU_FRAGMENT = "MENU_FRAGMENT";
+    private static final String PRODUCT_FRAGMENT = "PRODUCT_FRAGMENT";
 
     public static final int MENU_HEADER = 0;
     public static final int MENU_PRODUCT_INACTIVE = 1;
@@ -299,6 +302,13 @@ public class MainActivity extends AppCompatActivity
         startActivityForResult(signInWithGoogle, RC_SIGN_IN);
     }
 
+    public void createIntentIntegrator() {
+//        IntentIntegrator intentIntegrator = new IntentIntegrator(MainActivity.this);
+//        intentIntegrator.setBeepEnabled(true);
+//        intentIntegrator.setOrientationLocked(true);
+//        intentIntegrator.setCaptureActivity(Capture.class);
+//        intentIntegrator.initiateScan();
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -312,6 +322,19 @@ public class MainActivity extends AppCompatActivity
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException apiException) {
                 apiException.printStackTrace();
+            }
+        } else {
+            IntentResult intentResult = IntentIntegrator.parseActivityResult(
+                    requestCode, requestCode, data);
+
+            if (intentResult != null) {
+                if (intentResult.getContents() != null) {
+                    Log.d(TAG, intentResult.getContents());
+                    getOrderFromFireStore(intentResult.getContents());
+                } else {
+                    Snackbar.make(parentLayout, getResources().getString(R.string.scan_error),
+                            BaseTransientBottomBar.LENGTH_SHORT).show();
+                }
             }
         }
     }
@@ -422,8 +445,8 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction.commit();
     }
 
-    private void replaceFragmentToMenuFragment(boolean isMenu, boolean withCategoriesSort, List<Product> productList) {
-        List<Product> result = getConvertedProductListForRecyclerView(productList, isMenu, withCategoriesSort);
+    private void replaceFragmentToMenuFragment(boolean isMenu, List<Product> productList) {
+        List<Product> result = getConvertedProductListForRecyclerView(productList, isMenu);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -510,17 +533,13 @@ public class MainActivity extends AppCompatActivity
                 });
     }
 
-    private List<Product> getConvertedProductListForRecyclerView(List<Product> productList,
-                                                                 boolean isMenu,
-                                                                 boolean withCategoriesSort) {
+    private List<Product> getConvertedProductListForRecyclerView(List<Product> productList, boolean isMenu) {
         for (Product product : productList) {
             product.setRating(((float) product.getLikesCount()) / ((float) productList.size()));
             product.setViewType(MainActivity.MENU_PRODUCT_INACTIVE);
         }
 
-        if (withCategoriesSort) {
-            Collections.sort(productList, Product.PRODUCT_COMPARATOR_WITH_CATEGORIES);
-        } else Collections.sort(productList, Product.PRODUCT_COMPARATOR_WITHOUT_CATEGORIES);
+        Collections.sort(productList, Product.PRODUCT_COMPARATOR);
         if (isMenu) convertForRecyclerView(productList);
 
         return productList;
@@ -569,7 +588,7 @@ public class MainActivity extends AppCompatActivity
                             product.setLiked(true);
                             productList.add(product);
                         }
-                        replaceFragmentToMenuFragment(false, false, productList);
+                        replaceFragmentToMenuFragment(false, productList);
                         Log.d(TAG, "getFavoriteProductsFromFireStore(): Success!");
                     } else {
                         Log.d(TAG, "getFavoriteProductsFromFireStore(): Failed!");
@@ -600,7 +619,7 @@ public class MainActivity extends AppCompatActivity
                             }
                             productList.add(product);
                         }
-                        replaceFragmentToMenuFragment(true, true, productList);
+                        replaceFragmentToMenuFragment(true, productList);
                         Log.d(TAG, "getProductsFromFireStore(): Success!");
                     } else {
                         Log.d(TAG, "getProductsFromFireStore(): Failed!");
@@ -667,7 +686,6 @@ public class MainActivity extends AppCompatActivity
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Order order = task.getResult().toObject(Order.class);
-                        order.setOrderId(task.getResult().getId());
                         replaceFragmentToOrderFragment(order);
                         Log.d(TAG, "getOrderFromFireStore(): Successful!");
                     } else {
